@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://dfblr6s3i4487"]
+
+[ext_resource type="FontFile" uid="uid://bjqcqudoiecha" path="res://Silkscreen-Regular.ttf" id="1_37p78"]
+[ext_resource type="Script" uid="uid://dq7i3mpcq8btk" path="res://hud.gd" id="1_64ctp"]
+
+[node name="HUD" type="CanvasLayer" unique_id=211249179]
+script = ExtResource("1_64ctp")
+
+[node name="SpinButton" type="Button" parent="." unique_id=1258611457]
+offset_left = 40.0
+offset_top = 40.0
+offset_right = 165.0
+offset_bottom = 89.0
+theme_override_fonts/font = ExtResource("1_37p78")
+theme_override_font_sizes/font_size = 32
+text = "Spin"
+
+[connection signal="pressed" from="SpinButton" to="." method="_on_spin_button_pressed"]

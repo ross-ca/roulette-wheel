@@ -1,0 +1,49 @@
+[gd_scene format=3 uid="uid://duo88hvsdpfv2"]
+
+[ext_resource type="Script" uid="uid://xa0eqgxh8kan" path="res://main.gd" id="1_h2yge"]
+[ext_resource type="PackedScene" uid="uid://chkvs2klsp6me" path="res://roulette_wheel.tscn" id="1_ig7tw"]
+[ext_resource type="Shader" uid="uid://bhnaj174ofi68" path="res://wheelShader.gdshader" id="2_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://dfblr6s3i4487" path="res://hud.tscn" id="2_1bvp3"]
+[ext_resource type="Texture2D" uid="uid://dq17wxeoh38it" path="res://cherry.png" id="5_lquwl"]
+[ext_resource type="Texture2D" uid="uid://cyohheps83tey" path="res://cigarettes.png" id="6_7mycd"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_h2yge"]
+shader = ExtResource("2_0xm2m")
+shader_parameter/background_color = Color(0, 0, 0, 0)
+shader_parameter/shadow_color = Color(0.15686275, 0.15686275, 0.15686275, 1)
+shader_parameter/offset_in_pixels = Vector2(8, 8)
+shader_parameter/bob_pixels = 6.000000285
+shader_parameter/bob_speed = 1.25
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_g4v7s"]
+viewport_path = NodePath("SubViewport")
+
+[node name="Main" type="Node2D" unique_id=862141720]
+script = ExtResource("1_h2yge")
+
+[node name="HUD" parent="." unique_id=211249179 instance=ExtResource("2_1bvp3")]
+
+[node name="SubViewport" type="SubViewport" parent="." unique_id=1916336550]
+transparent_bg = true
+size = Vector2i(600, 600)
+
+[node name="RouletteWheel" parent="SubViewport" unique_id=1334309236 instance=ExtResource("1_ig7tw")]
+rotation = 2.7925267
+
+[node name="WheelViewportOutput" type="Sprite2D" parent="." unique_id=1865346715]
+material = SubResource("ShaderMaterial_h2yge")
+texture = SubResource("ViewportTexture_g4v7s")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=157658307]
+texture_filter = 1
+position = Vector2(106.25, 680.125)
+scale = Vector2(2.15625, 2.15625)
+texture = ExtResource("5_lquwl")
+
+[node name="Sprite2D2" type="Sprite2D" parent="." unique_id=1666864703]
+texture_filter = 1
+position = Vector2(230, 680.125)
+scale = Vector2(2.15625, 2.15625)
+texture = ExtResource("6_7mycd")
+
+[connection signal="spin_requested" from="HUD" to="." method="_on_spin_requested"]
