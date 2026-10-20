@@ -1,5 +1,7 @@
 extends Node2D
 
+@export var segment_texture: Texture2D
+@export var texture_coverage: float = 0.5
 @export var wheel_radius: float = 240
 @export var inner_radius: float = 100
 @export var label_radius: float = 210
@@ -48,7 +50,7 @@ extends Node2D
 const COLOURS = {
 	"green": Color("#168653"),
 	"red": Color("#c9343c"),
-	"black": Color("#20242c"),
+	"black": Color("#202529"),
 	"gold": Color("#d9b66d"),
 	"brown": Color("#331804")
 }
@@ -82,7 +84,43 @@ func _draw() -> void:
 			var angle: float = lerp(start_angle, end_angle, float(j) / arc_steps)
 			points.append(Vector2.from_angle(angle) * wheel_radius)
 
-		draw_colored_polygon(points, colour)
+		if segment_texture:
+			var uvs: PackedVector2Array = PackedVector2Array()
+
+			for point in points:
+				var radial_distance: float = point.length() / wheel_radius
+
+				var angle: float
+				if point.is_zero_approx():
+					angle = middle_angle
+				else:
+					angle = point.angle()
+
+				# Relative angle within this segment, from 0 to 1
+				var relative_angle: float = (
+					wrapf(angle - start_angle, 0.0, TAU)
+					/ segment_angle
+				)
+
+				# Keep the centre vertex centred in the texture
+				if point.is_zero_approx():
+					relative_angle = 0.5
+
+				# Control horizontal texture coverage
+				var horizontal_uv: float = ((relative_angle - 0.5) / texture_coverage) + 0.5
+
+				# Map the centre to the bottom and outer edge to the top
+				var vertical_uv: float = 1.0 - radial_distance
+
+				uvs.append(Vector2(horizontal_uv, vertical_uv))
+
+			var vertex_colours: PackedColorArray = PackedColorArray()
+			for _point in points:
+				vertex_colours.append(colour)
+
+			draw_polygon(points, vertex_colours, uvs, segment_texture)
+		else:
+			draw_colored_polygon(points, colour)
 
 		# Draw borders between segments
 		var edge_end: Vector2 = Vector2(cos(start_angle), sin(start_angle)) * wheel_radius
