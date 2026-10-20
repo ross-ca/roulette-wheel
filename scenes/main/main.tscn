@@ -1,11 +1,11 @@
 [gd_scene format=3 uid="uid://duo88hvsdpfv2"]
 
-[ext_resource type="Script" uid="uid://xa0eqgxh8kan" path="res://main.gd" id="1_h2yge"]
-[ext_resource type="PackedScene" uid="uid://chkvs2klsp6me" path="res://roulette_wheel.tscn" id="1_ig7tw"]
-[ext_resource type="Shader" uid="uid://bhnaj174ofi68" path="res://wheelShader.gdshader" id="2_0xm2m"]
-[ext_resource type="PackedScene" uid="uid://dfblr6s3i4487" path="res://hud.tscn" id="2_1bvp3"]
-[ext_resource type="Texture2D" uid="uid://dq17wxeoh38it" path="res://cherry.png" id="5_lquwl"]
-[ext_resource type="Texture2D" uid="uid://cyohheps83tey" path="res://cigarettes.png" id="6_7mycd"]
+[ext_resource type="Script" uid="uid://xa0eqgxh8kan" path="res://scenes/main/main.gd" id="1_h2yge"]
+[ext_resource type="PackedScene" uid="uid://chkvs2klsp6me" path="res://scenes/wheel/roulette_wheel.tscn" id="1_ig7tw"]
+[ext_resource type="Shader" uid="uid://bhnaj174ofi68" path="res://scenes/wheel/wheelShader.gdshader" id="2_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://dfblr6s3i4487" path="res://scenes/hud/hud.tscn" id="2_1bvp3"]
+[ext_resource type="Texture2D" uid="uid://dq17wxeoh38it" path="res://assets/textures/cherry.png" id="5_lquwl"]
+[ext_resource type="Texture2D" uid="uid://cyohheps83tey" path="res://assets/textures/cigarettes.png" id="6_7mycd"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_h2yge"]
 shader = ExtResource("2_0xm2m")

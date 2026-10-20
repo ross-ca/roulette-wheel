@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b7diaw7sfvmrt"
-path="res://.godot/imported/segmentGradient.png-5a94cc2c0419861c2026f35eae5e9d6b.ctex"
+path="res://.godot/imported/segmentGradient.png-c7500126f5d454741b7146719f37c0a8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://segmentGradient.png"
-dest_files=["res://.godot/imported/segmentGradient.png-5a94cc2c0419861c2026f35eae5e9d6b.ctex"]
+source_file="res://assets/textures/segmentGradient.png"
+dest_files=["res://.godot/imported/segmentGradient.png-c7500126f5d454741b7146719f37c0a8.ctex"]
 
 [params]
 

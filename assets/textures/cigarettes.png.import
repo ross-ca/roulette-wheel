@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cyohheps83tey"
-path="res://.godot/imported/cigarettes.png-ba1e96fbfca0c8ba4f3c346538299571.ctex"
+path="res://.godot/imported/cigarettes.png-0a2a69694defd44c4fe53bf6e637e185.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://cigarettes.png"
-dest_files=["res://.godot/imported/cigarettes.png-ba1e96fbfca0c8ba4f3c346538299571.ctex"]
+source_file="res://assets/textures/cigarettes.png"
+dest_files=["res://.godot/imported/cigarettes.png-0a2a69694defd44c4fe53bf6e637e185.ctex"]
 
 [params]
 

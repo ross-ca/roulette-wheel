@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://chkvs2klsp6me"]
 
-[ext_resource type="Script" uid="uid://cwvpv5uohp7a" path="res://draw_wheel.gd" id="1_akyk1"]
-[ext_resource type="Script" uid="uid://bfvt6tmgfddut" path="res://wheel_behaviour.gd" id="1_cn4ev"]
-[ext_resource type="FontFile" uid="uid://bjqcqudoiecha" path="res://Silkscreen-Regular.ttf" id="2_d7mvi"]
-[ext_resource type="Texture2D" uid="uid://b7diaw7sfvmrt" path="res://segmentGradient.png" id="3_gyyh7"]
-[ext_resource type="Texture2D" uid="uid://cylqp7hjpkavq" path="res://ball.png" id="5_c1vq6"]
+[ext_resource type="Script" uid="uid://cwvpv5uohp7a" path="res://scenes/wheel/draw_wheel.gd" id="1_akyk1"]
+[ext_resource type="Script" uid="uid://bfvt6tmgfddut" path="res://scenes/wheel/wheel_behaviour.gd" id="1_cn4ev"]
+[ext_resource type="FontFile" uid="uid://bjqcqudoiecha" path="res://assets/fonts/Silkscreen-Regular.ttf" id="2_d7mvi"]
+[ext_resource type="Texture2D" uid="uid://b7diaw7sfvmrt" path="res://assets/textures/segmentGradient.png" id="3_gyyh7"]
+[ext_resource type="Texture2D" uid="uid://cylqp7hjpkavq" path="res://assets/textures/ball.png" id="5_c1vq6"]
 
 [node name="RouletteWheel" type="Node2D" unique_id=1334309236]
 script = ExtResource("1_cn4ev")
