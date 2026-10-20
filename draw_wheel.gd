@@ -1,3 +1,4 @@
+@tool
 extends Node2D
 
 @export var segment_texture: Texture2D
@@ -54,6 +55,33 @@ const COLOURS = {
 	"gold": Color("#d9b66d"),
 	"brown": Color("#331804")
 }
+
+const _DRAW_PROPERTIES: Array[StringName] = [
+	&"segment_texture",
+	&"texture_coverage",
+	&"wheel_radius",
+	&"inner_radius",
+	&"label_radius",
+	&"font",
+	&"font_size",
+	&"segments",
+]
+
+var _setting_draw_property := false
+
+
+func _set(property: StringName, value: Variant) -> bool:
+	# Default assignment while the node is loading. Entering the tree redraws once.
+	if _setting_draw_property or not is_inside_tree():
+		return false
+	if property not in _DRAW_PROPERTIES:
+		return false
+
+	_setting_draw_property = true
+	set(property, value)
+	_setting_draw_property = false
+	queue_redraw()
+	return true
 
 
 func _draw() -> void:
