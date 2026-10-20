@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b7diaw7sfvmrt"
-path="res://.godot/imported/segmentGradient.png-5a94cc2c0419861c2026f35eae5e9d6b.ctex"
+uid="uid://cylqp7hjpkavq"
+path="res://.godot/imported/ball.png-d4a4bcef9ccf03d0071f393bf5d7669c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://segmentGradient.png"
-dest_files=["res://.godot/imported/segmentGradient.png-5a94cc2c0419861c2026f35eae5e9d6b.ctex"]
+source_file="res://assets/textures/ball.png"
+dest_files=["res://.godot/imported/ball.png-d4a4bcef9ccf03d0071f393bf5d7669c.ctex"]
 
 [params]
 
