@@ -8,6 +8,9 @@
 
 [node name="RouletteWheel" type="Node2D" unique_id=1334309236]
 script = ExtResource("1_cn4ev")
+wheel_turns_max = 1
+ball_extra_turns_min = 8
+ball_extra_turns_max = 8
 
 [node name="Ball" type="Sprite2D" parent="." unique_id=1284254620]
 z_index = 1
