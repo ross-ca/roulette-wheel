@@ -1,0 +1,14 @@
+[gd_scene format=3]
+
+[ext_resource type="Shader" path="res://scenes/card/card_tilt.gdshader" id="1_shader"]
+[ext_resource type="Script" path="res://scenes/card/card.gd" id="2_script"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_card"]
+resource_local_to_scene = true
+shader = ExtResource("1_shader")
+
+[node name="Card" type="TextureRect"]
+texture_filter = 1
+material = SubResource("ShaderMaterial_card")
+mouse_filter = 0
+script = ExtResource("2_script")

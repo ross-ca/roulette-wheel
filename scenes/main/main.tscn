@@ -4,8 +4,10 @@
 [ext_resource type="PackedScene" uid="uid://chkvs2klsp6me" path="res://scenes/wheel/roulette_wheel.tscn" id="1_ig7tw"]
 [ext_resource type="Shader" uid="uid://bhnaj174ofi68" path="res://scenes/wheel/wheelShader.gdshader" id="2_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://dfblr6s3i4487" path="res://scenes/hud/hud.tscn" id="2_1bvp3"]
+[ext_resource type="PackedScene" path="res://scenes/card/card.tscn" id="4_card"]
 [ext_resource type="Texture2D" uid="uid://dq17wxeoh38it" path="res://assets/textures/cherry.png" id="5_lquwl"]
 [ext_resource type="Texture2D" uid="uid://cyohheps83tey" path="res://assets/textures/cigarettes.png" id="6_7mycd"]
+[ext_resource type="Shader" uid="uid://dexl7k0sofn0k" path="res://scenes/card/card_tilt.gdshader" id="6_yyfjg"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_h2yge"]
 shader = ExtResource("2_0xm2m")
@@ -17,6 +19,24 @@ shader_parameter/bob_speed = 1.25
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_g4v7s"]
 viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_b1x3f"]
+resource_local_to_scene = true
+shader = ExtResource("6_yyfjg")
+shader_parameter/fov = 90.0
+shader_parameter/cull_back = true
+shader_parameter/y_rot = 0.0
+shader_parameter/x_rot = 0.0
+shader_parameter/inset = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_a8run"]
+resource_local_to_scene = true
+shader = ExtResource("6_yyfjg")
+shader_parameter/fov = 90.0
+shader_parameter/cull_back = true
+shader_parameter/y_rot = 0.0
+shader_parameter/x_rot = 0.0
+shader_parameter/inset = 0.0
 
 [node name="Main" type="Node2D" unique_id=862141720]
 script = ExtResource("1_h2yge")
@@ -35,15 +55,22 @@ z_as_relative = false
 material = SubResource("ShaderMaterial_h2yge")
 texture = SubResource("ViewportTexture_g4v7s")
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=157658307]
-texture_filter = 1
-position = Vector2(106.25, 680.125)
+[node name="CherryCard" parent="." unique_id=157658307 instance=ExtResource("4_card")]
+material = SubResource("ShaderMaterial_b1x3f")
+offset_left = 82.25
+offset_top = 644.125
+offset_right = 130.25
+offset_bottom = 716.125
 scale = Vector2(2.15625, 2.15625)
 texture = ExtResource("5_lquwl")
+max_tilt = 6.0
 
-[node name="Sprite2D2" type="Sprite2D" parent="." unique_id=1666864703]
-texture_filter = 1
-position = Vector2(230, 680.125)
+[node name="CigarettesCard" parent="." unique_id=1666864703 instance=ExtResource("4_card")]
+material = SubResource("ShaderMaterial_a8run")
+offset_left = 206.0
+offset_top = 644.125
+offset_right = 254.0
+offset_bottom = 716.125
 scale = Vector2(2.15625, 2.15625)
 texture = ExtResource("6_7mycd")
 
