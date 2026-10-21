@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://duo88hvsdpfv2"]
 
-[ext_resource type="Script" uid="uid://xa0eqgxh8kan" path="res://scenes/main/main.gd" id="1_h2yge"]
+[ext_resource type="Script" uid="uid://xa0eqgxh8kan" path="res://scenes/play/play.gd" id="1_h2yge"]
 [ext_resource type="PackedScene" uid="uid://chkvs2klsp6me" path="res://scenes/wheel/roulette_wheel.tscn" id="1_ig7tw"]
 [ext_resource type="Shader" uid="uid://bhnaj174ofi68" path="res://scenes/wheel/wheelShader.gdshader" id="2_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://dfblr6s3i4487" path="res://scenes/hud/hud.tscn" id="2_1bvp3"]
@@ -38,7 +38,7 @@ shader_parameter/y_rot = 0.0
 shader_parameter/x_rot = 0.0
 shader_parameter/inset = 0.0
 
-[node name="Main" type="Node2D" unique_id=862141720]
+[node name="Play" type="Node2D" unique_id=862141720]
 script = ExtResource("1_h2yge")
 
 [node name="HUD" parent="." unique_id=211249179 instance=ExtResource("2_1bvp3")]

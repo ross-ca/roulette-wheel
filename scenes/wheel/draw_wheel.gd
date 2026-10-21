@@ -8,45 +8,18 @@ extends Node2D
 @export var label_radius: float = 210
 @export var font: Font = ThemeDB.fallback_font
 @export var font_size: int = 20
-@export var segments: Array[Dictionary] = [
-	{"number": 0, "colour": "green"},
-	{"number": 32, "colour": "red"},
-	{"number": 15, "colour": "black"},
-	{"number": 19, "colour": "red"},
-	{"number": 4, "colour": "black"},
-	{"number": 21, "colour": "red"},
-	{"number": 2, "colour": "black"},
-	{"number": 25, "colour": "red"},
-	{"number": 17, "colour": "black"},
-	{"number": 34, "colour": "red"},
-	{"number": 6, "colour": "black"},
-	{"number": 27, "colour": "red"},
-	{"number": 13, "colour": "black"},
-	{"number": 36, "colour": "red"},
-	{"number": 11, "colour": "black"},
-	{"number": 30, "colour": "red"},
-	{"number": 8, "colour": "black"},
-	{"number": 23, "colour": "red"},
-	{"number": 10, "colour": "black"},
-	{"number": 5, "colour": "red"},
-	{"number": 24, "colour": "black"},
-	{"number": 16, "colour": "red"},
-	{"number": 33, "colour": "black"},
-	{"number": 1, "colour": "red"},
-	{"number": 20, "colour": "black"},
-	{"number": 14, "colour": "red"},
-	{"number": 31, "colour": "black"},
-	{"number": 9, "colour": "red"},
-	{"number": 22, "colour": "black"},
-	{"number": 18, "colour": "red"},
-	{"number": 29, "colour": "black"},
-	{"number": 7, "colour": "red"},
-	{"number": 28, "colour": "black"},
-	{"number": 12, "colour": "red"},
-	{"number": 35, "colour": "black"},
-	{"number": 3, "colour": "red"},
-	{"number": 26, "colour": "black"}
-]
+
+## The pockets to draw, clockwise from the top. The run hands its own pockets over at the start of a
+## round; the default European layout is there so the wheel previews in the editor.
+var pockets: Array[Pocket] = Pocket.european_layout():
+	set(value):
+		for pocket in pockets:
+			if pocket.changed.is_connected(queue_redraw):
+				pocket.changed.disconnect(queue_redraw)
+		pockets = value
+		for pocket in pockets:
+			pocket.changed.connect(queue_redraw)
+		queue_redraw()
 
 const COLOURS = {
 	"green": Color("#168653"),
@@ -64,7 +37,6 @@ const _DRAW_PROPERTIES: Array[StringName] = [
 	&"label_radius",
 	&"font",
 	&"font_size",
-	&"segments",
 ]
 
 var _setting_draw_property := false
@@ -85,22 +57,22 @@ func _set(property: StringName, value: Variant) -> bool:
 
 
 func _draw() -> void:
-	if segments.is_empty():
+	if pockets.is_empty():
 		return
 
-	var segment_angle: float = TAU / segments.size()
+	var segment_angle: float = TAU / pockets.size()
 
 	# Draw outer circle
 	draw_circle(Vector2.ZERO, wheel_radius + 12, COLOURS["gold"], true, -1.0, true)
 
 	# Draw each segment
-	for i in segments.size():
-		var segment: Dictionary = segments[i]
+	for i in pockets.size():
+		var pocket: Pocket = pockets[i]
 		var start_angle: float = -PI / 2.0 + i * segment_angle
 		var end_angle: float = start_angle + segment_angle
 		var middle_angle: float = (start_angle + end_angle) / 2.0
 
-		var colour: Color = COLOURS[segment["colour"]]
+		var colour: Color = COLOURS[pocket.colour]
 
 		# Build a polygon for the centre and an arc
 		var points: PackedVector2Array
@@ -155,7 +127,7 @@ func _draw() -> void:
 		draw_line(Vector2.ZERO, edge_end, COLOURS["gold"], 2.0, true)
 
 		var label_position: Vector2 = Vector2(cos(middle_angle), sin(middle_angle)) * label_radius
-		var label: String = str(segment["number"])
+		var label: String = str(pocket.number)
 		var text_size: Vector2 = font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size)
 		var baseline_offset: float = (font.get_ascent(font_size) - font.get_descent(font_size)) / 2.0
 
