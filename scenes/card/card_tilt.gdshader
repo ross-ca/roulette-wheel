@@ -18,6 +18,15 @@ uniform float x_rot : hint_range(-180, 180) = 0.0;
 // rotation without clipping inside its rect.
 uniform float inset : hint_range(0, 1) = 0.0;
 
+// Bob and shadow, as in wheelShader.gdshader. Pixel values are in texture pixels.
+uniform vec4 background_color : source_color = vec4(0.0, 0.0, 0.0, 0.0);
+uniform vec4 shadow_color : source_color = vec4(0.15686275, 0.15686275, 0.15686275, 1.0);
+uniform vec2 offset_in_pixels = vec2(4.0, 4.0);
+uniform float bob_pixels : hint_range(0.0, 32.0) = 3.0;
+uniform float bob_speed : hint_range(0.0, 6.0) = 1.25;
+// Phase shift of the bob in radians, so neighbouring cards needn't move in sync.
+uniform float bob_offset : hint_range(0.0, 6.283185) = 0.0;
+
 varying flat vec2 o;
 varying vec3 p;
 
@@ -50,9 +59,31 @@ void vertex() {
 	VERTEX += (UV - 0.5) / TEXTURE_PIXEL_SIZE * t * (1.0 - inset);
 }
 
+// Card colour at a texture UV; anywhere off the card counts as background.
+// TEXTURE is only in scope in the built-in functions, so it's passed in.
+vec4 card_color(sampler2D tex, vec2 uv) {
+	if (uv.x < 0.0 || uv.y < 0.0 || uv.x > 1.0 || uv.y > 1.0) return background_color;
+	return texture(tex, uv);
+}
+
 void fragment() {
 	if (cull_back && p.z <= 0.0) discard;
-	vec2 uv = (p.xy / p.z).xy - o;
-	COLOR = texture(TEXTURE, uv + 0.5);
-	COLOR.a *= step(max(abs(uv.x), abs(uv.y)), 0.5);
+	vec2 uv = (p.xy / p.z).xy - o + 0.5;
+
+	// Same bob and shadow as wheelShader.gdshader. The vertex stage draws the quad larger
+	// than the card (at inset 0), so there's room outside the card for both.
+	// Lift by the amplitude so the lowest point of the bob is the resting position.
+	float bob = sin(TIME * bob_speed + bob_offset) * bob_pixels + bob_pixels;
+	vec4 current_color = card_color(TEXTURE, uv + vec2(0.0, bob) * TEXTURE_PIXEL_SIZE);
+
+	// Shadow is cast from the card at rest, so it stays put while the card bobs.
+	if (length(current_color - background_color) < 0.01) {
+		vec4 offset_color = card_color(TEXTURE, uv - offset_in_pixels * TEXTURE_PIXEL_SIZE);
+
+		if (length(offset_color - background_color) > 0.01) {
+			current_color = shadow_color;
+		}
+	}
+
+	COLOR = current_color;
 }
