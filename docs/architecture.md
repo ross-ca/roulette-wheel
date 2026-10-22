@@ -40,7 +40,7 @@ Rules:
 
 ## Pockets
 
-`scenes/wheel/pocket.gd`. Each pocket is a `Pocket` Resource (`number`, `colour`, `weight`, `base_points`), because pockets are a core feature that will gain many properties.
+`scenes/wheel/pocket.gd`. Each pocket is a `Pocket` Resource (`number`, `colour`, `weight`), because pockets are a core feature that will gain many properties.
 
 - They belong to `run.pockets`. The play phase hands them to the wheel with `set_pockets()`.
 - `Pocket.european_layout()` returns a fresh set of 37 every call, so runs never share pocket objects.
@@ -97,7 +97,7 @@ Events, raised with `Modifiers.notify(run, event, args)`:
 
 ### Scoring (placeholder)
 
-`ScoreContext` starts from the landed pocket's `base_points` with mult 1, passes through every modifier, and totals `points × mult`. The real formula (probably points × mult plus per-pocket bonuses) isn't designed yet; only `ScoreContext` and the play phase should change when it is.
+`ScoreContext` starts from the chips the player submitted for the spin (the HUD's `ChipsInput`) with mult 1, passes through every modifier, and totals `points × mult`. The real formula (probably points × mult plus per-pocket bonuses) isn't designed yet; only `ScoreContext` and the play phase should change when it is.
 
 Modifiers record what they did in `ctx.trace`. Rules are computed instantly and the HUD plays the trace back afterwards, so game logic never waits on animation.
 

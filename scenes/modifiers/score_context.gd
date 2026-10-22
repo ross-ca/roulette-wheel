@@ -5,15 +5,16 @@ extends RefCounted
 ## should need to change when it is.
 
 var pocket: Pocket
+## Starts as the chips the player submitted for the spin.
 var points: int = 0
 var mult: float = 1.0
 ## What each modifier did, in order, for the UI to play back: {"source": Modifier, "text": String}.
 var trace: Array[Dictionary] = []
 
 
-func _init(landed: Pocket) -> void:
+func _init(landed: Pocket, chips: int) -> void:
 	pocket = landed
-	points = landed.base_points
+	points = chips
 
 
 func add_trace(source: Modifier, text: String) -> void:

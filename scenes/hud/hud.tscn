@@ -70,4 +70,16 @@ theme_override_fonts/font = ExtResource("1_37p78")
 theme_override_font_sizes/font_size = 32
 text = "Spin"
 
+[node name="ChipsInput" type="SpinBox" parent="."]
+unique_name_in_owner = true
+offset_left = 180.0
+offset_top = 40.0
+offset_right = 380.0
+offset_bottom = 89.0
+min_value = 1.0
+max_value = 1000.0
+value = 10.0
+rounded = true
+prefix = "Chips"
+
 [connection signal="pressed" from="SpinButton" to="." method="_on_spin_button_pressed"]

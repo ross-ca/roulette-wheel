@@ -27,8 +27,8 @@ static func spins_per_round(run: RunState) -> int:
 	return spins
 
 
-static func score(run: RunState, pocket: Pocket) -> ScoreContext:
-	var ctx := ScoreContext.new(pocket)
+static func score(run: RunState, pocket: Pocket, chips: int) -> ScoreContext:
+	var ctx := ScoreContext.new(pocket, chips)
 	for modifier in active(run):
 		modifier.modify_score(run, ctx)
 	return ctx

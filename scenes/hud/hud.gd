@@ -17,10 +17,21 @@ const POPUP_Y_RANGE := Vector2(0.2, 0.8)
 @onready var _tickets_label: Label = %TicketsLabel
 @onready var _last_spin_label: Label = %LastSpinLabel
 @onready var _result_label: Label = %ResultLabel
+@onready var _chips_input: SpinBox = %ChipsInput
 
 
 func _on_spin_button_pressed() -> void:
 	spin_requested.emit()
+
+
+## The chips entered for the next spin.
+func get_chips() -> int:
+	_chips_input.apply() # commit text still being typed
+	return int(_chips_input.value)
+
+
+func set_chips_editable(editable: bool) -> void:
+	_chips_input.editable = editable
 
 
 func show_round(run: RunState, step: RoundStep) -> void:
@@ -37,7 +48,7 @@ func show_round(run: RunState, step: RoundStep) -> void:
 
 ## Placeholder for the Balatro-style playback: lists what each modifier did, in order.
 func show_score(ctx: ScoreContext) -> void:
-	var lines: PackedStringArray = ["Landed %d: %d points" % [ctx.pocket.number, ctx.points]]
+	var lines: PackedStringArray = ["Landed %d: %d chips" % [ctx.pocket.number, ctx.points]]
 	for entry in ctx.trace:
 		lines.append(entry.text)
 	lines.append("%d × %s = %d" % [ctx.points, ctx.mult, ctx.total()])
