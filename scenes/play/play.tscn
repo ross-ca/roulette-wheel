@@ -17,24 +17,6 @@ shader_parameter/bob_speed = 1.25
 [sub_resource type="ViewportTexture" id="ViewportTexture_g4v7s"]
 viewport_path = NodePath("SubViewport")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_b1x3f"]
-resource_local_to_scene = true
-shader = ExtResource("6_yyfjg")
-shader_parameter/fov = 90.0
-shader_parameter/cull_back = true
-shader_parameter/y_rot = 0.0
-shader_parameter/x_rot = 0.0
-shader_parameter/inset = 0.0
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_a8run"]
-resource_local_to_scene = true
-shader = ExtResource("6_yyfjg")
-shader_parameter/fov = 90.0
-shader_parameter/cull_back = true
-shader_parameter/y_rot = 0.0
-shader_parameter/x_rot = 0.0
-shader_parameter/inset = 0.0
-
 [node name="Play" type="Node2D" unique_id=862141720]
 script = ExtResource("1_h2yge")
 
