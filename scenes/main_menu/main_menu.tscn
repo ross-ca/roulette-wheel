@@ -1,0 +1,60 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/main_menu/main_menu.gd" id="1_menu"]
+[ext_resource type="FontFile" uid="uid://bjqcqudoiecha" path="res://assets/fonts/Silkscreen-Regular.ttf" id="2_font"]
+
+[sub_resource type="Theme" id="Theme_menu"]
+default_font = ExtResource("2_font")
+default_font_size = 28
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_menu")
+script = ExtResource("1_menu")
+
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Items" type="VBoxContainer" parent="Center"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Title" type="Label" parent="Center/Items"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 72
+text = "Roulette"
+horizontal_alignment = 1
+
+[node name="ResultLabel" type="Label" parent="Center/Items"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="NewRunButton" type="Button" parent="Center/Items"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "New run"
+
+[node name="ContinueButton" type="Button" parent="Center/Items"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Continue"
+
+[node name="QuitButton" type="Button" parent="Center/Items"]
+layout_mode = 2
+text = "Quit"
+
+[connection signal="pressed" from="Center/Items/NewRunButton" to="." method="_on_new_run_button_pressed"]
+[connection signal="pressed" from="Center/Items/ContinueButton" to="." method="_on_continue_button_pressed"]
+[connection signal="pressed" from="Center/Items/QuitButton" to="." method="_on_quit_button_pressed"]

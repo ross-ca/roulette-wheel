@@ -11,13 +11,14 @@ config_version=5
 [application]
 
 config/name="roulette-wheel"
-run/main_scene="uid://duo88hvsdpfv2"
+run/main_scene="res://scenes/main_menu/main_menu.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
 Audio="*res://scenes/audio/audio.gd"
+Game="*res://scenes/game/game.gd"
 
 [display]
 

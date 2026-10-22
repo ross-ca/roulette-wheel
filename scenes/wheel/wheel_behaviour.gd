@@ -1,9 +1,9 @@
 extends Node2D
 
 ## Emitted each time the ball enters a pocket during a spin, including the one it lands in.
-signal pocket_passed(index: int, segment: Dictionary)
-## Emitted once the ball has settled. `index` is the position in the wheel's segments array.
-signal spin_finished(index: int, segment: Dictionary)
+signal pocket_passed(index: int, pocket: Pocket)
+## Emitted once the ball has settled. `index` is the position in the wheel's pockets array.
+signal spin_finished(index: int, pocket: Pocket)
 
 @export var spin_duration: float = 6.0
 ## Whole turns the wheel makes each spin, picked randomly between min and max.
@@ -35,6 +35,9 @@ signal spin_finished(index: int, segment: Dictionary)
 @export var debug_freeze_wheel: bool = false
 
 var is_spinning: bool = false
+## Every roll in a spin comes from here. The play phase swaps in the run's seeded generator so
+## spins are reproducible and survive save and load.
+var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
 # The ball lives in the wheel's rotating frame, so once it settles it rides with the wheel for free.
 var _ball_angle: float = 0.0 # radians, relative to the wheel
@@ -58,24 +61,34 @@ func _process(_delta: float) -> void:
 		_emit_passed_pockets()
 
 
+## Hands the wheel the pockets to draw and land on. Ignored mid-spin, since targets are computed at
+## spin start.
+func set_pockets(pockets: Array[Pocket]) -> void:
+	if is_spinning:
+		return
+	_wheel.pockets = pockets
+	_ball_angle = _pocket_angle(0)
+	_last_step = _ball_step()
+
+
 func spin_wheel() -> void:
-	if is_spinning or _wheel.segments.is_empty():
+	if is_spinning or _wheel.pockets.is_empty():
 		return
 
 	is_spinning = true
 	_last_step = _ball_step()
 
-	# The winner is chosen up front (so it can honour per-segment weights from
+	# The winner is chosen up front (so it can honour per-pocket weights from
 	# wheel mutations) and the ball is animated to land on it.
 	var winner: int = pick_winning_index()
 
-	var wheel_turns: int = randi_range(wheel_turns_min, maxi(wheel_turns_min, wheel_turns_max))
-	var target_rotation: float = _wheel.rotation + wheel_turns * TAU + randf_range(0.0, TAU)
+	var wheel_turns: int = rng.randi_range(wheel_turns_min, maxi(wheel_turns_min, wheel_turns_max))
+	var target_rotation: float = _wheel.rotation + wheel_turns * TAU + rng.randf_range(0.0, TAU)
 
 	# The ball runs against the wheel. Adding a few extra turns over the wheel's
 	# keeps it moving the opposite way in world space for the whole spin.
 	var ball_turns: int = wheel_turns \
-		+ randi_range(ball_extra_turns_min, maxi(ball_extra_turns_min, ball_extra_turns_max))
+		+ rng.randi_range(ball_extra_turns_min, maxi(ball_extra_turns_min, ball_extra_turns_max))
 	var pocket_angle: float = _pocket_angle(winner)
 	var turns_to_pocket: float = fposmod(_ball_angle - pocket_angle, TAU) + ball_turns * TAU
 	var target_ball_angle: float = _ball_angle - turns_to_pocket
@@ -111,35 +124,35 @@ func spin_wheel() -> void:
 	# sure the landing pocket has been reported before finishing.
 	_emit_passed_pockets()
 	is_spinning = false
-	spin_finished.emit(winner, _wheel.segments[winner])
+	spin_finished.emit(winner, _wheel.pockets[winner])
 
 
-## Random segment index, weighted by each segment's optional "weight" (default 1.0).
+## Random pocket index, weighted by each pocket's `weight`.
 func pick_winning_index() -> int:
-	var segments: Array[Dictionary] = _wheel.segments
+	var pockets: Array[Pocket] = _wheel.pockets
 	var total: float = 0.0
-	for segment in segments:
-		total += maxf(float(segment.get("weight", 1.0)), 0.0)
+	for pocket in pockets:
+		total += maxf(pocket.weight, 0.0)
 	if total <= 0.0:
-		return randi_range(0, segments.size() - 1)
+		return rng.randi_range(0, pockets.size() - 1)
 
-	var roll: float = randf() * total
-	for i in segments.size():
-		roll -= maxf(float(segments[i].get("weight", 1.0)), 0.0)
+	var roll: float = rng.randf() * total
+	for i in pockets.size():
+		roll -= maxf(pockets[i].weight, 0.0)
 		if roll < 0.0:
 			return i
-	return segments.size() - 1
+	return pockets.size() - 1
 
 
-# Centre of a segment, in the wheel's local frame (segments are drawn clockwise from the top).
+# Centre of a pocket, in the wheel's local frame (pockets are drawn clockwise from the top).
 func _pocket_angle(index: int) -> float:
-	var segment_angle: float = TAU / _wheel.segments.size()
+	var segment_angle: float = TAU / _wheel.pockets.size()
 	return -PI / 2.0 + (index + 0.5) * segment_angle
 
 
 # Pockets travelled by the ball, as a whole number that keeps counting past full laps.
 func _ball_step() -> int:
-	var segment_angle: float = TAU / _wheel.segments.size()
+	var segment_angle: float = TAU / _wheel.pockets.size()
 	return floori((_ball_angle + PI / 2.0) / segment_angle)
 
 
@@ -148,8 +161,8 @@ func _emit_passed_pockets() -> void:
 	var step: int = _ball_step()
 	while _last_step != step:
 		_last_step += signi(step - _last_step)
-		var index: int = posmod(_last_step, _wheel.segments.size())
-		pocket_passed.emit(index, _wheel.segments[index])
+		var index: int = posmod(_last_step, _wheel.pockets.size())
+		pocket_passed.emit(index, _wheel.pockets[index])
 
 
 # The wheel's spin as one continuous curve. It decelerates (quint ease-out) to a point just past

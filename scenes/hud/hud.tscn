@@ -3,8 +3,63 @@
 [ext_resource type="FontFile" uid="uid://bjqcqudoiecha" path="res://assets/fonts/Silkscreen-Regular.ttf" id="1_37p78"]
 [ext_resource type="Script" uid="uid://dq7i3mpcq8btk" path="res://scenes/hud/hud.gd" id="1_64ctp"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_info"]
+font = ExtResource("1_37p78")
+font_size = 20
+
+[sub_resource type="LabelSettings" id="LabelSettings_result"]
+font = ExtResource("1_37p78")
+font_size = 48
+outline_size = 8
+outline_color = Color(0, 0, 0, 1)
+
 [node name="HUD" type="CanvasLayer" unique_id=211249179]
 script = ExtResource("1_64ctp")
+
+[node name="Info" type="VBoxContainer" parent="."]
+offset_left = 40.0
+offset_top = 110.0
+offset_right = 420.0
+offset_bottom = 600.0
+theme_override_constants/separation = 8
+
+[node name="RoundLabel" type="Label" parent="Info"]
+unique_name_in_owner = true
+label_settings = SubResource("LabelSettings_info")
+
+[node name="ScoreLabel" type="Label" parent="Info"]
+unique_name_in_owner = true
+label_settings = SubResource("LabelSettings_info")
+
+[node name="SpinsLabel" type="Label" parent="Info"]
+unique_name_in_owner = true
+label_settings = SubResource("LabelSettings_info")
+
+[node name="MoneyLabel" type="Label" parent="Info"]
+unique_name_in_owner = true
+label_settings = SubResource("LabelSettings_info")
+
+[node name="TicketsLabel" type="Label" parent="Info"]
+unique_name_in_owner = true
+label_settings = SubResource("LabelSettings_info")
+
+[node name="LastSpinLabel" type="Label" parent="Info"]
+unique_name_in_owner = true
+label_settings = SubResource("LabelSettings_info")
+
+[node name="ResultLabel" type="Label" parent="."]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = 40.0
+offset_right = 300.0
+offset_bottom = 100.0
+grow_horizontal = 2
+label_settings = SubResource("LabelSettings_result")
+horizontal_alignment = 1
 
 [node name="SpinButton" type="Button" parent="." unique_id=1258611457]
 offset_left = 40.0
