@@ -54,7 +54,8 @@ Rules:
 
 - **Base mult comes from the odds.** It is 36 divided by the numbers the bet covers: red or black (18 numbers) is ×2, a single number (zero included) is ×36, a dozen (12) would be ×3. Rarer outcomes pay more. Each subclass sets its own value.
 - **Losing scores nothing.** If the landed pocket doesn't satisfy the bet, the spin scores 0 and `modify_score` isn't called, so tickets only trigger on a win. (Zero is green, so it loses every red or black bet.)
-- Only `ColourBet` exists so far. It covers red, black (×2) and green (×36, since green is only zero), and sets `base_mult` from its `colour`. Further bets, such as numbers, odd/even, dozens and columns, are new `Bet` subclasses; the HUD chooses which are offered.
+- `ColourBet` covers red, black (×2) and green (×36, since green is only zero), and sets `base_mult` from its `colour`. `NumberBet` is one exact number from 0 to 36, also ×36.
+- The HUD offers the colours as toggle buttons and the number as a text field. Entering a number picks a `NumberBet` and disables the colour buttons; clearing the field enables them again. Further bets, such as odd/even, dozens and columns, are new `Bet` subclasses; the HUD chooses which are offered.
 - The chips and bet are read from the HUD when Spin is pressed and held by `play.gd` until the spin settles. Both inputs are locked during the spin. They aren't saved, so a resumed round starts with the HUD defaults (10 chips, red).
 
 ## Steps and the queue

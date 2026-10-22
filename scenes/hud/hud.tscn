@@ -121,4 +121,16 @@ toggle_mode = true
 button_group = SubResource("ButtonGroup_bet")
 text = "Green"
 
+[node name="NumberInput" type="LineEdit" parent="."]
+unique_name_in_owner = true
+offset_left = 730.0
+offset_top = 40.0
+offset_right = 900.0
+offset_bottom = 89.0
+theme_override_fonts/font = ExtResource("1_37p78")
+theme_override_font_sizes/font_size = 24
+placeholder_text = "Number"
+max_length = 2
+
+[connection signal="text_changed" from="NumberInput" to="." method="_on_number_input_text_changed"]
 [connection signal="pressed" from="SpinButton" to="." method="_on_spin_button_pressed"]
