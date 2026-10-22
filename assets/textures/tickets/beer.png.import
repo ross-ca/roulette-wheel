@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cyohheps83tey"
-path="res://.godot/imported/cigarettes.png-0a2a69694defd44c4fe53bf6e637e185.ctex"
+uid="uid://ddkg31g5ca86k"
+path="res://.godot/imported/beer.png-c6ff3163ce38b3a3817b33667edf2005.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/textures/cigarettes.png"
-dest_files=["res://.godot/imported/cigarettes.png-0a2a69694defd44c4fe53bf6e637e185.ctex"]
+source_file="res://assets/textures/tickets/beer.png"
+dest_files=["res://.godot/imported/beer.png-c6ff3163ce38b3a3817b33667edf2005.ctex"]
 
 [params]
 

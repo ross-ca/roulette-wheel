@@ -22,8 +22,6 @@ const EUROPEAN_ORDER: Array[int] = [
 		emit_changed()
 ## Relative chance of being the winning pocket. 0 means it can never win.
 @export var weight: float = 1.0
-## Points scored when the ball lands here. Placeholder until scoring is designed.
-@export var base_points: int = 0
 
 
 ## A fresh set of the 37 European pockets. Each call returns new objects, so callers can mutate them.
@@ -34,6 +32,5 @@ static func european_layout() -> Array[Pocket]:
 		pocket.number = EUROPEAN_ORDER[i]
 		# Zero is green, then the wheel alternates red and black.
 		pocket.colour = "green" if i == 0 else ("red" if i % 2 == 1 else "black")
-		pocket.base_points = pocket.number
 		pockets.append(pocket)
 	return pockets

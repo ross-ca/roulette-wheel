@@ -17,10 +17,64 @@ const POPUP_Y_RANGE := Vector2(0.2, 0.8)
 @onready var _tickets_label: Label = %TicketsLabel
 @onready var _last_spin_label: Label = %LastSpinLabel
 @onready var _result_label: Label = %ResultLabel
+@onready var _chips_input: SpinBox = %ChipsInput
+@onready var _red_button: Button = %RedButton
+@onready var _black_button: Button = %BlackButton
+@onready var _green_button: Button = %GreenButton
+@onready var _number_input: LineEdit = %NumberInput
+
+var _inputs_editable := true
 
 
 func _on_spin_button_pressed() -> void:
 	spin_requested.emit()
+
+
+## The chips entered for the next spin.
+func get_chips() -> int:
+	_chips_input.apply() # commit text still being typed
+	return int(_chips_input.value)
+
+
+## The bet chosen for the next spin. A number entered in the number field wins out over the colours.
+func get_bet() -> Bet:
+	if _number_input.text.is_valid_int():
+		return NumberBet.of(int(_number_input.text))
+	if _black_button.button_pressed:
+		return ColourBet.of("black")
+	if _green_button.button_pressed:
+		return ColourBet.of("green")
+	return ColourBet.of("red")
+
+
+## Locks or unlocks the chips and bet inputs, which are fixed while a spin is running.
+func set_inputs_editable(editable: bool) -> void:
+	_inputs_editable = editable
+	_chips_input.editable = editable
+	_number_input.editable = editable
+	_refresh_colour_buttons()
+
+
+# Colours can't be chosen while a number is entered, or while the inputs are locked.
+func _refresh_colour_buttons() -> void:
+	var disabled := not _inputs_editable or _number_input.text.is_valid_int()
+	_red_button.disabled = disabled
+	_black_button.disabled = disabled
+	_green_button.disabled = disabled
+
+
+# Keeps the field to a number from 0 to 36.
+func _on_number_input_text_changed(new_text: String) -> void:
+	var digits := ""
+	for character in new_text:
+		if character >= "0" and character <= "9":
+			digits += character
+	if digits.is_valid_int() and int(digits) > 36:
+		digits = "36"
+	if digits != new_text:
+		_number_input.text = digits
+		_number_input.caret_column = digits.length()
+	_refresh_colour_buttons()
 
 
 func show_round(run: RunState, step: RoundStep) -> void:
@@ -37,7 +91,12 @@ func show_round(run: RunState, step: RoundStep) -> void:
 
 ## Placeholder for the Balatro-style playback: lists what each modifier did, in order.
 func show_score(ctx: ScoreContext) -> void:
-	var lines: PackedStringArray = ["Landed %d: %d points" % [ctx.pocket.number, ctx.points]]
+	var lines: PackedStringArray = ["Landed %d (%s)" % [ctx.pocket.number, ctx.pocket.colour]]
+	if not ctx.won:
+		lines.append("Bet on %s lost: no points" % ctx.bet.display_name)
+		_last_spin_label.text = "\n".join(lines)
+		return
+	lines.append("%s ×%s base, %d chips" % [ctx.bet.display_name, ctx.bet.base_mult, ctx.points])
 	for entry in ctx.trace:
 		lines.append(entry.text)
 	lines.append("%d × %s = %d" % [ctx.points, ctx.mult, ctx.total()])

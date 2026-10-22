@@ -3,6 +3,7 @@ extends Node
 
 const SAVE_PATH := "user://run.tres"
 const STARTING_MONEY := 4
+const TICKET_DATABASE := preload("res://scenes/modifiers/ticket_database.tres")
 
 var run: RunState
 ## How the last run ended, for the main menu to show. Empty if no run has ended this session.
@@ -18,12 +19,7 @@ func new_run(rng_seed: int = randi(), saving: bool = true) -> void:
 	run.rng.seed = rng_seed
 	run.money = STARTING_MONEY
 	run.pockets = Pocket.european_layout()
-	# Starter tickets until the shop sells them. Swapping their order changes the score.
-	var plus_mult := AddMultTicket.new()
-	plus_mult.amount = 4.0
-	var times_mult := MultiplyMultTicket.new()
-	times_mult.factor = 2.0
-	run.tickets = [plus_mult, times_mult]
+	run.tickets = TICKET_DATABASE.create_starters()
 
 
 func has_save() -> bool:

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dq17wxeoh38it"
-path="res://.godot/imported/cherry.png-9ab9b572a6fb3432adb56e8d452b4186.ctex"
+uid="uid://cbsa1y5pxp5x7"
+path="res://.godot/imported/plusMult.png-50d08800f6ebc4f9960ba37344aa6264.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/textures/cherry.png"
-dest_files=["res://.godot/imported/cherry.png-9ab9b572a6fb3432adb56e8d452b4186.ctex"]
+source_file="res://assets/textures/tickets/plusMult.png"
+dest_files=["res://.godot/imported/plusMult.png-50d08800f6ebc4f9960ba37344aa6264.ctex"]
 
 [params]
 

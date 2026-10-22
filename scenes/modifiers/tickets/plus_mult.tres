@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="AddMultTicket" format=3 uid="uid://cvipe10c7kv5y"]
+
+[ext_resource type="Texture2D" uid="uid://cbsa1y5pxp5x7" path="res://assets/textures/tickets/plusMult.png" id="1_kwabw"]
+[ext_resource type="Script" uid="uid://cqtk00mv18xq6" path="res://scenes/modifiers/tickets/add_mult_ticket.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "+Mult"
+icon = ExtResource("1_kwabw")

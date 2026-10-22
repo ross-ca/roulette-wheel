@@ -40,13 +40,23 @@ Rules:
 
 ## Pockets
 
-`scenes/wheel/pocket.gd`. Each pocket is a `Pocket` Resource (`number`, `colour`, `weight`, `base_points`), because pockets are a core feature that will gain many properties.
+`scenes/wheel/pocket.gd`. Each pocket is a `Pocket` Resource (`number`, `colour`, `weight`), because pockets are a core feature that will gain many properties.
 
 - They belong to `run.pockets`. The play phase hands them to the wheel with `set_pockets()`.
 - `Pocket.european_layout()` returns a fresh set of 37 every call, so runs never share pocket objects.
 - Properties the wheel draws emit `changed`, and the wheel redraws when any of its pockets change.
 - Refer to a particular pocket by object, not index. Indexes shift when pockets are added, removed or reordered.
 - The winner is picked at spin start using `weight`, so weight changes during a spin only affect the next one.
+
+## Bets
+
+`scenes/bets/`. Before each spin the player chooses a chip amount and a **bet**: the outcome they're backing. A `Bet` Resource has a `display_name`, a `base_mult` and `wins(pocket) -> bool`.
+
+- **Base mult comes from the odds.** It is 36 divided by the numbers the bet covers: red or black (18 numbers) is ×2, a single number (zero included) is ×36, a dozen (12) would be ×3. Rarer outcomes pay more. Each subclass sets its own value.
+- **Losing scores nothing.** If the landed pocket doesn't satisfy the bet, the spin scores 0 and `modify_score` isn't called, so tickets only trigger on a win. (Zero is green, so it loses every red or black bet.)
+- `ColourBet` covers red, black (×2) and green (×36, since green is only zero), and sets `base_mult` from its `colour`. `NumberBet` is one exact number from 0 to 36, also ×36.
+- The HUD offers the colours as toggle buttons and the number as a text field. Entering a number picks a `NumberBet` and disables the colour buttons; clearing the field enables them again. Further bets, such as odd/even, dozens and columns, are new `Bet` subclasses; the HUD chooses which are offered.
+- The chips and bet are read from the HUD when Spin is pressed and held by `play.gd` until the spin settles. Both inputs are locked during the spin. They aren't saved, so a resumed round starts with the HUD defaults (10 chips, red).
 
 ## Steps and the queue
 
@@ -97,7 +107,7 @@ Events, raised with `Modifiers.notify(run, event, args)`:
 
 ### Scoring (placeholder)
 
-`ScoreContext` starts from the landed pocket's `base_points` with mult 1, passes through every modifier, and totals `points × mult`. The real formula (probably points × mult plus per-pocket bonuses) isn't designed yet; only `ScoreContext` and the play phase should change when it is.
+`ScoreContext` starts with `points` as the chips the player submitted (the HUD's `ChipsInput`) and `mult` as the bet's `base_mult`. If the bet won it passes through every modifier and totals `points × mult`; if it lost the total is 0 and no modifier runs. The real formula (probably points × mult plus per-pocket bonuses) isn't designed yet; only `ScoreContext` and the play phase should change when it is.
 
 Modifiers record what they did in `ctx.trace`. Rules are computed instantly and the HUD plays the trace back afterwards, so game logic never waits on animation.
 
@@ -120,7 +130,8 @@ Modifiers record what they did in `ctx.trace`. Rules are computed instantly and 
 | Topic | Decision |
 | --- | --- |
 | Pocket data | `Pocket` Resource |
-| Scoring | Probably points × mult plus per-pocket bonuses; placeholder for now |
+| Scoring | Chips × (bet's base mult plus modifiers); a lost bet scores 0. Placeholder for now |
+| Bets | `Bet` Resource; base mult = 36 / numbers covered; red/black first |
 | Triggers | All levels: pocket passed, landed, spin, round, step |
 | Saving | Includes part-way through a round, saved after every spin |
 | Ticket order | Matters; `run.tickets` order is the trigger order |
@@ -135,4 +146,4 @@ Still open:
 
 ## Next
 
-The real shop, boss rounds, skips and events. The two starter tickets in `Game.new_run()` are temporary until the shop sells tickets.
+The real shop, boss rounds, skips and events, and more bet types.

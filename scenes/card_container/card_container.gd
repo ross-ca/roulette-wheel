@@ -1,4 +1,5 @@
 @tool
+class_name CardContainer
 extends Container
 ## Lays its children (cards) out in a horizontal row, accounting for each child's scale.
 ## Unlike HBoxContainer, which ignores scale, so scaled cards would overlap or leave gaps.
@@ -6,6 +7,8 @@ extends Container
 
 ## Emitted after a drag ends with the cards in a different order than they started.
 signal order_changed
+
+const CARD_SCENE := preload("res://scenes/card/card.tscn")
 
 enum Alignment { BEGIN, CENTER, END }
 
@@ -43,6 +46,26 @@ var _order_at_grab: Array[Control] = []
 var _targets := {} # Control -> Vector2, the position its slot wants
 var _phase_index := {} # Control -> int, fixed when a card is first seen
 var _next_phase_index := 0
+
+
+## Replaces the cards with one per ticket, in order.
+func set_tickets(tickets: Array[Ticket]) -> void:
+	for child in get_children():
+		remove_child(child) # out of the tree now, so _cards() doesn't see it before it's freed
+		child.queue_free()
+	for ticket in tickets:
+		var card: Card = CARD_SCENE.instantiate()
+		card.setup(ticket)
+		add_child(card)
+
+
+## The tickets of the cards, in their current left-to-right order.
+func get_tickets() -> Array[Ticket]:
+	var tickets: Array[Ticket] = []
+	for card in _cards():
+		if card is Card:
+			tickets.append(card.ticket)
+	return tickets
 
 
 func _ready() -> void:

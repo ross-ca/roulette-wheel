@@ -22,15 +22,25 @@ var _step: RoundStep
 var _state := State.WAITING
 var _last_tick_ms := 0
 var _ticks_this_spin := 0
+var _chips := 0 # submitted for the spin in progress
+var _bet: Bet # placed for the spin in progress
 
 @onready var _wheel := $SubViewport/RouletteWheel
 @onready var _hud := $HUD
+@onready var _cards: CardContainer = $CardContainer
 
 
 ## Called by the runner before the scene enters the tree.
 func setup(run: RunState, step: RunStep) -> void:
 	_run = run
 	_step = step
+
+
+# Dragging cards reorders the tickets, and ticket order is a mechanic.
+func _on_cards_order_changed() -> void:
+	_run.tickets = _cards.get_tickets()
+	Game.save_run()
+	_hud.show_round(_run, _step)
 
 
 func _ready() -> void:
@@ -53,6 +63,9 @@ func _ready() -> void:
 		Modifiers.notify(_run, &"round_started", [_run.current_round])
 		Game.save_run()
 
+	_cards.set_tickets(_run.tickets)
+	_cards.order_changed.connect(_on_cards_order_changed)
+
 	_hud.show_round(_run, _step)
 	# A save made after the last spin resumes straight into the result.
 	if _is_round_over():
@@ -63,6 +76,9 @@ func _on_spin_requested() -> void:
 	if _state != State.WAITING:
 		return
 	_state = State.SPINNING
+	_chips = _hud.get_chips()
+	_bet = _hud.get_bet()
+	_hud.set_inputs_editable(false)
 	_ticks_this_spin = 0
 	Modifiers.notify(_run, &"spin_started")
 	_wheel.spin_wheel()
@@ -82,7 +98,7 @@ func _on_wheel_pocket_passed(_index: int, pocket: Pocket) -> void:
 
 func _on_wheel_spin_finished(_index: int, pocket: Pocket) -> void:
 	Modifiers.notify(_run, &"pocket_landed", [pocket])
-	var ctx := Modifiers.score(_run, pocket)
+	var ctx := Modifiers.score(_run, pocket, _chips, _bet)
 	var progress := _run.current_round
 	progress.score += ctx.total()
 	progress.spins_left -= 1
@@ -95,6 +111,7 @@ func _on_wheel_spin_finished(_index: int, pocket: Pocket) -> void:
 	if _is_round_over():
 		_finish()
 	else:
+		_hud.set_inputs_editable(true)
 		_state = State.WAITING
 
 
