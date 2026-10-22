@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dnqbq7kwducy"
-path="res://.godot/imported/membershipCard.png-987b5c7d2654d1f3f7a2f06a54d729de.ctex"
+uid="uid://8tpfayhkeaok"
+path="res://.godot/imported/multiplyMult.png-9ee0ebc7e0c23192d46a42bbe9a6f53c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/textures/membershipCard.png"
-dest_files=["res://.godot/imported/membershipCard.png-987b5c7d2654d1f3f7a2f06a54d729de.ctex"]
+source_file="res://assets/textures/tickets/multiplyMult.png"
+dest_files=["res://.godot/imported/multiplyMult.png-9ee0ebc7e0c23192d46a42bbe9a6f53c.ctex"]
 
 [params]
 

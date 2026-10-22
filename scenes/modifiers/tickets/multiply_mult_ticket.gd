@@ -9,6 +9,10 @@ func _init() -> void:
 	display_name = "×Mult"
 
 
+func get_description() -> String:
+	return "×%s mult" % factor
+
+
 func modify_score(_run: RunState, ctx: ScoreContext) -> void:
 	ctx.mult *= factor
 	ctx.add_trace(self, "×%s mult" % factor)

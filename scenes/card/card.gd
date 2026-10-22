@@ -1,6 +1,10 @@
+class_name Card
 extends TextureRect
 ## A card that tilts in 3D towards the cursor while hovered, using card_tilt.gdshader.
 ## Instance card.tscn and set `texture`; leave scale/position to the parent scene.
+
+## The ticket this card shows. The ticket owns the data; the card only displays it.
+var ticket: Ticket
 
 ## Tilt in degrees when the cursor is at the edge of the card.
 @export_range(0.0, 60.0, 0.5) var max_tilt: float = 6.0
@@ -11,13 +15,13 @@ extends TextureRect
 @export_range(1.0, 1.5, 0.01) var hover_scale: float = 1.06
 ## How quickly the scale springs to and from the hover scale (the spring's angular
 ## frequency, rad/s). Higher is snappier.
-@export var hover_scale_speed: float = 14.0
+@export var hover_scale_speed: float = 50.0
 ## Damping of that spring. Below 1 the scale overshoots and settles back, lower is bouncier;
 ## 1 or more settles with no overshoot.
-@export_range(0.05, 2.0, 0.01) var hover_scale_damping: float = 0.45
+@export_range(0.05, 2.0, 0.01) var hover_scale_damping: float = 0.3
 
 ## Played through the Audio autoload when the cursor enters the card. Leave empty for silence.
-@export var hover_sound: AudioStream = preload("res://assets/audio/sfx/bubble_pop.wav")
+@export var hover_sound: AudioStream = preload("res://assets/audio/sfx/paper_shuffle.wav")
 @export_range(-40.0, 6.0, 0.5) var hover_sound_volume_db: float = -8.0
 ## Each play is pitched randomly within this fraction of normal, so repeats don't sound identical.
 @export_range(0.0, 0.3, 0.005) var hover_sound_pitch_variance: float = 0.05
@@ -43,6 +47,13 @@ var _idle_phase := 0.0 # radians; frozen while hovered so the drift resumes wher
 var _hover_amount := 0.0 # sprung towards 1 while hovered; overshoots 0..1 when underdamped
 var _hover_velocity := 0.0
 var _tilt := Vector2.ZERO # (x_rot, y_rot) in degrees, as passed to the shader
+
+
+## Shows `new_ticket`. Call before the card enters the tree, or again to refresh after the
+## ticket's values change.
+func setup(new_ticket: Ticket) -> void:
+	ticket = new_ticket
+	texture = ticket.icon
 
 
 func _ready() -> void:

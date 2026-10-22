@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://xa0eqgxh8kan" path="res://scenes/play/play.gd" id="1_h2yge"]
 [ext_resource type="PackedScene" uid="uid://chkvs2klsp6me" path="res://scenes/wheel/roulette_wheel.tscn" id="1_ig7tw"]
-[ext_resource type="Shader" uid="uid://bhnaj174ofi68" path="res://scenes/wheel/wheelShader.gdshader" id="2_0xm2m"]
+[ext_resource type="Shader" uid="uid://bhnaj174ofi68" path="res://scenes/wheel/wheel_shader.gdshader" id="2_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://dfblr6s3i4487" path="res://scenes/hud/hud.tscn" id="2_1bvp3"]
 [ext_resource type="PackedScene" path="res://scenes/card_container/card_container.tscn" id="5_b1x3f"]
 

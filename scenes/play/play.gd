@@ -25,12 +25,20 @@ var _ticks_this_spin := 0
 
 @onready var _wheel := $SubViewport/RouletteWheel
 @onready var _hud := $HUD
+@onready var _cards: CardContainer = $CardContainer
 
 
 ## Called by the runner before the scene enters the tree.
 func setup(run: RunState, step: RunStep) -> void:
 	_run = run
 	_step = step
+
+
+# Dragging cards reorders the tickets, and ticket order is a mechanic.
+func _on_cards_order_changed() -> void:
+	_run.tickets = _cards.get_tickets()
+	Game.save_run()
+	_hud.show_round(_run, _step)
 
 
 func _ready() -> void:
@@ -52,6 +60,9 @@ func _ready() -> void:
 		_run.current_round.spins_left = Modifiers.spins_per_round(_run)
 		Modifiers.notify(_run, &"round_started", [_run.current_round])
 		Game.save_run()
+
+	_cards.set_tickets(_run.tickets)
+	_cards.order_changed.connect(_on_cards_order_changed)
 
 	_hud.show_round(_run, _step)
 	# A save made after the last spin resumes straight into the result.
