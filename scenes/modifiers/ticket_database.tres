@@ -4,8 +4,9 @@
 [ext_resource type="Script" uid="uid://jfbvvk61rjco" path="res://scenes/modifiers/ticket.gd" id="2_3agre"]
 [ext_resource type="Resource" uid="uid://cvipe10c7kv5y" path="res://scenes/modifiers/tickets/plus_mult.tres" id="2_plus"]
 [ext_resource type="Resource" uid="uid://cb72fgm1hl5y" path="res://scenes/modifiers/tickets/times_mult.tres" id="3_times"]
+[ext_resource type="Resource" uid="uid://blsuetoqesx2u" path="res://scenes/modifiers/tickets/black_six_pass.tres" id="4_black_six"]
 
 [resource]
 script = ExtResource("1_script")
-tickets = Array[ExtResource("2_3agre")]([ExtResource("2_plus"), ExtResource("3_times")])
-starter_tickets = Array[ExtResource("2_3agre")]([ExtResource("2_plus"), ExtResource("3_times"), ExtResource("3_times")])
+tickets = Array[ExtResource("2_3agre")]([ExtResource("2_plus"), ExtResource("3_times"), ExtResource("4_black_six")])
+starter_tickets = Array[ExtResource("2_3agre")]([ExtResource("2_plus"), ExtResource("4_black_six"), ExtResource("3_times")])

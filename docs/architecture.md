@@ -105,6 +105,8 @@ Events, raised with `Modifiers.notify(run, event, args)`:
 
 `step_started` only fires when a step is first taken, not when a save resumes it.
 
+**Tickets that count passes.** `PocketPassTicket` watches one pocket (`number`, optionally `colour`). It resets its count on `spin_started`, adds one for each matching `pocket_passed`, and its subclasses apply the count in `modify_score`: `PassAddMultTicket` adds `amount × passes` to the mult, `PassMultiplyMultTicket` multiplies it by `factor ^ passes`. The count is plain per-spin state, not saved, because saves are never made mid-spin. Since `modify_score` only runs on a winning bet, a lost spin ignores the passes.
+
 ### Scoring (placeholder)
 
 `ScoreContext` starts with `points` as the chips the player submitted (the HUD's `ChipsInput`) and `mult` as the bet's `base_mult`. If the bet won it passes through every modifier and totals `points × mult`; if it lost the total is 0 and no modifier runs. The real formula (probably points × mult plus per-pocket bonuses) isn't designed yet; only `ScoreContext` and the play phase should change when it is.

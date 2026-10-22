@@ -1,14 +1,25 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://crqwb5y6ntq1x"]
 
-[ext_resource type="Shader" path="res://scenes/card/card_tilt.gdshader" id="1_shader"]
-[ext_resource type="Script" path="res://scenes/card/card.gd" id="2_script"]
+[ext_resource type="Shader" uid="uid://dexl7k0sofn0k" path="res://scenes/card/card_tilt.gdshader" id="1_shader"]
+[ext_resource type="Script" uid="uid://0qkxrmrok4mh" path="res://scenes/card/card.gd" id="2_script"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_card"]
 resource_local_to_scene = true
 shader = ExtResource("1_shader")
+shader_parameter/fov = 90.0
+shader_parameter/cull_back = true
+shader_parameter/y_rot = 0.0
+shader_parameter/x_rot = 0.0
+shader_parameter/inset = 0.0
+shader_parameter/background_color = Color(0, 0, 0, 0)
+shader_parameter/shadow_color = Color(0.15686275, 0.15686275, 0.15686275, 1)
+shader_parameter/offset_in_pixels = Vector2(4, 4)
+shader_parameter/bob_pixels = 3.0
+shader_parameter/bob_speed = 1.25
+shader_parameter/bob_offset = 0.0
 
-[node name="Card" type="TextureRect"]
-texture_filter = 1
+[node name="Card" type="TextureRect" unique_id=941757550]
+texture_filter = 5
 material = SubResource("ShaderMaterial_card")
 mouse_filter = 0
 script = ExtResource("2_script")
