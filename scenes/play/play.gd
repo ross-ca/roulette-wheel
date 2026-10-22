@@ -23,6 +23,7 @@ var _state := State.WAITING
 var _last_tick_ms := 0
 var _ticks_this_spin := 0
 var _chips := 0 # submitted for the spin in progress
+var _bet: Bet # placed for the spin in progress
 
 @onready var _wheel := $SubViewport/RouletteWheel
 @onready var _hud := $HUD
@@ -76,7 +77,8 @@ func _on_spin_requested() -> void:
 		return
 	_state = State.SPINNING
 	_chips = _hud.get_chips()
-	_hud.set_chips_editable(false)
+	_bet = _hud.get_bet()
+	_hud.set_inputs_editable(false)
 	_ticks_this_spin = 0
 	Modifiers.notify(_run, &"spin_started")
 	_wheel.spin_wheel()
@@ -96,7 +98,7 @@ func _on_wheel_pocket_passed(_index: int, pocket: Pocket) -> void:
 
 func _on_wheel_spin_finished(_index: int, pocket: Pocket) -> void:
 	Modifiers.notify(_run, &"pocket_landed", [pocket])
-	var ctx := Modifiers.score(_run, pocket, _chips)
+	var ctx := Modifiers.score(_run, pocket, _chips, _bet)
 	var progress := _run.current_round
 	progress.score += ctx.total()
 	progress.spins_left -= 1
@@ -109,7 +111,7 @@ func _on_wheel_spin_finished(_index: int, pocket: Pocket) -> void:
 	if _is_round_over():
 		_finish()
 	else:
-		_hud.set_chips_editable(true)
+		_hud.set_inputs_editable(true)
 		_state = State.WAITING
 
 

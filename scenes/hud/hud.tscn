@@ -7,6 +7,8 @@
 font = ExtResource("1_37p78")
 font_size = 20
 
+[sub_resource type="ButtonGroup" id="ButtonGroup_bet"]
+
 [sub_resource type="LabelSettings" id="LabelSettings_result"]
 font = ExtResource("1_37p78")
 font_size = 48
@@ -81,5 +83,42 @@ max_value = 1000.0
 value = 10.0
 rounded = true
 prefix = "Chips"
+
+[node name="RedButton" type="Button" parent="."]
+unique_name_in_owner = true
+offset_left = 400.0
+offset_top = 40.0
+offset_right = 500.0
+offset_bottom = 89.0
+theme_override_fonts/font = ExtResource("1_37p78")
+theme_override_font_sizes/font_size = 24
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_bet")
+text = "Red"
+
+[node name="BlackButton" type="Button" parent="."]
+unique_name_in_owner = true
+offset_left = 510.0
+offset_top = 40.0
+offset_right = 610.0
+offset_bottom = 89.0
+theme_override_fonts/font = ExtResource("1_37p78")
+theme_override_font_sizes/font_size = 24
+toggle_mode = true
+button_group = SubResource("ButtonGroup_bet")
+text = "Black"
+
+[node name="GreenButton" type="Button" parent="."]
+unique_name_in_owner = true
+offset_left = 620.0
+offset_top = 40.0
+offset_right = 720.0
+offset_bottom = 89.0
+theme_override_fonts/font = ExtResource("1_37p78")
+theme_override_font_sizes/font_size = 24
+toggle_mode = true
+button_group = SubResource("ButtonGroup_bet")
+text = "Green"
 
 [connection signal="pressed" from="SpinButton" to="." method="_on_spin_button_pressed"]

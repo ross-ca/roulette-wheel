@@ -27,10 +27,12 @@ static func spins_per_round(run: RunState) -> int:
 	return spins
 
 
-static func score(run: RunState, pocket: Pocket, chips: int) -> ScoreContext:
-	var ctx := ScoreContext.new(pocket, chips)
-	for modifier in active(run):
-		modifier.modify_score(run, ctx)
+## Scores a spin. A lost bet scores nothing, so `modify_score` only runs when the bet won.
+static func score(run: RunState, pocket: Pocket, chips: int, bet: Bet) -> ScoreContext:
+	var ctx := ScoreContext.new(pocket, chips, bet)
+	if ctx.won:
+		for modifier in active(run):
+			modifier.modify_score(run, ctx)
 	return ctx
 
 

@@ -18,6 +18,9 @@ const POPUP_Y_RANGE := Vector2(0.2, 0.8)
 @onready var _last_spin_label: Label = %LastSpinLabel
 @onready var _result_label: Label = %ResultLabel
 @onready var _chips_input: SpinBox = %ChipsInput
+@onready var _red_button: Button = %RedButton
+@onready var _black_button: Button = %BlackButton
+@onready var _green_button: Button = %GreenButton
 
 
 func _on_spin_button_pressed() -> void:
@@ -30,8 +33,21 @@ func get_chips() -> int:
 	return int(_chips_input.value)
 
 
-func set_chips_editable(editable: bool) -> void:
+## The bet chosen for the next spin.
+func get_bet() -> Bet:
+	if _black_button.button_pressed:
+		return ColourBet.of("black")
+	if _green_button.button_pressed:
+		return ColourBet.of("green")
+	return ColourBet.of("red")
+
+
+## Locks or unlocks the chips and bet inputs, which are fixed while a spin is running.
+func set_inputs_editable(editable: bool) -> void:
 	_chips_input.editable = editable
+	_red_button.disabled = not editable
+	_black_button.disabled = not editable
+	_green_button.disabled = not editable
 
 
 func show_round(run: RunState, step: RoundStep) -> void:
@@ -48,7 +64,12 @@ func show_round(run: RunState, step: RoundStep) -> void:
 
 ## Placeholder for the Balatro-style playback: lists what each modifier did, in order.
 func show_score(ctx: ScoreContext) -> void:
-	var lines: PackedStringArray = ["Landed %d: %d chips" % [ctx.pocket.number, ctx.points]]
+	var lines: PackedStringArray = ["Landed %d (%s)" % [ctx.pocket.number, ctx.pocket.colour]]
+	if not ctx.won:
+		lines.append("Bet on %s lost: no points" % ctx.bet.display_name)
+		_last_spin_label.text = "\n".join(lines)
+		return
+	lines.append("%s ×%s base, %d chips" % [ctx.bet.display_name, ctx.bet.base_mult, ctx.points])
 	for entry in ctx.trace:
 		lines.append(entry.text)
 	lines.append("%d × %s = %d" % [ctx.points, ctx.mult, ctx.total()])
