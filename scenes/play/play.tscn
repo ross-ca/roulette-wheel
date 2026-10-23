@@ -36,9 +36,9 @@ material = SubResource("ShaderMaterial_h2yge")
 texture = SubResource("ViewportTexture_g4v7s")
 
 [node name="CardContainer" parent="." unique_id=1437024605 instance=ExtResource("5_b1x3f")]
-offset_left = 736.2
+offset_left = 602.0
 offset_top = 586.0
-offset_right = 1246.2017
+offset_right = 1112.0017
 offset_bottom = 766.0
 card_scale = 2.5
 bob_tilt_offset_step = 1.0

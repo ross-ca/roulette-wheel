@@ -1,12 +1,13 @@
 [gd_resource type="Resource" script_class="PassAddMultTicket" format=3 uid="uid://blsuetoqesx2u"]
 
-[ext_resource type="Texture2D" uid="uid://c37o0lf0tsxfd" path="res://assets/textures/tickets/black6Rollover.png" id="1_8eon2"]
-[ext_resource type="Script" uid="uid://cveo4kpbfvpsw" path="res://scenes/modifiers/tickets/classes/pass_add_mult_ticket.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://c37o0lf0tsxfd" path="res://assets/textures/tickets/black6Rollover.png" id="1_f3elh"]
+[ext_resource type="Script" uid="uid://cveo4kpbfvpsw" path="res://scenes/modifiers/tickets/classes/pass_add_mult_ticket.gd" id="2_2w3f8"]
 
 [resource]
-script = ExtResource("1_script")
+script = ExtResource("2_2w3f8")
 number = 6
 colour = "black"
+trigger_chance = 0.25
 id = &"black_six_pass"
 display_name = "Black 6 Rider"
-icon = ExtResource("1_8eon2")
+icon = ExtResource("1_f3elh")

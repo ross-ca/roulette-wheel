@@ -10,10 +10,10 @@ func _init() -> void:
 
 
 func get_description() -> String:
-	return "+%s mult each time the ball passes %s" % [amount, _pocket_name()]
+	return "+%s mult each time the ball passes %s%s" % [amount, _pocket_name(), _chance_text()]
 
 
-func apply_pass(ctx: ScoreContext) -> void:
+func apply_pass(_run: RunState, ctx: ScoreContext) -> void:
 	ctx.mult += amount
 
 
