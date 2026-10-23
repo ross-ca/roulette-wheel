@@ -1,13 +1,14 @@
 [gd_resource type="Resource" script_class="PassMultiplyMultTicket" format=3 uid="uid://bo23nl8iiv1l"]
 
-[ext_resource type="Script" uid="uid://x10il3kscee1" path="res://scenes/modifiers/tickets/classes/pass_multiply_mult_ticket.gd" id="1_38ko1"]
-[ext_resource type="Texture2D" uid="uid://ccaut4l0b43gk" path="res://assets/textures/tickets/black17Rollover.png" id="1_kvo1o"]
+[ext_resource type="Texture2D" uid="uid://ccaut4l0b43gk" path="res://assets/textures/tickets/black17Rollover.png" id="1_a15no"]
+[ext_resource type="Script" uid="uid://x10il3kscee1" path="res://scenes/modifiers/tickets/classes/pass_multiply_mult_ticket.gd" id="2_b235x"]
 
 [resource]
-script = ExtResource("1_38ko1")
+script = ExtResource("2_b235x")
 factor = 2.0
 number = 17
 colour = "black"
+trigger_chance = 0.1
 display_name = "Black 17 xMult"
-icon = ExtResource("1_kvo1o")
+icon = ExtResource("1_a15no")
 metadata/_custom_type_script = "uid://x10il3kscee1"

@@ -116,6 +116,11 @@ func show_equation(points: int, mult: float, total := -1) -> void:
 			.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
+## Refreshes just the money, for tickets that pay out mid-spin.
+func show_money(run: RunState) -> void:
+	_money_label.text = "$%d" % run.money
+
+
 func show_round(run: RunState, step: RoundStep) -> void:
 	var progress := run.current_round
 	_round_label.text = "Table %d" % run.table

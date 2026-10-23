@@ -87,6 +87,7 @@ func _on_spin_requested() -> void:
 func _on_wheel_pocket_passed(_index: int, pocket: Pocket) -> void:
 	Modifiers.notify(_run, &"pocket_passed", [pocket, _ctx])
 	_hud.show_equation(_ctx.points, _ctx.mult)
+	_hud.show_money(_run)
 	_hud.show_pass(pocket)
 
 	var now := Time.get_ticks_msec()

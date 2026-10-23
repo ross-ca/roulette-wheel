@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="PassAddMoneyTicket" format=3 uid="uid://cc736vpm43dig"]
+
+[ext_resource type="Script" uid="uid://cdpjyqfsg7wnw" path="res://scenes/modifiers/tickets/classes/pass_add_money_ticket.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://dah34yrh1mlxq" path="res://assets/textures/tickets/red9Rollover.png" id="1_tex"]
+
+[resource]
+script = ExtResource("1_script")
+amount = 2
+number = 9
+colour = "red"
+trigger_chance = 0.25
+id = &"red_nine_pass"
+display_name = "Red 9 Rider"
+icon = ExtResource("1_tex")
