@@ -1,6 +1,7 @@
 extends CanvasLayer
 
 signal spin_requested
+signal continue_requested
 
 const WHEEL_COLOURS: Dictionary = preload("res://scenes/wheel/draw_wheel.gd").COLOURS
 const POPUP_FONT: Font = preload("res://assets/fonts/Silkscreen-Regular.ttf")
@@ -22,6 +23,7 @@ const POPUP_Y_RANGE := Vector2(0.2, 0.8)
 @onready var _black_button: Button = %BlackButton
 @onready var _green_button: Button = %GreenButton
 @onready var _number_input: LineEdit = %NumberInput
+@onready var _continue_button: Button = %ContinueButton
 
 var _inputs_editable := true
 var _shown_mult := -1.0
@@ -141,9 +143,17 @@ func show_score(ctx: ScoreContext) -> void:
 	_last_spin_label.text = "\n".join(lines)
 
 
+func _on_continue_button_pressed() -> void:
+	_continue_button.hide()
+	continue_requested.emit()
+
+
+## Shows the round's result and a Continue button; the run only moves on when it's pressed.
 func show_result(won: bool) -> void:
 	_result_label.text = "Round won!" if won else "Round lost"
 	_result_label.show()
+	_continue_button.show()
+	_continue_button.grab_focus()
 
 
 ## Throwaway visualisation: pops the number of a passed pocket, then lets it rise and fade.

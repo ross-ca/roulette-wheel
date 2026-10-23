@@ -82,6 +82,21 @@ grow_horizontal = 2
 label_settings = SubResource("LabelSettings_equation")
 horizontal_alignment = 1
 
+[node name="ContinueButton" type="Button" parent="."]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -100.0
+offset_top = 190.0
+offset_right = 100.0
+offset_bottom = 250.0
+grow_horizontal = 2
+theme_override_fonts/font = ExtResource("1_37p78")
+theme_override_font_sizes/font_size = 32
+text = "Continue"
+
 [node name="SpinButton" type="Button" parent="." unique_id=1258611457]
 offset_left = 40.0
 offset_top = 40.0
@@ -152,4 +167,5 @@ placeholder_text = "Number"
 max_length = 2
 
 [connection signal="text_changed" from="NumberInput" to="." method="_on_number_input_text_changed"]
+[connection signal="pressed" from="ContinueButton" to="." method="_on_continue_button_pressed"]
 [connection signal="pressed" from="SpinButton" to="." method="_on_spin_button_pressed"]

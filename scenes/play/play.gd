@@ -12,8 +12,6 @@ const TICK_VOLUME_DB := -12.0
 ## Pitch rises by this much per tick played in the current spin, up to TICK_PITCH_MAX.
 const TICK_PITCH_STEP := 0.004
 const TICK_PITCH_MAX := 1.5
-## Pause on the final result before handing back to the run.
-const FINISH_DELAY := 1.5
 
 enum State { WAITING, SPINNING, DONE }
 
@@ -129,6 +127,5 @@ func _finish() -> void:
 	var won := progress.score >= _step.target_score
 	Modifiers.notify(_run, &"round_finished", [progress, won])
 	_hud.show_result(won)
-	# Not process_always, so the delay waits while the game is paused.
-	await get_tree().create_timer(FINISH_DELAY, false).timeout
+	await _hud.continue_requested
 	finished.emit({"won": won, "score": progress.score})
