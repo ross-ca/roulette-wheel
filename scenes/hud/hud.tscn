@@ -15,6 +15,12 @@ font_size = 48
 outline_size = 8
 outline_color = Color(0, 0, 0, 1)
 
+[sub_resource type="LabelSettings" id="LabelSettings_equation"]
+font = ExtResource("1_37p78")
+font_size = 40
+outline_size = 8
+outline_color = Color(0, 0, 0, 1)
+
 [node name="HUD" type="CanvasLayer" unique_id=211249179]
 script = ExtResource("1_64ctp")
 
@@ -61,6 +67,19 @@ offset_right = 300.0
 offset_bottom = 100.0
 grow_horizontal = 2
 label_settings = SubResource("LabelSettings_result")
+horizontal_alignment = 1
+
+[node name="EquationLabel" type="Label" parent="."]
+unique_name_in_owner = true
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = 110.0
+offset_right = 300.0
+offset_bottom = 170.0
+grow_horizontal = 2
+label_settings = SubResource("LabelSettings_equation")
 horizontal_alignment = 1
 
 [node name="SpinButton" type="Button" parent="." unique_id=1258611457]

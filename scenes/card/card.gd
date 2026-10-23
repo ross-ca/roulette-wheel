@@ -42,6 +42,11 @@ var base_scale := Vector2.ONE:
 ## Normally set by CardContainer.
 var idle_phase_offset := 0.0
 
+## Scale multiplier at the start of `pulse`.
+@export_range(1.0, 1.5, 0.01) var pulse_peak: float = 1.2
+
+var _pulse_scale := 1.0
+var _pulse_tween: Tween
 var _hovered := false
 var _idle_phase := 0.0 # radians; frozen while hovered so the drift resumes where it stopped
 var _hover_amount := 0.0 # sprung towards 1 while hovered; overshoots 0..1 when underdamped
@@ -52,8 +57,21 @@ var _tilt := Vector2.ZERO # (x_rot, y_rot) in degrees, as passed to the shader
 ## Shows `new_ticket`. Call before the card enters the tree, or again to refresh after the
 ## ticket's values change.
 func setup(new_ticket: Ticket) -> void:
+	if ticket and ticket.triggered.is_connected(pulse):
+		ticket.triggered.disconnect(pulse)
 	ticket = new_ticket
 	texture = ticket.icon
+	ticket.triggered.connect(pulse)
+
+
+## A brief pop, e.g. when the ticket triggers. Retriggering restarts it.
+func pulse() -> void:
+	if _pulse_tween:
+		_pulse_tween.kill()
+	_pulse_scale = pulse_peak
+	_pulse_tween = create_tween()
+	_pulse_tween.tween_property(self, "_pulse_scale", 1.0, 0.2) \
+		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
 func _ready() -> void:
@@ -93,7 +111,7 @@ func _step_hover_spring(delta: float) -> void:
 
 
 func _apply_scale() -> void:
-	scale = base_scale * lerpf(1.0, hover_scale, _hover_amount)
+	scale = base_scale * lerpf(1.0, hover_scale, _hover_amount) * _pulse_scale
 
 
 func _set_hovered(hovered: bool) -> void:
