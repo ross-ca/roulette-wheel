@@ -97,7 +97,7 @@ Events, raised with `Modifiers.notify(run, event, args)`:
 
 | Event | When | Args |
 | --- | --- | --- |
-| `pocket_passed` | The ball enters any pocket (dozens per spin, keep handlers cheap) | pocket |
+| `pocket_passed` | The ball enters any pocket (dozens per spin, keep handlers cheap) | pocket, live `ScoreContext` |
 | `pocket_landed` | The ball settles | pocket |
 | `spin_started` / `spin_finished` | Each spin | — / pocket |
 | `round_started` / `round_finished` | Each round | round state / round state, won |
@@ -105,11 +105,15 @@ Events, raised with `Modifiers.notify(run, event, args)`:
 
 `step_started` only fires when a step is first taken, not when a save resumes it.
 
-**Tickets that count passes.** `PocketPassTicket` watches one pocket (`number`, optionally `colour`). It resets its count on `spin_started`, adds one for each matching `pocket_passed`, and its subclasses apply the count in `modify_score`: `PassAddMultTicket` adds `amount × passes` to the mult, `PassMultiplyMultTicket` multiplies it by `factor ^ passes`. The count is plain per-spin state, not saved, because saves are never made mid-spin. Since `modify_score` only runs on a winning bet, a lost spin ignores the passes.
+**Tickets that count passes.** `PocketPassTicket` watches one pocket (`number`, optionally `colour`). It resets its count on `spin_started`, adds one for each matching `pocket_passed` and calls `apply_pass(ctx)`, which subclasses use to change the spin's live mult as the ball goes over the pocket: `PassAddMultTicket` adds `amount`, `PassMultiplyMultTicket` multiplies by `factor`. Passes therefore interleave with each other in the order they happen, and run before the other tickets' `modify_score`. `modify_score` only records the trace. The count is plain per-spin state, not saved, because saves are never made mid-spin. A lost bet still scores nothing, so the live mult is simply discarded.
 
 ### Scoring (placeholder)
 
-`ScoreContext` starts with `points` as the chips the player submitted (the HUD's `ChipsInput`) and `mult` as the bet's `base_mult`. If the bet won it passes through every modifier and totals `points × mult`; if it lost the total is 0 and no modifier runs. The real formula (probably points × mult plus per-pocket bonuses) isn't designed yet; only `ScoreContext` and the play phase should change when it is.
+`ScoreContext` is created when the spin starts (so pass tickets can change `mult` live) and told the landed pocket afterwards via `land`. It starts with `points` as the chips the player submitted (the HUD's `ChipsInput`) and `mult` as the bet's `base_mult`. If the bet won it passes through every modifier and totals `points × mult`; if it lost the total is 0 and no modifier runs. The real formula (probably points × mult plus per-pocket bonuses) isn't designed yet; only `ScoreContext` and the play phase should change when it is.
+
+**Live equation.** The HUD's `EquationLabel` shows `chips × mult`. Before the spin it previews the current chips and the bet's `base_mult`, refreshing when either input changes. During the spin `play.gd` calls `show_equation` on every `pocket_passed` with the live `ScoreContext`, and the label pulses whenever the mult has changed, so pass tickets are seen bumping it. When the spin settles `show_score` sets the final `chips × mult = total`, including the effect of every other modifier. The equation stays on screen until the inputs next change.
+
+**Ticket pulse.** `Ticket` has a UI-only `triggered` signal. `PocketPassTicket` emits it on each matching pass, and the ticket's `Card` connects to it in `setup` and calls `pulse()`, a short scale pop layered on top of the hover scale. Other tickets don't emit it yet.
 
 Modifiers record what they did in `ctx.trace`. Rules are computed instantly and the HUD plays the trace back afterwards, so game logic never waits on animation.
 

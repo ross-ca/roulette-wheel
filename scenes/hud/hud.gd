@@ -1,6 +1,7 @@
 extends CanvasLayer
 
 signal spin_requested
+signal continue_requested
 
 const WHEEL_COLOURS: Dictionary = preload("res://scenes/wheel/draw_wheel.gd").COLOURS
 const POPUP_FONT: Font = preload("res://assets/fonts/Silkscreen-Regular.ttf")
@@ -22,8 +23,20 @@ const POPUP_Y_RANGE := Vector2(0.2, 0.8)
 @onready var _black_button: Button = %BlackButton
 @onready var _green_button: Button = %GreenButton
 @onready var _number_input: LineEdit = %NumberInput
+@onready var _continue_button: Button = %ContinueButton
 
 var _inputs_editable := true
+var _shown_mult := -1.0
+var _pulse: Tween
+
+@onready var _equation_label: Label = %EquationLabel
+
+
+func _ready() -> void:
+	_chips_input.value_changed.connect(func(_value: float) -> void: _preview_equation())
+	for button in [_red_button, _black_button, _green_button]:
+		button.toggled.connect(func(_on: bool) -> void: _preview_equation())
+	_preview_equation()
 
 
 func _on_spin_button_pressed() -> void:
@@ -75,6 +88,32 @@ func _on_number_input_text_changed(new_text: String) -> void:
 		_number_input.text = digits
 		_number_input.caret_column = digits.length()
 	_refresh_colour_buttons()
+	_preview_equation()
+
+
+# Before the spin, shows the equation the current chips and bet start from.
+func _preview_equation() -> void:
+	if not _inputs_editable:
+		return
+	show_equation(int(_chips_input.value), get_bet().base_mult)
+
+
+## The live score equation. Pulses when the mult has changed since it was last shown, so each
+## pocket pass visibly bumps it. Pass `total` (-1 for none) to append "= total" once settled.
+func show_equation(points: int, mult: float, total := -1) -> void:
+	var text := "%d × %s" % [points, String.num(snappedf(mult, 0.01))]
+	if total >= 0:
+		text += " = %d" % total
+	_equation_label.text = text
+	if not is_equal_approx(mult, _shown_mult):
+		_shown_mult = mult
+		_equation_label.pivot_offset = _equation_label.size / 2.0
+		if _pulse:
+			_pulse.kill()
+		_equation_label.scale = Vector2(1.3, 1.3)
+		_pulse = create_tween()
+		_pulse.tween_property(_equation_label, "scale", Vector2.ONE, 0.2) \
+			.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
 func show_round(run: RunState, step: RoundStep) -> void:
@@ -91,6 +130,7 @@ func show_round(run: RunState, step: RoundStep) -> void:
 
 ## Placeholder for the Balatro-style playback: lists what each modifier did, in order.
 func show_score(ctx: ScoreContext) -> void:
+	show_equation(ctx.points, ctx.mult, ctx.total())
 	var lines: PackedStringArray = ["Landed %d (%s)" % [ctx.pocket.number, ctx.pocket.colour]]
 	if not ctx.won:
 		lines.append("Bet on %s lost: no points" % ctx.bet.display_name)
@@ -103,9 +143,17 @@ func show_score(ctx: ScoreContext) -> void:
 	_last_spin_label.text = "\n".join(lines)
 
 
+func _on_continue_button_pressed() -> void:
+	_continue_button.hide()
+	continue_requested.emit()
+
+
+## Shows the round's result and a Continue button; the run only moves on when it's pressed.
 func show_result(won: bool) -> void:
 	_result_label.text = "Round won!" if won else "Round lost"
 	_result_label.show()
+	_continue_button.show()
+	_continue_button.grab_focus()
 
 
 ## Throwaway visualisation: pops the number of a passed pocket, then lets it rise and fade.

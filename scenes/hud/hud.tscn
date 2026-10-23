@@ -15,6 +15,12 @@ font_size = 48
 outline_size = 8
 outline_color = Color(0, 0, 0, 1)
 
+[sub_resource type="LabelSettings" id="LabelSettings_equation"]
+font = ExtResource("1_37p78")
+font_size = 40
+outline_size = 8
+outline_color = Color(0, 0, 0, 1)
+
 [node name="HUD" type="CanvasLayer" unique_id=211249179]
 script = ExtResource("1_64ctp")
 
@@ -62,6 +68,34 @@ offset_bottom = 100.0
 grow_horizontal = 2
 label_settings = SubResource("LabelSettings_result")
 horizontal_alignment = 1
+
+[node name="EquationLabel" type="Label" parent="."]
+unique_name_in_owner = true
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = 110.0
+offset_right = 300.0
+offset_bottom = 170.0
+grow_horizontal = 2
+label_settings = SubResource("LabelSettings_equation")
+horizontal_alignment = 1
+
+[node name="ContinueButton" type="Button" parent="."]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -100.0
+offset_top = 190.0
+offset_right = 100.0
+offset_bottom = 250.0
+grow_horizontal = 2
+theme_override_fonts/font = ExtResource("1_37p78")
+theme_override_font_sizes/font_size = 32
+text = "Continue"
 
 [node name="SpinButton" type="Button" parent="." unique_id=1258611457]
 offset_left = 40.0
@@ -133,4 +167,5 @@ placeholder_text = "Number"
 max_length = 2
 
 [connection signal="text_changed" from="NumberInput" to="." method="_on_number_input_text_changed"]
+[connection signal="pressed" from="ContinueButton" to="." method="_on_continue_button_pressed"]
 [connection signal="pressed" from="SpinButton" to="." method="_on_spin_button_pressed"]

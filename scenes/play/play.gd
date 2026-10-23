@@ -12,8 +12,6 @@ const TICK_VOLUME_DB := -12.0
 ## Pitch rises by this much per tick played in the current spin, up to TICK_PITCH_MAX.
 const TICK_PITCH_STEP := 0.004
 const TICK_PITCH_MAX := 1.5
-## Pause on the final result before handing back to the run.
-const FINISH_DELAY := 1.5
 
 enum State { WAITING, SPINNING, DONE }
 
@@ -24,6 +22,7 @@ var _last_tick_ms := 0
 var _ticks_this_spin := 0
 var _chips := 0 # submitted for the spin in progress
 var _bet: Bet # placed for the spin in progress
+var _ctx: ScoreContext # live score of the spin in progress
 
 @onready var _wheel := $SubViewport/RouletteWheel
 @onready var _hud := $HUD
@@ -78,6 +77,7 @@ func _on_spin_requested() -> void:
 	_state = State.SPINNING
 	_chips = _hud.get_chips()
 	_bet = _hud.get_bet()
+	_ctx = ScoreContext.new(_chips, _bet)
 	_hud.set_inputs_editable(false)
 	_ticks_this_spin = 0
 	Modifiers.notify(_run, &"spin_started")
@@ -85,7 +85,8 @@ func _on_spin_requested() -> void:
 
 
 func _on_wheel_pocket_passed(_index: int, pocket: Pocket) -> void:
-	Modifiers.notify(_run, &"pocket_passed", [pocket])
+	Modifiers.notify(_run, &"pocket_passed", [pocket, _ctx])
+	_hud.show_equation(_ctx.points, _ctx.mult)
 	_hud.show_pass(pocket)
 
 	var now := Time.get_ticks_msec()
@@ -98,7 +99,7 @@ func _on_wheel_pocket_passed(_index: int, pocket: Pocket) -> void:
 
 func _on_wheel_spin_finished(_index: int, pocket: Pocket) -> void:
 	Modifiers.notify(_run, &"pocket_landed", [pocket])
-	var ctx := Modifiers.score(_run, pocket, _chips, _bet)
+	var ctx := Modifiers.score(_run, _ctx, pocket)
 	var progress := _run.current_round
 	progress.score += ctx.total()
 	progress.spins_left -= 1
@@ -126,6 +127,5 @@ func _finish() -> void:
 	var won := progress.score >= _step.target_score
 	Modifiers.notify(_run, &"round_finished", [progress, won])
 	_hud.show_result(won)
-	# Not process_always, so the delay waits while the game is paused.
-	await get_tree().create_timer(FINISH_DELAY, false).timeout
+	await _hud.continue_requested
 	finished.emit({"won": won, "score": progress.score})

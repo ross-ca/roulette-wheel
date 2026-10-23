@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="MultiplyMultTicket" format=3 uid="uid://cb72fgm1hl5y"]
 
 [ext_resource type="Texture2D" uid="uid://8tpfayhkeaok" path="res://assets/textures/tickets/multiplyMult.png" id="1_nsrms"]
-[ext_resource type="Script" uid="uid://gc2ayvutf7y3" path="res://scenes/modifiers/tickets/multiply_mult_ticket.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://gc2ayvutf7y3" path="res://scenes/modifiers/tickets/classes/multiply_mult_ticket.gd" id="1_script"]
 
 [resource]
 script = ExtResource("1_script")

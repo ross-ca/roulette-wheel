@@ -16,12 +16,17 @@ var mult: float = 1.0
 var trace: Array[Dictionary] = []
 
 
-func _init(landed: Pocket, chips: int, placed: Bet) -> void:
-	pocket = landed
+## Created when the spin starts, before the pocket is known, so `mult` can build up live as the ball
+## passes pockets. Call `land` once it settles.
+func _init(chips: int, placed: Bet) -> void:
 	bet = placed
 	points = chips
-	won = placed.wins(landed)
 	mult = placed.base_mult
+
+
+func land(landed: Pocket) -> void:
+	pocket = landed
+	won = bet.wins(landed)
 
 
 func add_trace(source: Modifier, text: String) -> void:

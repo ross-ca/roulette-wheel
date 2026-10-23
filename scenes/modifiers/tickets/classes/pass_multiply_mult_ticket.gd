@@ -14,9 +14,13 @@ func get_description() -> String:
 	return "×%s mult each time the ball passes %s" % [factor, _pocket_name()]
 
 
+func apply_pass(ctx: ScoreContext) -> void:
+	ctx.mult *= factor
+
+
+## The mult was already multiplied live during the spin; this only records it.
 func modify_score(_run: RunState, ctx: ScoreContext) -> void:
 	if _passes == 0:
 		return
 	var total := pow(factor, _passes)
-	ctx.mult *= total
 	ctx.add_trace(self, "×%s mult (%s passes of %s)" % [total, _passes, _pocket_name()])
