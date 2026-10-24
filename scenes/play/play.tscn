@@ -26,7 +26,7 @@ render_target_update_mode = 4
 texture_filter = 2
 ball_extra_turns_min = 6
 
-[node name="Views" type="Control" parent="."]
+[node name="Views" type="Control" parent="." unique_id=61409807]
 clip_contents = true
 layout_mode = 1
 anchors_preset = 15
@@ -36,7 +36,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="BettingView" parent="Views" instance=ExtResource("3_betting")]
+[node name="BettingView" parent="Views" unique_id=970465835 instance=ExtResource("3_betting")]
 layout_mode = 0
 anchors_preset = 0
 anchor_right = 0.0
@@ -44,7 +44,7 @@ anchor_bottom = 0.0
 grow_horizontal = 1
 grow_vertical = 1
 
-[node name="WheelView" parent="Views" instance=ExtResource("4_wheel")]
+[node name="WheelView" parent="Views" unique_id=1096472193 instance=ExtResource("4_wheel")]
 layout_mode = 0
 anchors_preset = 0
 anchor_right = 0.0
@@ -60,8 +60,8 @@ separation = 10.0
 
 [node name="HUD" parent="." unique_id=211249179 instance=ExtResource("2_1bvp3")]
 
-[connection signal="bet_placed" from="Views/BettingView" to="." method="_on_bet_placed"]
 [connection signal="bet_cleared" from="Views/BettingView" to="." method="_on_bet_cleared"]
+[connection signal="bet_placed" from="Views/BettingView" to="." method="_on_bet_placed"]
 [connection signal="wheel_requested" from="Views/BettingView" to="." method="_on_wheel_requested"]
 [connection signal="betting_requested" from="Views/WheelView" to="." method="_on_betting_requested"]
 [connection signal="spin_requested" from="Views/WheelView" to="." method="_on_spin_requested"]

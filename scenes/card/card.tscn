@@ -23,3 +23,4 @@ texture_filter = 5
 material = SubResource("ShaderMaterial_card")
 mouse_filter = 0
 script = ExtResource("2_script")
+mute_hover_sound = true
