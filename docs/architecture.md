@@ -9,6 +9,7 @@ How a run is structured, as built. The original proposal, with its reasoning and
 - **Round**: one play phase, a few spins to reach a target score.
 - **Ticket**: our version of Balatro's jokers. Order matters.
 - **Step**: one entry in the run's queue (a round, a shop, later events and choices).
+- **Card**: how something the player holds or can buy is shown on screen. A view, not the thing itself.
 
 ## The parts
 
@@ -113,9 +114,27 @@ Events, raised with `Modifiers.notify(run, event, args)`:
 
 **Live equation.** The HUD's `EquationLabel` shows `chips × mult`. Before the spin it previews the current chips and the bet's `base_mult`, refreshing when either input changes. During the spin `play.gd` calls `show_equation` on every `pocket_passed` with the live `ScoreContext`, and the label pulses whenever the mult has changed, so pass tickets are seen bumping it. When the spin settles `show_score` sets the final `chips × mult = total`, including the effect of every other modifier. The equation stays on screen until the inputs next change.
 
-**Ticket pulse.** `Ticket` has a UI-only `triggered` signal. `PocketPassTicket` emits it on each matching pass, and the ticket's `Card` connects to it in `setup` and calls `pulse()`, a short scale pop layered on top of the hover scale. Other tickets don't emit it yet.
+**Ticket pulse.** `Modifier` has a UI-only `triggered` signal. `PocketPassTicket` emits it on each matching pass, and the ticket's `Card` connects to it in `setup` and calls `pulse()`, a short scale pop layered on top of the hover scale. Other tickets don't emit it yet.
 
 Modifiers record what they did in `ctx.trace`. Rules are computed instantly and the HUD plays the trace back afterwards, so game logic never waits on animation.
+
+## Cards and tooltips
+
+`scenes/card/`, `scenes/card_container/`, `scenes/tooltip/`. Two layers:
+
+- **The thing** is a `Modifier` Resource: a ticket now, consumables and the like later. It owns the data and behaviour, lives in `RunState` and is saved with it. It never knows how it's shown; it only emits `triggered` in case something is listening.
+- **The card** (`Card`) is a view of one thing: its face. It draws the icon, tilts, bobs, pops on hover, pulses on `triggered` and shows the tooltip while hovered. It has no game logic and nothing worth saving, and can be thrown away and rebuilt from its item at any time.
+
+The **tooltip** is a second view of the same thing, the detailed one. Neither view branches on what kind of thing it shows: they ask the item for `display_name`, `icon`, `get_description()` (may contain BBCode) and `get_kind_name()` ("Ticket"). Anything kind-specific a view needs, such as a different card frame later, should come from the item the same way, not from `if item is ...`.
+
+**If it changes the run, it doesn't go in Card.** What interacting with a card means belongs to whatever holds it. `CardContainer` gives cards one interaction, drag to reorder, and reports it with `order_changed`; the play phase decides that means ticket trigger order and writes `run.tickets`. Clicking to buy will belong to the shop, clicking to use a consumable to wherever consumables are held. So every screen gets the same card and tooltip, and only adds what its interactions do.
+
+Details:
+
+- `CardContainer.set_items(items)` builds one card per item; `get_items()` returns them in on-screen order (assign it into a typed array such as `run.tickets`).
+- The tooltip is one shared instance, the `Tooltip` autoload (a `CanvasLayer` on layer 5, above the HUD and below the pause menu). It isn't a child of the card so it isn't scaled with it, draws over every card, and only one shows at a time. Cards call `Tooltip.show_for(card)` and `Tooltip.hide_for(card)`; `hide_for` does nothing if another card has taken over, so a late `mouse_exited` can't hide the next card's tooltip.
+- It anchors to `Card.get_resting_screen_rect()` (the card at `base_scale`) so it doesn't wobble with the hover pop, sits above the card (below if there's no room) and stays on screen. It reads the description each time it's shown, so changed values need no refresh. It hides while the game is paused.
+- While a card is dragged it's `held`, which hides its tooltip. The other cards ignore the mouse during the drag, because Godot picks the hovered control by tree order, not `z_index`, so a neighbour would otherwise take the hover.
 
 ## Saving
 

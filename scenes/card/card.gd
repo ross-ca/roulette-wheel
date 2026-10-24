@@ -1,10 +1,20 @@
 class_name Card
 extends TextureRect
-## A card that tilts in 3D towards the cursor while hovered, using card_tilt.gdshader.
-## Instance card.tscn and set `texture`; leave scale/position to the parent scene.
+## The face of something the player holds or can buy: a ticket now, consumables and the like later.
+## A card is only a view. The `Modifier` it shows owns the data and behaviour and lives in the run;
+## the card can be thrown away and rebuilt from it at any time, and holds nothing worth saving. It
+## doesn't branch on what kind of thing it shows: it asks the item for its icon (and the tooltip asks
+## for its name, description and kind).
+##
+## Rule of thumb: if it changes the run, it doesn't go in Card. The card shows itself, tilts towards
+## the cursor (card_tilt.gdshader), pops on hover, pulses when its item triggers and shows the
+## `Tooltip` while hovered. What interacting with it means (drag to reorder, click to buy or use)
+## belongs to whatever holds the card: a CardContainer, the shop and so on.
+##
+## Instance card.tscn and call `setup`; leave scale/position to the parent scene.
 
-## The ticket this card shows. The ticket owns the data; the card only displays it.
-var ticket: Ticket
+## The thing this card shows.
+var item: Modifier
 
 ## Tilt in degrees when the cursor is at the edge of the card.
 @export_range(0.0, 60.0, 0.5) var max_tilt: float = 6.0
@@ -42,6 +52,12 @@ var base_scale := Vector2.ONE:
 ## Normally set by CardContainer.
 var idle_phase_offset := 0.0
 
+## True while the player is dragging the card, which hides its tooltip. Normally set by CardContainer.
+var held := false:
+	set(value):
+		held = value
+		_update_tooltip()
+
 ## Scale multiplier at the start of `pulse`.
 @export_range(1.0, 1.5, 0.01) var pulse_peak: float = 1.2
 
@@ -54,17 +70,17 @@ var _hover_velocity := 0.0
 var _tilt := Vector2.ZERO # (x_rot, y_rot) in degrees, as passed to the shader
 
 
-## Shows `new_ticket`. Call before the card enters the tree, or again to refresh after the
-## ticket's values change.
-func setup(new_ticket: Ticket) -> void:
-	if ticket and ticket.triggered.is_connected(pulse):
-		ticket.triggered.disconnect(pulse)
-	ticket = new_ticket
-	texture = ticket.icon
-	ticket.triggered.connect(pulse)
+## Shows `new_item`. Call before the card enters the tree, or again to show a different item. The
+## tooltip reads the item's description live, so changed values need no refresh.
+func setup(new_item: Modifier) -> void:
+	if item and item.triggered.is_connected(pulse):
+		item.triggered.disconnect(pulse)
+	item = new_item
+	texture = item.icon
+	item.triggered.connect(pulse)
 
 
-## A brief pop, e.g. when the ticket triggers. Retriggering restarts it.
+## A brief pop, e.g. when the item triggers. Retriggering restarts it.
 func pulse() -> void:
 	if _pulse_tween:
 		_pulse_tween.kill()
@@ -79,6 +95,10 @@ func _ready() -> void:
 	mouse_exited.connect(_set_hovered.bind(false))
 	resized.connect(_update_pivot)
 	_update_pivot()
+
+
+func _exit_tree() -> void:
+	Tooltip.hide_for(self) # freed or moved while hovered, so mouse_exited never comes
 
 
 func _process(delta: float) -> void:
@@ -114,13 +134,29 @@ func _apply_scale() -> void:
 	scale = base_scale * lerpf(1.0, hover_scale, _hover_amount) * _pulse_scale
 
 
+## The card's rect on screen at `base_scale`, ignoring the hover pop and pulse, so the tooltip can
+## anchor to it without wobbling.
+func get_resting_screen_rect() -> Rect2:
+	var parent_xform := get_global_transform_with_canvas() * get_transform().affine_inverse()
+	var centre := position + pivot_offset
+	return parent_xform * Rect2(centre - pivot_offset * base_scale, size * base_scale)
+
+
 func _set_hovered(hovered: bool) -> void:
 	_hovered = hovered
+	_update_tooltip()
 	if hovered and hover_sound:
 		var pitch := 1.0 + randf_range(-hover_sound_pitch_variance, hover_sound_pitch_variance)
 		Audio.play_sfx(hover_sound, hover_sound_volume_db, pitch)
 
 
-# Scale (e.g. a future hover pop) should happen about the card's centre.
+func _update_tooltip() -> void:
+	if _hovered and not held and item:
+		Tooltip.show_for(self)
+	else:
+		Tooltip.hide_for(self)
+
+
+# Scale (the hover pop and pulse) should happen about the card's centre.
 func _update_pivot() -> void:
 	pivot_offset = size / 2.0

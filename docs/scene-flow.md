@@ -4,7 +4,7 @@ How scenes get loaded and used, from launch to the end of a run. See [architectu
 
 ## Launch
 
-1. Godot creates the autoloads first, `Audio` and `Game`. They sit under the root for the whole session and are never unloaded.
+1. Godot creates the autoloads first, `Audio`, `Game` and `Tooltip`. They sit under the root for the whole session and are never unloaded.
 2. It loads the main scene set in `project.godot`: `scenes/main_menu/main_menu.tscn`.
 
 ## Main menu
