@@ -1,7 +1,7 @@
 class_name PocketPassTicket
 extends Ticket
 ## Base for tickets that react every time the ball passes over one pocket. Subclasses override
-## `apply_pass` to change the spin's live mult as each pass happens; the base counts the passes so
+## `apply_pass` to change the spin's live mults as each pass happens; the base counts the passes so
 ## `modify_score` can trace the total afterwards.
 
 ## The number of the pocket to watch.
@@ -28,8 +28,8 @@ func on_event(run: RunState, event: StringName, args: Array) -> void:
 				triggered.emit()
 
 
-## Called on each matching pass with the run and the spin's live ScoreContext.
-func apply_pass(_run: RunState, _ctx: ScoreContext) -> void:
+## Called on each matching pass with the run and the spin's live SpinContext.
+func apply_pass(_run: RunState, _spin: SpinContext) -> void:
 	pass
 
 

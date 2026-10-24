@@ -1,6 +1,6 @@
 class_name PassAddMultTicket
 extends PocketPassTicket
-## Adds to the mult every time the ball passes over a chosen pocket.
+## Adds to every bet's mult every time the ball passes over a chosen pocket.
 
 @export var amount: float = 2.0
 
@@ -13,8 +13,8 @@ func get_description() -> String:
 	return "+%s mult each time the ball passes %s%s" % [amount, _pocket_name(), _chance_text()]
 
 
-func apply_pass(_run: RunState, ctx: ScoreContext) -> void:
-	ctx.mult += amount
+func apply_pass(_run: RunState, spin: SpinContext) -> void:
+	spin.add_mult(amount)
 
 
 ## The mult was already added live during the spin; this only records it.

@@ -1,14 +1,14 @@
 class_name ScoreContext
 extends RefCounted
-## One spin's score as it passes through the modifiers. Placeholder: the formula will probably be
-## points × mult with per-pocket bonuses, but isn't designed yet. Only this class and the play phase
-## should need to change when it is.
+## One bet's score in a spin as it passes through the modifiers. A spin holds one per bet in its
+## SpinContext. Placeholder: the formula will probably be points × mult with per-pocket bonuses, but
+## isn't designed yet. Only this class, SpinContext and the play phase should need to change when it is.
 
 var pocket: Pocket
 var bet: Bet
-## Whether the landed pocket satisfied the bet. A lost spin scores nothing.
+## Whether the landed pocket satisfied the bet. A lost bet scores nothing.
 var won := false
-## Starts as the chips the player submitted for the spin.
+## Starts as the chips placed on the bet.
 var points: int = 0
 ## Starts as the bet's base mult.
 var mult: float = 1.0
@@ -16,8 +16,8 @@ var mult: float = 1.0
 var trace: Array[Dictionary] = []
 
 
-## Created when the spin starts, before the pocket is known, so `mult` can build up live as the ball
-## passes pockets. Call `land` once it settles.
+## Created by SpinContext when the spin starts, before the pocket is known, so `mult` can build up
+## live as the ball passes pockets. `land` is called once it settles.
 func _init(chips: int, placed: Bet) -> void:
 	bet = placed
 	points = chips

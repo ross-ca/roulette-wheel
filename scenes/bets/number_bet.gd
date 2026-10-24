@@ -19,3 +19,7 @@ func _init() -> void:
 
 func wins(pocket: Pocket) -> bool:
 	return pocket.number == number
+
+
+func key() -> String:
+	return "number:%d" % number

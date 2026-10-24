@@ -50,13 +50,26 @@ Rules:
 
 ## Bets
 
-`scenes/bets/`. Before each spin the player chooses a chip amount and a **bet**: the outcome they're backing. A `Bet` Resource has a `display_name`, a `base_mult` and `wins(pocket) -> bool`.
+`scenes/bets/`. Before each spin the player drags chips onto the table to place one or more **bets**: the outcomes they're backing. A `Bet` Resource has a `display_name`, a `base_mult`, `wins(pocket) -> bool` and `key()`, which identifies the outcome so two bet objects on the same spot count as the same bet.
 
 - **Base mult comes from the odds.** It is 36 divided by the numbers the bet covers: red or black (18 numbers) is ×2, a single number (zero included) is ×36, a dozen (12) would be ×3. Rarer outcomes pay more. Each subclass sets its own value.
-- **Losing scores nothing.** If the landed pocket doesn't satisfy the bet, the spin scores 0 and `modify_score` isn't called, so tickets only trigger on a win. (Zero is green, so it loses every red or black bet.)
+- **Losing scores nothing.** If the landed pocket doesn't satisfy a bet, that bet scores 0 and `modify_score` isn't called for it, so tickets only trigger on a win. (Zero is green, so it loses every red or black bet.)
 - `ColourBet` covers red, black (×2) and green (×36, since green is only zero), and sets `base_mult` from its `colour`. `NumberBet` is one exact number from 0 to 36, also ×36.
-- The HUD offers the colours as toggle buttons and the number as a text field. Entering a number picks a `NumberBet` and disables the colour buttons; clearing the field enables them again. Further bets, such as odd/even, dozens and columns, are new `Bet` subclasses; the HUD chooses which are offered.
-- The chips and bet are read from the HUD when Spin is pressed and held by `play.gd` until the spin settles. Both inputs are locked during the spin. They aren't saved, so a resumed round starts with the HUD defaults (10 chips, red).
+- **Placed bets** are `PlacedBet` Resources (`bet`, `chips`) in `run.current_round.bets`, so they're saved: the round is saved after every bet change. Chips dropped on a spot that already has a bet add to it (matched by `key()`); right-clicking a spot removes its bet. A spin needs at least one bet and uses them all up, so the table is empty after each spin.
+- **The table** is built by `BettingView`: a `BetSpot` (a drop target holding its `Bet`) for zero, each number in three rows of twelve, red and black. Further bets, such as odd/even, dozens and columns, are new `Bet` subclasses plus spots on the table.
+- **Chips** are `Chip`s in a row under the table, using Godot's Control drag and drop (`_get_drag_data` returns `{"chips": value}`). Their values are `CHIP_VALUES` in `play.gd`, a placeholder: chips don't cost money yet, and are planned to become fractions of the player's money.
+- The table and chips are locked during a spin.
+
+## Play views
+
+A round has two screens: **betting** (`BettingView`: round info, the table, chips, tickets, consumables, Go to wheel) and **the wheel** (`WheelView`: tickets, Go back to betting, a live row per bet, the wheel and its spin button). Players switch between them often, so:
+
+- **Both live in the one play phase**, loaded for the whole round. Switching is UI, not a run step, so it doesn't go through the runner, and the wheel never has to be rebuilt.
+- **They slide sideways** between each other, and a slide can be reversed mid-way. The tickets are one shared strip that glides between the views.
+- **Views are display only.** They report input through signals and show what `play.gd` tells them; every rule stays in `play.gd`, so the views can be redesigned without touching game logic.
+- **No going back to betting mid-spin.** The bets are locked anyway, and the spin plays out in the wheel view.
+
+How the slide works is in [scene-flow.md](scene-flow.md#inside-the-play-phase).
 
 ## Steps and the queue
 
@@ -87,7 +100,7 @@ A phase never decides what comes next.
 | Hook | Use |
 | --- | --- |
 | `modify_spins(run, spins) -> int` | Spins per round |
-| `modify_score(run, ctx)` | Change the `ScoreContext` for a spin |
+| `modify_score(run, ctx)` | Change a winning bet's `ScoreContext` (called once per winning bet) |
 | `modify_price(run, price) -> int` | Shop prices |
 | `on_event(run, event, args)` | React to something that happened |
 
@@ -97,7 +110,7 @@ Events, raised with `Modifiers.notify(run, event, args)`:
 
 | Event | When | Args |
 | --- | --- | --- |
-| `pocket_passed` | The ball enters any pocket (dozens per spin, keep handlers cheap) | pocket, live `ScoreContext` |
+| `pocket_passed` | The ball enters any pocket (dozens per spin, keep handlers cheap) | pocket, live `SpinContext` |
 | `pocket_landed` | The ball settles | pocket |
 | `spin_started` / `spin_finished` | Each spin | — / pocket |
 | `round_started` / `round_finished` | Each round | round state / round state, won |
@@ -105,17 +118,22 @@ Events, raised with `Modifiers.notify(run, event, args)`:
 
 `step_started` only fires when a step is first taken, not when a save resumes it.
 
-**Tickets that count passes.** `PocketPassTicket` watches one pocket (`number`, optionally `colour`). It resets its count on `spin_started`, adds one for each matching `pocket_passed` that passes its `trigger_chance` roll (0 never, 1 always; rolled on `run.rng`, and not at all when 1) and calls `apply_pass(run, ctx)`, which subclasses use (it gets the run and the live context) to change the spin's live mult as the ball goes over the pocket: `PassAddMultTicket` adds `amount`, `PassMultiplyMultTicket` multiplies by `factor`. `PassAddMoneyTicket` instead adds `amount` to `run.money` (and the round's `money_earned`) on each pass, win or lose; the HUD's money label updates live. Passes therefore interleave with each other in the order they happen, and run before the other tickets' `modify_score`. `modify_score` only records the trace. The count is plain per-spin state, not saved, because saves are never made mid-spin. A lost bet still scores nothing, so the live mult is simply discarded.
+**Tickets that count passes.** `PocketPassTicket` watches one pocket (`number`, optionally `colour`). It resets its count on `spin_started`, adds one for each matching `pocket_passed` that passes its `trigger_chance` roll (0 never, 1 always; rolled on `run.rng`, and not at all when 1) and calls `apply_pass(run, spin)`, which subclasses use (it gets the run and the live `SpinContext`) to change the spin's live mults as the ball goes over the pocket: `PassAddMultTicket` adds `amount` to every bet's mult, `PassMultiplyMultTicket` multiplies every bet's mult by `factor`. `PassAddMoneyTicket` instead adds `amount` to `run.money` (and the round's `money_earned`) on each pass, win or lose; the betting view's money label updates live. Passes therefore interleave with each other in the order they happen, and run before the other tickets' `modify_score`. `modify_score` only records the trace. The count is plain per-spin state, not saved, because saves are never made mid-spin. A lost bet still scores nothing, so its live mult is simply discarded.
 
 ### Scoring (placeholder)
 
-`ScoreContext` is created when the spin starts (so pass tickets can change `mult` live) and told the landed pocket afterwards via `land`. It starts with `points` as the chips the player submitted (the HUD's `ChipsInput`) and `mult` as the bet's `base_mult`. If the bet won it passes through every modifier and totals `points × mult`; if it lost the total is 0 and no modifier runs. The real formula (probably points × mult plus per-pocket bonuses) isn't designed yet; only `ScoreContext` and the play phase should change when it is.
+A spin is scored in two layers:
 
-**Live equation.** The HUD's `EquationLabel` shows `chips × mult`. Before the spin it previews the current chips and the bet's `base_mult`, refreshing when either input changes. During the spin `play.gd` calls `show_equation` on every `pocket_passed` with the live `ScoreContext`, and the label pulses whenever the mult has changed, so pass tickets are seen bumping it. When the spin settles `show_score` sets the final `chips × mult = total`, including the effect of every other modifier. The equation stays on screen until the inputs next change.
+- **`SpinContext`**: the whole spin. Created when the spin starts from the round's placed bets (so pass tickets can change mults live), and told the landed pocket afterwards via `land`. Holds one `ScoreContext` per bet, in the order they were placed, and totals them. Effects on the whole spin go through it: `add_mult` and `multiply_mult` change every bet.
+- **`ScoreContext`**: one bet. It starts with `points` as the chips placed on the bet and `mult` as the bet's `base_mult`. If the bet won it passes through every modifier and totals `points × mult`; if it lost the total is 0 and no modifier runs.
+
+`Modifiers.score` takes the bets in order and runs every modifier on each winning one, so a ticket's `modify_score` only ever deals with one bet. The spin's score is the sum of its bets'. The real formula (probably points × mult plus per-pocket bonuses) isn't designed yet; only `ScoreContext`, `SpinContext` and the play phase should change when it is.
+
+**Live equations.** The wheel view has a `BetRow` per placed bet showing `name: chips × mult`. Before the spin it shows each bet's chips and `base_mult`. During the spin `play.gd` calls `WheelView.show_spin` on every `pocket_passed` with the live `SpinContext`, and each row pulses whenever its mult has changed, so pass tickets are seen bumping it. When the spin settles `show_result` sets each row to its final `chips × mult = total` (or "lost") and lists what each modifier did. The rows stay until the bets next change.
 
 **Ticket pulse.** `Ticket` has a UI-only `triggered` signal. `PocketPassTicket` emits it on each matching pass, and the ticket's `Card` connects to it in `setup` and calls `pulse()`, a short scale pop layered on top of the hover scale. Other tickets don't emit it yet.
 
-Modifiers record what they did in `ctx.trace`. Rules are computed instantly and the HUD plays the trace back afterwards, so game logic never waits on animation.
+Modifiers record what they did in `ctx.trace`. Rules are computed instantly and the wheel view plays the trace back afterwards, so game logic never waits on animation.
 
 ## Saving
 
@@ -136,8 +154,9 @@ Modifiers record what they did in `ctx.trace`. Rules are computed instantly and 
 | Topic | Decision |
 | --- | --- |
 | Pocket data | `Pocket` Resource |
-| Scoring | Chips × (bet's base mult plus modifiers); a lost bet scores 0. Placeholder for now |
-| Bets | `Bet` Resource; base mult = 36 / numbers covered; red/black first |
+| Scoring | Per bet: chips × (bet's base mult plus modifiers); a lost bet scores 0; a spin scores the sum of its bets. Placeholder for now |
+| Bets | `Bet` Resource; base mult = 36 / numbers covered; several bets per spin, used up by the spin |
+| Play views | Betting and wheel views in one phase scene, sliding between each other; no going back to betting mid-spin |
 | Triggers | All levels: pocket passed, landed, spin, round, step |
 | Saving | Includes part-way through a round, saved after every spin |
 | Ticket order | Matters; `run.tickets` order is the trigger order |
@@ -148,6 +167,7 @@ Still open:
 - Boss rules before or after tickets in the trigger order? (Currently after.)
 - Should anything be able to change where the current ball lands? Today the winner is fixed at spin start.
 - The scoring formula.
+- Chips and money: should placing chips cost money, and should chip values be fractions of the player's money (the plan)? Today chips are free and fixed (`CHIP_VALUES`).
 - What the shop sells besides tickets.
 
 ## Next

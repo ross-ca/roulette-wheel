@@ -12,3 +12,9 @@ extends Resource
 
 func wins(_pocket: Pocket) -> bool:
 	return false
+
+
+## Identifies the outcome backed, so chips placed on the same spot stack into one bet. Two bets with
+## the same key are the same bet, even when they're different objects (such as after a load).
+func key() -> String:
+	return display_name
