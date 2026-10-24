@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Godot 4.7 (Forward Plus, Jolt Physics) 2D roulette roguelike in the style of Balatro, pure GDScript. There is no build system, linter or test suite; develop by opening the project in the Godot editor, or run it with `godot --path .` (main scene is `scenes/main_menu/main_menu.tscn`). `.vscode/settings.json` points godot-tools at a Windows editor path, so adjust it locally if needed. Indentation is tabs (GDScript default).
 
+`.github/workflows/build-windows.yml` exports the "Windows Desktop" preset (x86_64, single exe with the pck embedded) on pushes to `main` or by hand from the Actions tab, uploads it as a run artifact, then posts the download link to Discord through the `DISCORD_WEBHOOK_URL` repo secret (the step is skipped if the secret isn't set). Its `GODOT_VERSION` must match the editor version exactly, so bump it when upgrading Godot.
+
 Prose docs live in `docs/` (it has a `.gdignore`, so Godot doesn't import it): `architecture.md` (the design as built, decisions and open questions), `scene-flow.md` (how scenes are loaded and swapped) and `debugging.md` (running scenes on their own, saves). Keep them in sync when changing those systems. The original proposal is the "Roulette run structure proposal" doc (https://claude.ai/artifact/GGBJfbtG4TACy3CQSebUXR). Terms: a **run** is a series of **tables**, each table has several **rounds** (a play phase of a few spins) with a **shop** between them, and **tickets** are our version of Balatro's jokers.
 
 ## Architecture
