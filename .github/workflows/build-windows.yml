@@ -1,0 +1,91 @@
+name: Build Windows
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# A newer push to main supersedes a build still in progress.
+concurrency:
+  group: build-windows-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  # Must match the editor version exactly, or the export templates won't be found.
+  GODOT_VERSION: 4.7.2-stable
+  GODOT: ~/godot/godot
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      # Godot looks for templates in ~/.local/share/godot/export_templates/<version with dots>.
+      # The full template archive is ~1.3 GB, so only the Windows x86_64 ones are kept and cached.
+      - name: Cache Godot and export templates
+        id: cache
+        uses: actions/cache@v6
+        with:
+          path: |
+            ~/godot
+            ~/.local/share/godot/export_templates
+          key: godot-${{ env.GODOT_VERSION }}-windows-x86_64
+
+      - name: Download Godot and export templates
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          base=https://github.com/godotengine/godot/releases/download/$GODOT_VERSION
+          editor=Godot_v${GODOT_VERSION}_linux.x86_64
+          templates=Godot_v${GODOT_VERSION}_export_templates.tpz
+          cd "$RUNNER_TEMP"
+          curl -sSfLO "$base/$editor.zip"
+          curl -sSfLO "$base/$templates"
+          curl -sSfLO "$base/SHA512-SUMS.txt"
+          grep -E " ($editor\.zip|$templates)$" SHA512-SUMS.txt | sha512sum -c
+
+          mkdir -p ~/godot
+          unzip -q "$editor.zip" -d ~/godot
+          mv ~/godot/"$editor" ~/godot/godot
+
+          dest=~/.local/share/godot/export_templates/${GODOT_VERSION/-/.}
+          mkdir -p "$dest"
+          unzip -jq "$templates" 'templates/version.txt' 'templates/windows_release_x86_64*.exe' -d "$dest"
+
+      # A fresh checkout has no .godot/ folder, so assets are imported before exporting.
+      - name: Import assets
+        run: ${{ env.GODOT }} --headless --path . --import
+
+      - name: Export
+        run: |
+          mkdir -p build
+          ${{ env.GODOT }} --headless --path . --export-release "Windows Desktop" build/roulette-wheel.exe
+
+      - name: Upload build
+        id: upload
+        uses: actions/upload-artifact@v7
+        with:
+          name: roulette-wheel-windows-${{ github.sha }}
+          path: build/roulette-wheel.exe
+          if-no-files-found: error
+          retention-days: 14
+
+      # Skipped (not failed) when the DISCORD_WEBHOOK_URL secret isn't set, e.g. on forks.
+      - name: Post to Discord
+        env:
+          WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
+        run: |
+          if [ -z "$WEBHOOK" ]; then
+            echo "DISCORD_WEBHOOK_URL not set, skipping"
+            exit 0
+          fi
+          # jq builds the JSON so quotes etc. in the commit subject can't break it.
+          content=$(printf 'New Windows build of `%s` (`%s`) by %s\n> %s\nDownload (expires in 14 days): <%s>' \
+            "$GITHUB_REF_NAME" "${GITHUB_SHA::7}" "$(git log -1 --format=%an)" "$(git log -1 --format=%s)" "$ARTIFACT_URL")
+          jq -n --arg content "$content" '{content: $content, username: "Build bot"}' \
+            | curl -sSf -H "Content-Type: application/json" -d @- "$WEBHOOK"
