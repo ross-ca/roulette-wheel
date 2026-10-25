@@ -5,7 +5,7 @@ How scenes get loaded and used, from launch to the end of a run. See [architectu
 ## Launch
 
 1. Godot creates the autoloads first, `Audio` and `Game`. They sit under the root for the whole session and are never unloaded.
-2. It loads the main scene set in `project.godot`: `scenes/main_menu/main_menu.tscn`.
+2. It loads the main scene set in `project.godot`: `scenes/intro/intro.tscn`, the intro video. It starts loading the main menu in the background, plays the intro video (`VideoStreamPlayer`, Ogg Theora, letterboxed to its aspect ratio), and changes to the menu when the video ends or on any key, click or button press. With no video set it goes straight to the menu.
 
 ## Main menu
 
@@ -46,7 +46,7 @@ The loop calls `Game.end_run()`, which deletes the save and records the result, 
 root
 ├─ Audio          (autoload)
 ├─ Game           (autoload, holds Game.run)
-└─ MainMenu  or  Run
+└─ Intro  or  MainMenu  or  Run
                   ├─ Phase
                   │   └─ Play  or  Shop   (swapped by the loop)
                   └─ PauseMenu
