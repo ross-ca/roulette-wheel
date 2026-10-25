@@ -1,9 +1,9 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://8q44yyjs2ntc"]
 
-[ext_resource type="Script" path="res://scenes/chip/chip_stack.gd" id="1_script"]
-[ext_resource type="Resource" path="res://scenes/chip/chip_set.tres" id="2_set"]
+[ext_resource type="Script" uid="uid://cna1jb87ulo0r" path="res://scenes/chip/chip_stack.gd" id="1_script"]
+[ext_resource type="Resource" uid="uid://ddh2clbas82ha" path="res://scenes/chip/chip_set.tres" id="2_set"]
 
-[node name="ChipStack" type="Control"]
+[node name="ChipStack" type="Control" unique_id=670310570]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

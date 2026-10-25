@@ -6,7 +6,7 @@ extends Control
 
 @export var chip_set: ChipSet
 ## Size of each chip drawn in the stack.
-@export var chip_size := Vector2(28, 28)
+@export var chip_size := Vector2(56, 56)
 ## How far each chip sits above the one under it.
 @export var chip_rise := 4.0
 ## Chips drawn in a column before it shows a count instead of growing.

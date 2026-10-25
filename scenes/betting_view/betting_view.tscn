@@ -2,6 +2,8 @@
 
 [ext_resource type="Script" uid="uid://bonosbytb8p81" path="res://scenes/betting_view/betting_view.gd" id="1_script"]
 [ext_resource type="FontFile" uid="uid://bjqcqudoiecha" path="res://assets/fonts/Silkscreen-Regular.ttf" id="2_font"]
+[ext_resource type="Script" uid="uid://d2st3ptq8dlys" path="res://scenes/bet_table/bet_table.gd" id="3_table"]
+[ext_resource type="Resource" uid="uid://desc1cj401ifv" path="res://scenes/bet_table/table_style.tres" id="4_style"]
 
 [sub_resource type="Theme" id="Theme_view"]
 default_font = ExtResource("2_font")
@@ -61,11 +63,12 @@ size_flags_horizontal = 3
 text = "Score 0 / 0"
 horizontal_alignment = 1
 
-[node name="Table" type="HBoxContainer" parent="Margin/Rows" unique_id=1459938205]
+[node name="Table" type="Container" parent="Margin/Rows" unique_id=1459938205]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
-mouse_filter = 2
+script = ExtResource("3_table")
+style = ExtResource("4_style")
 
 [node name="Chips" type="HBoxContainer" parent="Margin/Rows" unique_id=187652771]
 unique_name_in_owner = true

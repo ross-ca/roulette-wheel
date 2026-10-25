@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://xa0eqgxh8kan" path="res://scenes/play/play.gd" id="1_h2yge"]
 [ext_resource type="PackedScene" uid="uid://chkvs2klsp6me" path="res://scenes/wheel/roulette_wheel.tscn" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://dfblr6s3i4487" path="res://scenes/hud/hud.tscn" id="2_1bvp3"]
-[ext_resource type="PackedScene" path="res://scenes/betting_view/betting_view.tscn" id="3_betting"]
+[ext_resource type="PackedScene" uid="uid://cjsrh2v84pgsm" path="res://scenes/betting_view/betting_view.tscn" id="3_betting"]
 [ext_resource type="PackedScene" path="res://scenes/wheel_view/wheel_view.tscn" id="4_wheel"]
 [ext_resource type="PackedScene" path="res://scenes/card_container/card_container.tscn" id="5_b1x3f"]
 
@@ -16,6 +16,15 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_h2yge")
+
+[node name="Background" type="ColorRect" parent="." unique_id=1857960410]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.13725491, 0.2784314, 0.21176471, 1)
 
 [node name="SubViewport" type="SubViewport" parent="." unique_id=1916336550]
 transparent_bg = true

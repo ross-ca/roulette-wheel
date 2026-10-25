@@ -79,6 +79,7 @@ func _ready() -> void:
 	_cards.order_changed.connect(_on_cards_order_changed)
 
 	_betting.set_chip_values(CHIP_VALUES)
+	_betting.show_pockets(_run.pockets)
 	_show_round()
 	_show_bets()
 	_place_views()
