@@ -2,7 +2,7 @@
 
 ## Running a scene on its own
 
-Phase scenes don't need the runner. Open `play.tscn`, `shop.tscn` or `run.tscn` in the editor and press **F6** (Run Current Scene). F5 runs the whole game from the main menu.
+Phase scenes don't need the runner. Open `play.tscn`, `shop.tscn` or `run.tscn` in the editor and press **F6** (Run Current Scene). F5 runs the whole game from the intro; F6 on `main_menu.tscn` skips it.
 
 Each phase checks whether the runner called `setup()` before it entered the tree. If not, it makes its own throwaway run:
 

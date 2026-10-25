@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Godot 4.7 (Forward Plus, Jolt Physics) 2D roulette roguelike in the style of Balatro, pure GDScript. There is no build system, linter or test suite; develop by opening the project in the Godot editor, or run it with `godot --path .` (main scene is `scenes/main_menu/main_menu.tscn`). `.vscode/settings.json` points godot-tools at a Windows editor path, so adjust it locally if needed. Indentation is tabs (GDScript default).
+Godot 4.7 (Forward Plus, Jolt Physics) 2D roulette roguelike in the style of Balatro, pure GDScript. There is no build system, linter or test suite; develop by opening the project in the Godot editor, or run it with `godot --path .` (main scene is `scenes/intro/intro.tscn`, the intro video, which hands over to `scenes/main_menu/main_menu.tscn`). `.vscode/settings.json` points godot-tools at a Windows editor path, so adjust it locally if needed. Indentation is tabs (GDScript default).
 
 `.github/workflows/build-windows.yml` exports the "Windows Desktop" preset (x86_64, single exe with the pck embedded) on pushes to `main` or by hand from the Actions tab, uploads it as a run artifact, then posts the download link to Discord through the `DISCORD_WEBHOOK_URL` repo secret (the step is skipped if the secret isn't set). Its `GODOT_VERSION` must match the editor version exactly, so bump it when upgrading Godot.
 
@@ -58,6 +58,7 @@ Exported properties in `_DRAW_PROPERTIES` trigger `queue_redraw()` through a cus
 
 ## Conventions
 
-- Assets go in `assets/` (`fonts`, `textures`, `audio/{music,sfx}`); `addons/` is currently empty. Do NOT attempt to read anything within `/assets` through any tools - if you would need to make changes, instead explain them to the developer so they can make them for you.
+- Assets go in `assets/` (`fonts`, `textures`, `video`, `audio/{music,sfx}`); `addons/` is currently empty. Do NOT attempt to read anything within `/assets` through any tools - if you would need to make changes, instead explain them to the developer so they can make them for you.
+- The intro video is Ogg Theora (`.ogv`, the only format Godot plays natively) in `assets/video/`, rendered from After Effects to a lossless master and converted with ffmpeg. Set it as the `Video` node's stream in `scenes/intro/intro.tscn`.
 - Commit the `.uid` files Godot generates next to scripts and shaders. Don't commit `.godot/`.
 - Always update `docs/` when making changes to the project, once you're done.
