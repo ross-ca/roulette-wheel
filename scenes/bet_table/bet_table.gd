@@ -1,9 +1,9 @@
 class_name BetTable
 extends Container
 ## The betting table: zero down the left, the numbers in three rows of twelve (3, 6, 9… along the
-## top), the dozens below them and red and black along the bottom. Number tiles are square and as
-## big as the space allows. The grid lines are a border drawn round each tile, overlapping where
-## tiles meet, so empty corners of the layout stay clear. Corners on the outside of the grid are
+## top), the dozens below them and the even-money bets (1-18, even, red, black, odd, 19-36) along
+## the bottom. Number tiles are square and as big as the space allows. The grid lines are a border
+## drawn round each tile, overlapping where tiles meet, so empty corners of the layout stay clear. Corners on the outside of the grid are
 ## rounded, and zero's more than the rest.
 ## Display only, like BettingView: it reports drops and right-clicks through its signals.
 
@@ -47,8 +47,13 @@ func _ready() -> void:
 			_add_spot(NumberBet.of(column * 3 + 3 - row), column + 1, row)
 	for dozen in 3:
 		_add_spot(DozenBet.of(dozen), dozen * 4 + 1, DOZENS_ROW, 4)
-	_add_spot(ColourBet.of("red"), 1, COLOURS_ROW, 6)
-	_add_spot(ColourBet.of("black"), 7, COLOURS_ROW, 6)
+	# The even-money bets along the bottom, two columns each, in a real table's order.
+	_add_spot(HalfBet.of(false), 1, COLOURS_ROW, 2)
+	_add_spot(ParityBet.of(true), 3, COLOURS_ROW, 2)
+	_add_spot(ColourBet.of("red"), 5, COLOURS_ROW, 2)
+	_add_spot(ColourBet.of("black"), 7, COLOURS_ROW, 2)
+	_add_spot(ParityBet.of(false), 9, COLOURS_ROW, 2)
+	_add_spot(HalfBet.of(true), 11, COLOURS_ROW, 2)
 	_find_outside_corners()
 
 

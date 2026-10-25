@@ -6,7 +6,7 @@ extends Resource
 
 ## Keyed by Pocket.colour ("red", "black", "green").
 @export var tiles: Dictionary[String, BetTileStyle] = {}
-## Every tile that isn't a number: the dozens and the red and black bets.
+## Every tile that isn't a number: the dozens and the even-money bets along the bottom.
 @export var outside: BetTileStyle
 ## Used for a pocket colour missing from `tiles`.
 @export var fallback: BetTileStyle

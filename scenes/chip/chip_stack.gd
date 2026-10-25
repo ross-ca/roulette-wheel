@@ -40,9 +40,8 @@ func _layout() -> void:
 	tiers.sort()
 	tiers.reverse()
 
-	# Columns are centred along the bottom edge.
-	var width := tiers.size() * chip_size.x + maxf(tiers.size() - 1, 0) * column_gap
-	var x := (size.x - width) / 2.0
+	# Columns are left-aligned along the bottom edge.
+	var x := 0
 	for tier in tiers:
 		var count: int = counts[tier]
 		var shown := mini(count, max_shown)
