@@ -15,6 +15,7 @@ var editable := true
 var _style: BetTileStyle
 var _table_style: TableStyle
 var _scale := 1.0 # the tile's size relative to the table style's reference tile
+var _box: StyleBoxFlat
 
 @onready var _label: Label = $Label
 @onready var _stack: ChipStack = $ChipStack
@@ -32,11 +33,14 @@ func _ready() -> void:
 
 
 ## Draws the tile with `style`, using `table_style` for the font. `scale_factor` is the tile's size
-## relative to the table style's reference tile, so text and shadows scale with it.
-func set_style(style: BetTileStyle, table_style: TableStyle, scale_factor: float) -> void:
+## relative to the table style's reference tile, so text and shadows scale with it. `corner_radii`
+## rounds the tile's corners (top-left, top-right, bottom-right, bottom-left), in actual pixels.
+func set_style(style: BetTileStyle, table_style: TableStyle, scale_factor: float,
+		corner_radii := Vector4.ZERO) -> void:
 	_style = style
 	_table_style = table_style
 	_scale = scale_factor
+	_box = table_style.box(style.fill, corner_radii)
 	_refresh()
 
 
@@ -61,8 +65,8 @@ func _refresh() -> void:
 
 
 func _draw() -> void:
-	if _style:
-		draw_rect(Rect2(Vector2.ZERO, size), _style.fill)
+	if _box:
+		draw_style_box(_box, Rect2(Vector2.ZERO, size))
 
 
 func _can_drop_data(_at: Vector2, data: Variant) -> bool:

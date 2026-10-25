@@ -48,3 +48,4 @@ tiles = Dictionary[String, ExtResource("1_qwflh")]({
 outside = SubResource("Resource_e8wex")
 fallback = SubResource("Resource_tv5rq")
 font = ExtResource("2_c6io4")
+zero_corner_radius = 1.0
