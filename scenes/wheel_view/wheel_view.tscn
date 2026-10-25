@@ -4,6 +4,7 @@
 [ext_resource type="FontFile" uid="uid://bjqcqudoiecha" path="res://assets/fonts/Silkscreen-Regular.ttf" id="2_font"]
 [ext_resource type="Shader" uid="uid://bhnaj174ofi68" path="res://scenes/wheel/wheel_shader.gdshader" id="3_shader"]
 [ext_resource type="PackedScene" path="res://scenes/side_tab/side_tab.tscn" id="4_tab"]
+[ext_resource type="Resource" uid="uid://desc1cj401ifv" path="res://scenes/bet_table/table_style.tres" id="5_style"]
 
 [sub_resource type="Theme" id="Theme_view"]
 default_font = ExtResource("2_font")
@@ -27,6 +28,7 @@ grow_vertical = 2
 mouse_filter = 2
 theme = SubResource("Theme_view")
 script = ExtResource("1_script")
+table_style = ExtResource("5_style")
 
 [node name="Margin" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -62,6 +64,7 @@ mouse_filter = 2
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
+theme_override_constants/separation = 8
 
 [node name="BreakdownLabel" type="Label" parent="Margin/Columns/Left"]
 unique_name_in_owner = true

@@ -80,6 +80,7 @@ func _ready() -> void:
 
 	_betting.set_chip_values(CHIP_VALUES)
 	_betting.show_pockets(_run.pockets)
+	_wheel_view.show_pockets(_run.pockets)
 	_show_round()
 	_show_bets()
 	_place_views()
@@ -190,13 +191,15 @@ func _on_wheel_spin_finished(_index: int, pocket: Pocket) -> void:
 	progress.bets.clear() # the spin uses its bets up
 	Modifiers.notify(_run, &"spin_finished", [pocket])
 
-	# The rows keep showing this spin's result until the next bet is placed.
-	_wheel_view.show_result(_spin)
 	_betting.show_bets(progress.bets)
+	Game.save_run()
+
+	# The rows reveal each bet's result and keep showing it until the next bet is placed. The wheel
+	# view stays locked (still SPINNING) until the reveal has played.
+	await _wheel_view.show_result(_spin)
 	_wheel_view.set_spinning(false)
 	_state = State.WAITING
 	_show_round()
-	Game.save_run()
 
 	if _is_round_over():
 		_finish()

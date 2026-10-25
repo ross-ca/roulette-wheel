@@ -11,6 +11,44 @@
 default_font = ExtResource("2_font")
 default_font_size = 20
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i454r"]
+bg_color = Color(0.13725491, 0.13333334, 0.13333334, 1)
+border_width_left = 8
+border_width_top = 8
+border_width_bottom = 8
+border_color = Color(0.9764706, 0.8392157, 0.5176471, 1)
+corner_radius_top_left = 52
+corner_radius_bottom_left = 52
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ceuks"]
+bg_color = Color(0.18431373, 0.1764706, 0.1764706, 1)
+border_width_left = 8
+border_width_top = 8
+border_width_bottom = 8
+border_color = Color(0.9764706, 0.8392157, 0.5176471, 1)
+corner_radius_top_left = 52
+corner_radius_bottom_left = 52
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dvm0a"]
+bg_color = Color(0.18431373, 0.1764706, 0.1764706, 1)
+border_width_left = 8
+border_width_top = 8
+border_width_bottom = 8
+border_color = Color(0.9764706, 0.8392157, 0.5176471, 1)
+corner_radius_top_left = 52
+corner_radius_bottom_left = 52
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lxuho"]
+bg_color = Color(0.13725491, 0.13333334, 0.13333334, 1)
+border_width_left = 8
+border_width_top = 8
+border_width_bottom = 8
+border_color = Color(0.9764706, 0.8392157, 0.5176471, 1)
+corner_radius_top_left = 52
+corner_radius_bottom_left = 52
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_x3spg"]
+
 [node name="BettingView" type="Control" unique_id=585023277]
 layout_mode = 3
 anchors_preset = 15
@@ -72,7 +110,7 @@ layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 12
 
-[node name="TableMargin" type="MarginContainer" parent="Rows/Margin/Body"]
+[node name="TableMargin" type="MarginContainer" parent="Rows/Margin/Body" unique_id=1056456288]
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
@@ -127,5 +165,10 @@ offset_top = -165.0
 offset_bottom = 165.0
 grow_horizontal = 0
 grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_i454r")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ceuks")
+theme_override_styles/hover = SubResource("StyleBoxFlat_dvm0a")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_lxuho")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_x3spg")
 
 [connection signal="pressed" from="WheelTab" to="." method="_on_wheel_button_pressed"]
