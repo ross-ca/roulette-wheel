@@ -16,6 +16,12 @@ extends TextureRect
 ## The thing this card shows.
 var item: Modifier
 
+## The noise `dissolve` eats the card away along (card_tilt.gdshader's `dissolve_noise`).
+@export var dissolve_noise: Texture2D = preload("res://scenes/card/perlin.tres")
+
+## True once `dissolve` has started: the card is on its way out, so it ignores the mouse.
+var leaving := false
+
 ## Tilt in degrees when the cursor is at the edge of the card.
 @export_range(0.0, 60.0, 0.5) var max_tilt: float = 6.0
 ## How quickly the tilt follows the cursor and relaxes back to flat. Higher is snappier.
@@ -92,7 +98,21 @@ func pulse() -> void:
 		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
+## Dissolves the card away and returns once it's fully gone. It doesn't free the card: whatever
+## holds it decides when to remove it.
+func dissolve(duration := 0.6) -> void:
+	if leaving:
+		return
+	leaving = true
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	Tooltip.hide_for(self)
+	var tween := create_tween()
+	tween.tween_property(material, "shader_parameter/dissolve_amount", 1.0, duration)
+	await tween.finished
+
+
 func _ready() -> void:
+	(material as ShaderMaterial).set_shader_parameter("dissolve_noise", dissolve_noise)
 	mouse_entered.connect(_set_hovered.bind(true))
 	mouse_exited.connect(_set_hovered.bind(false))
 	resized.connect(_update_pivot)

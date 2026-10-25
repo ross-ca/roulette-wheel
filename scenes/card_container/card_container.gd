@@ -9,6 +9,8 @@ extends Container
 
 ## Emitted after a drag ends with the cards in a different order than they started.
 signal order_changed
+## Emitted when a card is right-clicked (and none is being dragged). What it means is up to the scene.
+signal item_right_clicked(item: Modifier)
 
 const CARD_SCENE := preload("res://scenes/card/card.tscn")
 
@@ -60,6 +62,19 @@ func set_items(items: Array) -> void:
 		var card: Card = CARD_SCENE.instantiate()
 		card.setup(item)
 		add_child(card)
+
+
+## Removes the card showing `item`. It dissolves first, holding its slot, and only then do the
+## others slide together to close the gap. Await it to know when the card is gone.
+func remove_item(item: Modifier) -> void:
+	for card in _cards():
+		if card is Card and card.item == item:
+			await card.dissolve()
+			remove_child(card) # out of the tree now, so _cards() doesn't see it before it's freed
+			card.queue_free()
+			queue_sort()
+			update_minimum_size()
+			return
 
 
 ## The items of the cards, in their current left-to-right order. Assign it to a typed array
@@ -184,7 +199,10 @@ func _forget(node: Node) -> void:
 func _on_card_gui_input(event: InputEvent, card: Control) -> void:
 	if Engine.is_editor_hint() or _dragged != null:
 		return
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+		if card is Card:
+			item_right_clicked.emit(card.item)
+	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		_dragged = card
 		_grab_dx = get_local_mouse_position().x - card.position.x
 		_order_at_grab = _cards()
