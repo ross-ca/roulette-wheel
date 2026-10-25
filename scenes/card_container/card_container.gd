@@ -3,7 +3,9 @@ class_name CardContainer
 extends Container
 ## Lays its children (cards) out in a horizontal row, accounting for each child's scale.
 ## Unlike HBoxContainer, which ignores scale, so scaled cards would overlap or leave gaps.
-## At runtime the cards can be dragged left and right to reorder them.
+## At runtime the cards can be dragged left and right to reorder them. That's the one interaction
+## this container gives a card; what the new order means (e.g. ticket trigger order) is up to the
+## scene that uses it, via `order_changed`.
 
 ## Emitted after a drag ends with the cards in a different order than they started.
 signal order_changed
@@ -43,29 +45,31 @@ enum Alignment { BEGIN, CENTER, END }
 var _dragged: Control
 var _grab_dx := 0.0 # mouse x minus the dragged card's position.x when it was picked up
 var _order_at_grab: Array[Control] = []
+var _mouse_filters := {} # Control -> MouseFilter, of the other cards while one is dragged
 var _targets := {} # Control -> Vector2, the position its slot wants
 var _phase_index := {} # Control -> int, fixed when a card is first seen
 var _next_phase_index := 0
 
 
-## Replaces the cards with one per ticket, in order.
-func set_tickets(tickets: Array[Ticket]) -> void:
+## Replaces the cards with one per item, in order.
+func set_items(items: Array) -> void:
 	for child in get_children():
 		remove_child(child) # out of the tree now, so _cards() doesn't see it before it's freed
 		child.queue_free()
-	for ticket in tickets:
+	for item: Modifier in items:
 		var card: Card = CARD_SCENE.instantiate()
-		card.setup(ticket)
+		card.setup(item)
 		add_child(card)
 
 
-## The tickets of the cards, in their current left-to-right order.
-func get_tickets() -> Array[Ticket]:
-	var tickets: Array[Ticket] = []
+## The items of the cards, in their current left-to-right order. Assign it to a typed array
+## (e.g. `run.tickets.assign(...)`) to get the item type back.
+func get_items() -> Array[Modifier]:
+	var items: Array[Modifier] = []
 	for card in _cards():
 		if card is Card:
-			tickets.append(card.ticket)
-	return tickets
+			items.append(card.item)
+	return items
 
 
 func _ready() -> void:
@@ -171,8 +175,10 @@ func _watch(node: Node) -> void:
 func _forget(node: Node) -> void:
 	_targets.erase(node)
 	_phase_index.erase(node)
+	_mouse_filters.erase(node)
 	if node == _dragged:
 		_dragged = null
+		_restore_mouse_filters()
 
 
 func _on_card_gui_input(event: InputEvent, card: Control) -> void:
@@ -183,6 +189,14 @@ func _on_card_gui_input(event: InputEvent, card: Control) -> void:
 		_grab_dx = get_local_mouse_position().x - card.position.x
 		_order_at_grab = _cards()
 		card.z_index = 1 # draw over its neighbours
+		if "held" in card:
+			card.set("held", true)
+		# Mouse picking goes by tree order, not z_index, so a neighbour later in the tree would
+		# take the hover (and its tooltip) whenever the dragged card is over it.
+		for other in _order_at_grab:
+			if other != card:
+				_mouse_filters[other] = other.mouse_filter
+				other.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 
 ## Moves the dragged card with the mouse and swaps it into whichever slot it's nearest.
@@ -209,8 +223,17 @@ func _drop() -> void:
 	var card := _dragged
 	_dragged = null
 	card.z_index = 0 # it eases back to its slot from where it was dropped
+	if "held" in card:
+		card.set("held", false)
+	_restore_mouse_filters()
 	if _cards() != _order_at_grab:
 		order_changed.emit()
+
+
+func _restore_mouse_filters() -> void:
+	for other: Control in _mouse_filters:
+		other.mouse_filter = _mouse_filters[other]
+	_mouse_filters.clear()
 
 
 func _cards() -> Array[Control]:

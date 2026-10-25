@@ -51,7 +51,7 @@ func setup(run: RunState, step: RunStep) -> void:
 
 # Dragging cards reorders the tickets, and ticket order is a mechanic.
 func _on_cards_order_changed() -> void:
-	_run.tickets = _cards.get_tickets()
+	_run.tickets.assign(_cards.get_items())
 	Game.save_run()
 
 
@@ -75,7 +75,7 @@ func _ready() -> void:
 		Modifiers.notify(_run, &"round_started", [_run.current_round])
 		Game.save_run()
 
-	_cards.set_tickets(_run.tickets)
+	_cards.set_items(_run.tickets)
 	_cards.order_changed.connect(_on_cards_order_changed)
 
 	_betting.set_chip_values(CHIP_VALUES)
