@@ -14,6 +14,8 @@ signal triggered
 
 @export var display_name: String = ""
 @export var icon: Texture2D
+## How rare it is, for the cascading roll in `Rarity` and the tooltip.
+@export var rarity: Rarity.Tier = Rarity.Tier.COMMON
 
 
 ## What the modifier does, with its current values filled in, for its tooltip. Subclasses override

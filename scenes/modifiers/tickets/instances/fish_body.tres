@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="AddMultTicket" format=3 uid="uid://bpt437d28ki10"]
+
+[ext_resource type="Texture2D" uid="uid://d2wmg0kdlhm48" path="res://assets/textures/tickets/wideFishBody.png" id="1_4q16n"]
+[ext_resource type="Script" uid="uid://cqtk00mv18xq6" path="res://scenes/modifiers/tickets/classes/add_mult_ticket.gd" id="1_g485u"]
+
+[resource]
+script = ExtResource("1_g485u")
+amount = 5.0
+id = &"fish_body"
+display_name = "Wide Fish Body"
+icon = ExtResource("1_4q16n")
+metadata/_custom_type_script = "uid://cqtk00mv18xq6"

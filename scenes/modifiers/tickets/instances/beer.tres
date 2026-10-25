@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="PassMultiplyMultTicket" format=3 uid="uid://d285wdpg357pq"]
+
+[ext_resource type="Texture2D" uid="uid://ddkg31g5ca86k" path="res://assets/textures/tickets/beer.png" id="1_oi212"]
+[ext_resource type="Script" uid="uid://x10il3kscee1" path="res://scenes/modifiers/tickets/classes/pass_multiply_mult_ticket.gd" id="1_x65f7"]
+
+[resource]
+script = ExtResource("1_x65f7")
+number = 1
+colour = "red"
+trigger_chance = 0.1
+id = &"beer"
+display_name = "Beer"
+icon = ExtResource("1_oi212")
+metadata/_custom_type_script = "uid://x10il3kscee1"

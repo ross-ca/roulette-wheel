@@ -28,7 +28,7 @@ Its `_ready()` starts the loop in `run.gd`, which repeats:
 ## Phase scenes
 
 - `play.tscn` is one round. It holds a SubViewport with the `RouletteWheel` scene, the two views (`BettingView` and `WheelView`, which slide between each other without being freed), the shared ticket strip and the HUD overlay. It reads and writes `Game.run.current_round`.
-- `shop.tscn` is the stub shop.
+- `shop.tscn` is the stub shop. It shows `ShopStep.stock` (five tickets rolled by rarity, kept on the step so a reload shows the same ones) in a `CardContainer`; a Reroll button re-rolls them for a price; it can't buy them yet.
 
 Each emits `finished(result)` when done, which wakes the loop.
 

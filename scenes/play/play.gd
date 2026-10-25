@@ -34,6 +34,7 @@ var _spin: SpinContext # live score of the spin in progress
 ## 0 shows the betting view, 1 the wheel view, and values between are part-way through a slide.
 var _view_position := 0.0
 var _slide: Tween
+var _selling := false # a ticket's card is dissolving
 
 @onready var _wheel := $SubViewport/RouletteWheel
 @onready var _views: Control = $Views
@@ -53,6 +54,20 @@ func setup(run: RunState, step: RunStep) -> void:
 func _on_cards_order_changed() -> void:
 	_run.tickets.assign(_cards.get_items())
 	Game.save_run()
+
+
+# Right-clicking a ticket sells it for half its price. Not mid-spin: tickets are scoring then. The
+# ticket stays in the run (and spinning is blocked) until its card has finished dissolving.
+func _on_cards_item_right_clicked(item: Modifier) -> void:
+	if _state == State.SPINNING or _selling or not item is Ticket:
+		return
+	_selling = true
+	await _cards.remove_item(item)
+	_run.tickets.erase(item)
+	_run.money += int(item.price * 0.5)
+	_show_round()
+	Game.save_run()
+	_selling = false
 
 
 func _ready() -> void:
@@ -77,6 +92,7 @@ func _ready() -> void:
 
 	_cards.set_items(_run.tickets)
 	_cards.order_changed.connect(_on_cards_order_changed)
+	_cards.item_right_clicked.connect(_on_cards_item_right_clicked)
 
 	_betting.set_chip_values(CHIP_VALUES)
 	_betting.show_pockets(_run.pockets)
@@ -156,7 +172,7 @@ func _find_bet(bet: Bet) -> PlacedBet:
 
 
 func _on_spin_requested() -> void:
-	if _state != State.WAITING or _run.current_round.bets.is_empty():
+	if _state != State.WAITING or _selling or _run.current_round.bets.is_empty():
 		return
 	_state = State.SPINNING
 	_spin = SpinContext.new(_run.current_round.bets)

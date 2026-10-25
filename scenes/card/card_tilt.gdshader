@@ -27,6 +27,15 @@ uniform float bob_speed : hint_range(0.0, 6.0) = 1.25;
 // Phase shift of the bob in radians, so neighbouring cards needn't move in sync.
 uniform float bob_offset : hint_range(0.0, 6.283185) = 0.0;
 
+// Dissolve: pixels disappear where the noise (mixed towards the gradient by mix_ratio) is below
+// dissolve_amount, so 0 leaves the card whole and 1 removes all of it, shadow included.
+// The textures are read in card space, so the pattern tilts and bobs with the card. An unassigned
+// texture reads as white, which never dissolves, so Card assigns the noise.
+uniform float dissolve_amount : hint_range(0.0, 1.0) = 0.0;
+uniform float mix_ratio : hint_range(0.0, 1.0) = 0.0;
+uniform sampler2D dissolve_noise : hint_default_white;
+uniform sampler2D dissolve_gradient : hint_default_white;
+
 varying flat vec2 o;
 varying vec3 p;
 
@@ -83,6 +92,13 @@ void fragment() {
 		if (length(offset_color - background_color) > 0.01) {
 			current_color = shadow_color;
 		}
+	}
+
+	if (dissolve_amount > 0.0) {
+		vec2 dissolve_uv = clamp(uv + vec2(0.0, bob) * TEXTURE_PIXEL_SIZE, 0.0, 1.0);
+		float n = mix(texture(dissolve_noise, dissolve_uv).x, texture(dissolve_gradient, dissolve_uv).x, mix_ratio);
+		// The small factor puts the threshold above a noise value of 1 at full amount.
+		current_color.a *= step(dissolve_amount * 1.001, n);
 	}
 
 	COLOR = current_color;

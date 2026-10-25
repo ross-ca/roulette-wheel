@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AddMultTicket" format=3 uid="uid://dj0ktj8hbc3km"]
+
+[ext_resource type="Script" uid="uid://cqtk00mv18xq6" path="res://scenes/modifiers/tickets/classes/add_mult_ticket.gd" id="1_cx384"]
+[ext_resource type="Texture2D" uid="uid://1dlshdedg866" path="res://assets/textures/tickets/replacementHip.png" id="1_qq4m4"]
+
+[resource]
+script = ExtResource("1_cx384")
+amount = 10.0
+id = &"replacement_hip"
+display_name = "Replacement Hip"
+icon = ExtResource("1_qq4m4")
+rarity = 4
+metadata/_custom_type_script = "uid://cqtk00mv18xq6"

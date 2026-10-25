@@ -6,9 +6,22 @@
 [ext_resource type="Resource" uid="uid://cb72fgm1hl5y" path="res://scenes/modifiers/tickets/instances/times_mult.tres" id="3_times"]
 [ext_resource type="Resource" uid="uid://blsuetoqesx2u" path="res://scenes/modifiers/tickets/instances/black_six_pass.tres" id="4_black_six"]
 [ext_resource type="Resource" uid="uid://bo23nl8iiv1l" path="res://scenes/modifiers/tickets/instances/black_17_pass.tres" id="5_a38ke"]
-[ext_resource type="Resource" path="res://scenes/modifiers/tickets/instances/red_nine_pass.tres" id="6_red9"]
+[ext_resource type="Resource" uid="uid://cc736vpm43dig" path="res://scenes/modifiers/tickets/instances/red_nine_pass.tres" id="6_red9"]
+[ext_resource type="Resource" uid="uid://4ndvicshyflf" path="res://scenes/modifiers/tickets/instances/all_in.tres" id="8_fv1xg"]
+[ext_resource type="Resource" uid="uid://d285wdpg357pq" path="res://scenes/modifiers/tickets/instances/beer.tres" id="9_s0oeo"]
+[ext_resource type="Resource" uid="uid://3qoftoxo1cgw" path="res://scenes/modifiers/tickets/instances/cherry.tres" id="10_5dhtq"]
+[ext_resource type="Resource" uid="uid://bgb18novdkd83" path="res://scenes/modifiers/tickets/instances/cigarettes.tres" id="11_gt542"]
+[ext_resource type="Resource" uid="uid://irb781f0rhp8" path="res://scenes/modifiers/tickets/instances/clover.tres" id="12_v1dbm"]
+[ext_resource type="Resource" uid="uid://cm5wm310638yj" path="res://scenes/modifiers/tickets/instances/divorce.tres" id="13_q6dlq"]
+[ext_resource type="Resource" uid="uid://bpt437d28ki10" path="res://scenes/modifiers/tickets/instances/fish_body.tres" id="14_prrxk"]
+[ext_resource type="Resource" uid="uid://dbx6uonqjyskp" path="res://scenes/modifiers/tickets/instances/fish_head.tres" id="15_uri81"]
+[ext_resource type="Resource" uid="uid://xblc06pvoot0" path="res://scenes/modifiers/tickets/instances/fish_tail.tres" id="16_s6784"]
+[ext_resource type="Resource" uid="uid://cmwd0r4ue8gva" path="res://scenes/modifiers/tickets/instances/let_it_ride.tres" id="17_ja6a2"]
+[ext_resource type="Resource" uid="uid://byh4ayc4rhaab" path="res://scenes/modifiers/tickets/instances/membership_card.tres" id="18_dtkb8"]
+[ext_resource type="Resource" uid="uid://cwm35bq3ofeap" path="res://scenes/modifiers/tickets/instances/needle.tres" id="19_qoagc"]
+[ext_resource type="Resource" uid="uid://dj0ktj8hbc3km" path="res://scenes/modifiers/tickets/instances/replacement_hip.tres" id="20_s0oeo"]
 
 [resource]
 script = ExtResource("1_script")
-tickets = Array[ExtResource("2_3agre")]([ExtResource("2_plus"), ExtResource("3_times"), ExtResource("4_black_six"), ExtResource("5_a38ke"), ExtResource("6_red9")])
+tickets = Array[ExtResource("2_3agre")]([ExtResource("2_plus"), ExtResource("3_times"), ExtResource("4_black_six"), ExtResource("5_a38ke"), ExtResource("6_red9"), ExtResource("8_fv1xg"), ExtResource("9_s0oeo"), ExtResource("10_5dhtq"), ExtResource("11_gt542"), ExtResource("12_v1dbm"), ExtResource("13_q6dlq"), ExtResource("14_prrxk"), ExtResource("15_uri81"), ExtResource("16_s6784"), ExtResource("17_ja6a2"), ExtResource("18_dtkb8"), ExtResource("19_qoagc"), ExtResource("20_s0oeo")])
 starter_tickets = Array[ExtResource("2_3agre")]([ExtResource("2_plus"), ExtResource("4_black_six"), ExtResource("5_a38ke"), ExtResource("3_times"), ExtResource("6_red9")])

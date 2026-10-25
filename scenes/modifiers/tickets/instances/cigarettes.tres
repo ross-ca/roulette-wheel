@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="PassMultiplyMultTicket" format=3 uid="uid://bgb18novdkd83"]
+
+[ext_resource type="Script" uid="uid://x10il3kscee1" path="res://scenes/modifiers/tickets/classes/pass_multiply_mult_ticket.gd" id="1_6ut04"]
+[ext_resource type="Texture2D" uid="uid://cyohheps83tey" path="res://assets/textures/tickets/cigarettes.png" id="1_iudtf"]
+
+[resource]
+script = ExtResource("1_6ut04")
+factor = 2.0
+number = 21
+colour = "red"
+trigger_chance = 0.1
+id = &"cigarettes"
+display_name = "Cigarettes"
+icon = ExtResource("1_iudtf")
+metadata/_custom_type_script = "uid://x10il3kscee1"
