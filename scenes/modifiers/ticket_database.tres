@@ -19,8 +19,9 @@
 [ext_resource type="Resource" uid="uid://cmwd0r4ue8gva" path="res://scenes/modifiers/tickets/instances/let_it_ride.tres" id="17_ja6a2"]
 [ext_resource type="Resource" uid="uid://byh4ayc4rhaab" path="res://scenes/modifiers/tickets/instances/membership_card.tres" id="18_dtkb8"]
 [ext_resource type="Resource" uid="uid://cwm35bq3ofeap" path="res://scenes/modifiers/tickets/instances/needle.tres" id="19_qoagc"]
+[ext_resource type="Resource" uid="uid://dj0ktj8hbc3km" path="res://scenes/modifiers/tickets/instances/replacement_hip.tres" id="20_s0oeo"]
 
 [resource]
 script = ExtResource("1_script")
-tickets = Array[ExtResource("2_3agre")]([ExtResource("2_plus"), ExtResource("3_times"), ExtResource("4_black_six"), ExtResource("5_a38ke"), ExtResource("6_red9"), ExtResource("8_fv1xg"), ExtResource("9_s0oeo"), ExtResource("10_5dhtq"), ExtResource("11_gt542"), ExtResource("12_v1dbm"), ExtResource("13_q6dlq"), ExtResource("14_prrxk"), ExtResource("15_uri81"), ExtResource("16_s6784"), ExtResource("17_ja6a2"), ExtResource("18_dtkb8"), ExtResource("19_qoagc")])
+tickets = Array[ExtResource("2_3agre")]([ExtResource("2_plus"), ExtResource("3_times"), ExtResource("4_black_six"), ExtResource("5_a38ke"), ExtResource("6_red9"), ExtResource("8_fv1xg"), ExtResource("9_s0oeo"), ExtResource("10_5dhtq"), ExtResource("11_gt542"), ExtResource("12_v1dbm"), ExtResource("13_q6dlq"), ExtResource("14_prrxk"), ExtResource("15_uri81"), ExtResource("16_s6784"), ExtResource("17_ja6a2"), ExtResource("18_dtkb8"), ExtResource("19_qoagc"), ExtResource("20_s0oeo")])
 starter_tickets = Array[ExtResource("2_3agre")]([ExtResource("2_plus"), ExtResource("4_black_six"), ExtResource("5_a38ke"), ExtResource("3_times"), ExtResource("6_red9")])
