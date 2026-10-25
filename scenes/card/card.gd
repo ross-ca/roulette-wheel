@@ -40,6 +40,8 @@ var item: Modifier
 @export_range(0.0, 20.0, 0.1) var idle_tilt: float = 2.0
 ## Revolutions per second of the idle drift.
 @export_range(0.0, 2.0, 0.01) var idle_speed: float = 0.25
+## Toggles playing of a sound on card hover.
+@export var mute_hover_sound: bool = false;
 
 ## The card's resting scale. Set this instead of `scale`, which the hover pop overwrites.
 ## Normally set by CardContainer.
@@ -145,7 +147,7 @@ func get_resting_screen_rect() -> Rect2:
 func _set_hovered(hovered: bool) -> void:
 	_hovered = hovered
 	_update_tooltip()
-	if hovered and hover_sound:
+	if hovered and hover_sound and !mute_hover_sound:
 		var pitch := 1.0 + randf_range(-hover_sound_pitch_variance, hover_sound_pitch_variance)
 		Audio.play_sfx(hover_sound, hover_sound_volume_db, pitch)
 

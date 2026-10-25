@@ -1,0 +1,51 @@
+[gd_resource type="Resource" script_class="TableStyle" format=3 uid="uid://desc1cj401ifv"]
+
+[ext_resource type="Script" uid="uid://codyvqq0k878e" path="res://scenes/bet_table/bet_tile_style.gd" id="1_qwflh"]
+[ext_resource type="FontFile" uid="uid://ddxplyyts7k4" path="res://assets/fonts/PressStart2P-Regular.ttf" id="2_c6io4"]
+[ext_resource type="Script" uid="uid://cm5lhbhwdm8y1" path="res://scenes/bet_table/table_style.gd" id="3_18eo8"]
+[ext_resource type="FontFile" uid="uid://carjjs13uxcng" path="res://assets/fonts/Silkscreen-Bold.ttf" id="3_c6io4"]
+
+[sub_resource type="Resource" id="Resource_tv5rq"]
+script = ExtResource("1_qwflh")
+fill = Color(0.33333334, 0.33333334, 0.33333334, 1)
+shadow_color = Color(0.11764706, 0.20392157, 0.27058825, 1)
+shadow_offset = Vector2(4, 4)
+
+[sub_resource type="Resource" id="Resource_e8wex"]
+script = ExtResource("1_qwflh")
+fill = Color(0.13725491, 0.2784314, 0.21176471, 1)
+font = ExtResource("3_c6io4")
+font_size = 40
+shadow_color = Color(0.11764706, 0.20392157, 0.27058825, 1)
+shadow_offset = Vector2(4, 4)
+
+[sub_resource type="Resource" id="Resource_7nifw"]
+script = ExtResource("1_qwflh")
+fill = Color(0.13725491, 0.13333334, 0.13333334, 1)
+shadow_color = Color(0.11764706, 0.20392157, 0.27058825, 1)
+shadow_offset = Vector2(4, 4)
+
+[sub_resource type="Resource" id="Resource_10r85"]
+script = ExtResource("1_qwflh")
+fill = Color(0.11764706, 0.47843137, 0.27450982, 1)
+shadow_color = Color(0.11764706, 0.20392157, 0.27058825, 1)
+shadow_offset = Vector2(4, 4)
+
+[sub_resource type="Resource" id="Resource_sjrfa"]
+script = ExtResource("1_qwflh")
+fill = Color(0.8627451, 0.12156863, 0.14901961, 1)
+font_color = Color(0, 0, 0, 1)
+shadow_color = Color(0.5294118, 0.16078432, 0.16078432, 1)
+shadow_offset = Vector2(3, 3)
+
+[resource]
+script = ExtResource("3_18eo8")
+tiles = Dictionary[String, ExtResource("1_qwflh")]({
+"black": SubResource("Resource_7nifw"),
+"green": SubResource("Resource_10r85"),
+"red": SubResource("Resource_sjrfa")
+})
+outside = SubResource("Resource_e8wex")
+fallback = SubResource("Resource_tv5rq")
+font = ExtResource("2_c6io4")
+zero_corner_radius = 1.0

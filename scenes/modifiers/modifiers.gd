@@ -4,8 +4,8 @@ extends RefCounted
 ## rules. Game rules go through here; signals are only for UI, sound and animation.
 ##
 ## Events passed to `notify` (and on to `Modifier.on_event`), with their args:
-## - &"pocket_passed" [pocket, ctx]: the ball entered any pocket. Fires dozens of times a spin, so
-##   keep handlers cheap. `ctx` is the spin's live ScoreContext; handlers may change its mult.
+## - &"pocket_passed" [pocket, spin]: the ball entered any pocket. Fires dozens of times a spin, so
+##   keep handlers cheap. `spin` is the spin's live SpinContext; handlers may change its bets' mults.
 ## - &"pocket_landed" [pocket]: the ball settled in the winning pocket.
 ## - &"spin_started" [] / &"spin_finished" [pocket]
 ## - &"round_started" [round_state] / &"round_finished" [round_state, won]
@@ -28,13 +28,15 @@ static func spins_per_round(run: RunState) -> int:
 
 
 ## Finishes scoring a spin whose context has been live since the spin started (pass events have
-## already changed its mult). A lost bet scores nothing, so `modify_score` only runs when the bet won.
-static func score(run: RunState, ctx: ScoreContext, pocket: Pocket) -> ScoreContext:
-	ctx.land(pocket)
-	if ctx.won:
-		for modifier in active(run):
-			modifier.modify_score(run, ctx)
-	return ctx
+## already changed its mults). Each bet that won goes through every modifier in turn, bets in the
+## order they were placed. A lost bet scores nothing, so `modify_score` never sees it.
+static func score(run: RunState, spin: SpinContext, pocket: Pocket) -> SpinContext:
+	spin.land(pocket)
+	for ctx in spin.bets:
+		if ctx.won:
+			for modifier in active(run):
+				modifier.modify_score(run, ctx)
+	return spin
 
 
 static func price(run: RunState, base_price: int) -> int:

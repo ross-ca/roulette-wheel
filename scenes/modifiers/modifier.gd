@@ -27,7 +27,8 @@ func get_kind_name() -> String:
 	return ""
 
 
-## Value hooks: take the value so far and return the new one.
+## Value hooks: take the value so far and return the new one. `modify_score` runs once for each bet
+## that won, with that bet's ScoreContext.
 func modify_spins(_run: RunState, spins: int) -> int:
 	return spins
 
