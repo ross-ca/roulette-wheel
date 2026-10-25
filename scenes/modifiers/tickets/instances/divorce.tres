@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="PassAddMoneyTicket" format=3 uid="uid://cm5wm310638yj"]
+
+[ext_resource type="Texture2D" uid="uid://ck3b2wrwt74li" path="res://assets/textures/tickets/divorce.png" id="1_im7ks"]
+[ext_resource type="Script" uid="uid://cdpjyqfsg7wnw" path="res://scenes/modifiers/tickets/classes/pass_add_money_ticket.gd" id="1_myaps"]
+
+[resource]
+script = ExtResource("1_myaps")
+amount = 4
+colour = "green"
+trigger_chance = 0.2
+id = &"divorce"
+display_name = "Divorce"
+icon = ExtResource("1_im7ks")
+metadata/_custom_type_script = "uid://cdpjyqfsg7wnw"

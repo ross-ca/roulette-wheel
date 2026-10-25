@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="PassMultiplyMultTicket" format=3 uid="uid://cmwd0r4ue8gva"]
+
+[ext_resource type="Script" uid="uid://x10il3kscee1" path="res://scenes/modifiers/tickets/classes/pass_multiply_mult_ticket.gd" id="1_4s8uc"]
+[ext_resource type="Texture2D" uid="uid://gcjnf5dks3xu" path="res://assets/textures/tickets/letItRide.png" id="1_43fql"]
+
+[resource]
+script = ExtResource("1_4s8uc")
+number = 17
+colour = "black"
+trigger_chance = 0.2
+id = &"let_it_ride"
+display_name = "Let It Ride"
+icon = ExtResource("1_43fql")
+metadata/_custom_type_script = "uid://x10il3kscee1"

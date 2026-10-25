@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="PassAddMultTicket" format=3 uid="uid://irb781f0rhp8"]
+
+[ext_resource type="Texture2D" uid="uid://dunljkumy3wdv" path="res://assets/textures/tickets/clover.png" id="1_cg2y6"]
+[ext_resource type="Script" uid="uid://cveo4kpbfvpsw" path="res://scenes/modifiers/tickets/classes/pass_add_mult_ticket.gd" id="1_o1mr3"]
+
+[resource]
+script = ExtResource("1_o1mr3")
+amount = 4.0
+colour = "red"
+trigger_chance = 0.02
+display_name = "Clover"
+icon = ExtResource("1_cg2y6")
+metadata/_custom_type_script = "uid://cveo4kpbfvpsw"

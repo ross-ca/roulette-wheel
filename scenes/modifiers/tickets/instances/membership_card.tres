@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="PassAddMoneyTicket" format=3 uid="uid://byh4ayc4rhaab"]
+
+[ext_resource type="Script" uid="uid://cdpjyqfsg7wnw" path="res://scenes/modifiers/tickets/classes/pass_add_money_ticket.gd" id="1_delkw"]
+[ext_resource type="Texture2D" uid="uid://dnqbq7kwducy" path="res://assets/textures/tickets/membershipCard.png" id="1_paqgc"]
+
+[resource]
+script = ExtResource("1_delkw")
+amount = 5
+number = 11
+colour = "black"
+trigger_chance = 0.25
+id = &"membership_card"
+display_name = "Membership Card"
+icon = ExtResource("1_paqgc")
+metadata/_custom_type_script = "uid://cdpjyqfsg7wnw"

@@ -3,6 +3,8 @@
 [ext_resource type="Script" path="res://scenes/shop/shop.gd" id="1_shop"]
 [ext_resource type="FontFile" uid="uid://bjqcqudoiecha" path="res://assets/fonts/Silkscreen-Regular.ttf" id="2_font"]
 
+[ext_resource type="PackedScene" path="res://scenes/card_container/card_container.tscn" id="3_cards"]
+
 [sub_resource type="Theme" id="Theme_shop"]
 default_font = ExtResource("2_font")
 default_font_size = 28
@@ -40,10 +42,18 @@ unique_name_in_owner = true
 layout_mode = 2
 horizontal_alignment = 1
 
+[node name="Stock" parent="Center/Items" instance=ExtResource("3_cards")]
+unique_name_in_owner = true
+layout_mode = 2
+
 [node name="TicketsLabel" type="Label" parent="Center/Items"]
 unique_name_in_owner = true
 layout_mode = 2
 horizontal_alignment = 1
+
+[node name="RerollButton" type="Button" parent="Center/Items"]
+unique_name_in_owner = true
+layout_mode = 2
 
 [node name="ReverseButton" type="Button" parent="Center/Items"]
 layout_mode = 2
@@ -53,5 +63,6 @@ text = "Reverse ticket order"
 layout_mode = 2
 text = "Continue"
 
+[connection signal="pressed" from="Center/Items/RerollButton" to="." method="_on_reroll_button_pressed"]
 [connection signal="pressed" from="Center/Items/ReverseButton" to="." method="_on_reverse_button_pressed"]
 [connection signal="pressed" from="Center/Items/ContinueButton" to="." method="_on_continue_button_pressed"]

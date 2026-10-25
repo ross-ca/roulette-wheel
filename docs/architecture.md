@@ -85,7 +85,7 @@ How the slide works is in [scene-flow.md](scene-flow.md#inside-the-play-phase).
 `scenes/run/steps/`. A run is a queue of `RunStep` Resources in `run.steps`. Each step names the scene that plays it (`phase_scene`) and handles its own outcome in `on_finished(run, result)`.
 
 - `RoundStep`: `target_score`, `reward`, and `modifiers` (boss rules). Winning pays the reward; losing ends the run.
-- `ShopStep`: a shop visit.
+- `ShopStep`: a shop visit. It holds the shop's `stock` (`SLOTS` = 5 tickets) and rolls it once with `stock_up(run, database)`, using `TicketDatabase.roll` so it follows the rarity cascade and never offers a ticket twice. The stock is saved with the step, so resuming a saved shop shows the same tickets. `reroll(run, database)` clears it and rolls again; the shop's Reroll button charges `REROLL_COST` (a placeholder, passed through `Modifiers.price`) and is disabled when the player can't afford it.
 
 Branching is editing the queue: skip a round with `pop_front()`, insert an event step, make a boss round by giving a `RoundStep` modifiers. Steps loaded from `.tres` files are shared by Godot's resource cache, so `duplicate(true)` them before queuing.
 

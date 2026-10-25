@@ -62,6 +62,7 @@ func set_items(items: Array) -> void:
 		var card: Card = CARD_SCENE.instantiate()
 		card.setup(item)
 		add_child(card)
+	update_minimum_size() # the row's width follows its cards
 
 
 ## Removes the card showing `item`. It dissolves first, holding its slot, and only then do the

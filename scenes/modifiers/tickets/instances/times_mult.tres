@@ -5,5 +5,6 @@
 
 [resource]
 script = ExtResource("1_script")
+id = &"times_mult"
 display_name = "×Mult"
 icon = ExtResource("1_nsrms")
