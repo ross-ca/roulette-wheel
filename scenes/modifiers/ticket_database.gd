@@ -10,6 +10,14 @@ extends Resource
 @export var starter_tickets: Array[Ticket] = []
 
 
+## A template picked from `tickets` by the cascading rarity roll on `rng` (use `create()` with its
+## `id` for a copy to hand out), skipping any whose id is in `exclude`. Null if none are left.
+func roll(rng: RandomNumberGenerator, exclude: Array[Ticket] = []) -> Ticket:
+	var excluded_ids := exclude.map(func(ticket: Ticket) -> StringName: return ticket.id)
+	var candidates := tickets.filter(func(ticket: Ticket) -> bool: return not excluded_ids.has(ticket.id))
+	return Rarity.roll(rng, candidates) as Ticket
+
+
 ## A fresh copy of the ticket with this `id`, or null if there isn't one.
 func create(id: StringName) -> Ticket:
 	for ticket in tickets:

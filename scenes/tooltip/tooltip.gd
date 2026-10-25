@@ -25,8 +25,10 @@ func show_for(card: Card) -> void:
 	_card = card
 	var item := card.item
 	_title.text = item.display_name
-	_kind.text = item.get_kind_name()
-	_kind.visible = not _kind.text.is_empty()
+	var kind := item.get_kind_name()
+	var rarity_name: String = Rarity.NAMES[item.rarity]
+	_kind.text = rarity_name if kind.is_empty() else "%s · %s" % [kind, rarity_name]
+	_kind.add_theme_color_override("font_color", Rarity.COLOURS[item.rarity])
 	_description.text = item.get_description()
 	_description.visible = not _description.text.is_empty()
 	_update()
