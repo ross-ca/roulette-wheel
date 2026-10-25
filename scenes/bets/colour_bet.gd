@@ -22,3 +22,7 @@ func _init() -> void:
 
 func wins(pocket: Pocket) -> bool:
 	return pocket.colour == colour
+
+
+func key() -> String:
+	return "colour:%s" % colour

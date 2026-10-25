@@ -6,3 +6,5 @@ extends Resource
 @export var spins_left: int = 0
 @export var score: int = 0
 @export var money_earned: int = 0
+## Bets on the table for the next spin. The spin uses them up.
+@export var bets: Array[PlacedBet] = []

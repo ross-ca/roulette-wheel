@@ -1,7 +1,7 @@
 class_name PassMultiplyMultTicket
 extends PocketPassTicket
-## Multiplies the mult every time the ball passes over a chosen pocket, so n passes multiply it by
-## `factor` to the power of n.
+## Multiplies every bet's mult every time the ball passes over a chosen pocket, so n passes multiply
+## it by `factor` to the power of n.
 
 @export var factor: float = 1.5
 
@@ -14,8 +14,8 @@ func get_description() -> String:
 	return "×%s mult each time the ball passes %s%s" % [factor, _pocket_name(), _chance_text()]
 
 
-func apply_pass(_run: RunState, ctx: ScoreContext) -> void:
-	ctx.mult *= factor
+func apply_pass(_run: RunState, spin: SpinContext) -> void:
+	spin.multiply_mult(factor)
 
 
 ## The mult was already multiplied live during the spin; this only records it.
