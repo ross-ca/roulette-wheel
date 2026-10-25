@@ -1,8 +1,9 @@
 class_name BettingView
 extends Control
-## The play phase's betting screen: money, score and rolls along the top, the table, the chips to drag onto it,
-## and the tickets, consumables and the way to the wheel along the bottom. Display only: it reports
-## what the player does through its signals, and play.gd decides what happens.
+## The play phase's betting screen: money, score and rolls along the top, the table, the chips to
+## drag onto it, the tickets and consumables along the bottom, and the WHEEL tab on the right edge.
+## Display only: it reports what the player does through its signals, and play.gd decides what
+## happens.
 
 signal bet_placed(bet: Bet, chip: PlacedChip)
 signal bet_cleared(bet: Bet)

@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://d2st3ptq8dlys" path="res://scenes/bet_table/bet_table.gd" id="3_table"]
 [ext_resource type="Resource" uid="uid://desc1cj401ifv" path="res://scenes/bet_table/table_style.tres" id="4_style"]
 [ext_resource type="PackedScene" path="res://scenes/stat_display/stat_display.tscn" id="5_stat"]
+[ext_resource type="PackedScene" path="res://scenes/side_tab/side_tab.tscn" id="6_tab"]
 
 [sub_resource type="Theme" id="Theme_view"]
 default_font = ExtResource("2_font")
@@ -71,10 +72,16 @@ layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 12
 
-[node name="Table" type="Container" parent="Rows/Margin/Body" unique_id=1459938205]
-unique_name_in_owner = true
+[node name="TableMargin" type="MarginContainer" parent="Rows/Margin/Body"]
 layout_mode = 2
 size_flags_vertical = 3
+mouse_filter = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_right = 112
+
+[node name="Table" type="Container" parent="Rows/Margin/Body/TableMargin" unique_id=1459938205]
+unique_name_in_owner = true
+layout_mode = 2
 script = ExtResource("3_table")
 style = ExtResource("4_style")
 fill = 0.95
@@ -109,9 +116,17 @@ text = "Consumables"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="WheelButton" type="Button" parent="Rows/Margin/Body/Bottom" unique_id=1605460053]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Go to wheel"
+[node name="WheelTab" parent="." unique_id=1605460053 instance=ExtResource("6_tab")]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -104.0
+offset_top = -165.0
+offset_bottom = 165.0
+grow_horizontal = 0
+grow_vertical = 2
 
-[connection signal="pressed" from="Rows/Margin/Body/Bottom/WheelButton" to="." method="_on_wheel_button_pressed"]
+[connection signal="pressed" from="WheelTab" to="." method="_on_wheel_button_pressed"]

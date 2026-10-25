@@ -1,0 +1,23 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/side_tab/side_tab.gd" id="1_script"]
+[ext_resource type="FontFile" uid="uid://ddxplyyts7k4" path="res://assets/fonts/PressStart2P-Regular.ttf" id="2_font"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_title"]
+font = ExtResource("2_font")
+font_size = 36
+font_color = Color(0.9764706, 0.8392157, 0.5176471, 1)
+shadow_size = 0
+shadow_color = Color(0.11764706, 0.20392157, 0.27058825, 1)
+shadow_offset = Vector2(-4, 4)
+
+[node name="SideTab" type="Button"]
+custom_minimum_size = Vector2(104, 330)
+focus_mode = 0
+script = ExtResource("1_script")
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 0
+mouse_filter = 2
+text = "WHEEL"
+label_settings = SubResource("LabelSettings_title")

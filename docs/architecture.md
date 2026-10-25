@@ -70,7 +70,7 @@ Rules:
 
 ## Play views
 
-A round has two screens: **betting** (`BettingView`: money, score and rolls remaining in `StatDisplay` boxes, the table, chips, tickets, consumables, Go to wheel) and **the wheel** (`WheelView`: tickets, Go back to betting, a live row per bet, the wheel and its spin button). Players switch between them often, so:
+A round has two screens: **betting** (`BettingView`: money, score and rolls remaining in `StatDisplay` boxes, the table, chips, tickets, consumables, and the WHEEL `SideTab` on the right edge) and **the wheel** (`WheelView`: tickets, Go back to betting, a live row per bet, the wheel and its spin button). Players switch between them often, so:
 
 - **Both live in the one play phase**, loaded for the whole round. Switching is UI, not a run step, so it doesn't go through the runner, and the wheel never has to be rebuilt.
 - **They slide sideways** between each other, and a slide can be reversed mid-way. The tickets are one shared strip that glides between the views.
