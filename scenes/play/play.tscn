@@ -2,46 +2,76 @@
 
 [ext_resource type="Script" uid="uid://xa0eqgxh8kan" path="res://scenes/play/play.gd" id="1_h2yge"]
 [ext_resource type="PackedScene" uid="uid://chkvs2klsp6me" path="res://scenes/wheel/roulette_wheel.tscn" id="1_ig7tw"]
-[ext_resource type="Shader" uid="uid://bhnaj174ofi68" path="res://scenes/wheel/wheel_shader.gdshader" id="2_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://dfblr6s3i4487" path="res://scenes/hud/hud.tscn" id="2_1bvp3"]
+[ext_resource type="PackedScene" uid="uid://cjsrh2v84pgsm" path="res://scenes/betting_view/betting_view.tscn" id="3_betting"]
+[ext_resource type="PackedScene" path="res://scenes/wheel_view/wheel_view.tscn" id="4_wheel"]
 [ext_resource type="PackedScene" path="res://scenes/card_container/card_container.tscn" id="5_b1x3f"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_h2yge"]
-shader = ExtResource("2_0xm2m")
-shader_parameter/background_color = Color(0, 0, 0, 0)
-shader_parameter/shadow_color = Color(0.15686275, 0.15686275, 0.15686275, 1)
-shader_parameter/offset_in_pixels = Vector2(8, 8)
-shader_parameter/bob_pixels = 6.000000285
-shader_parameter/bob_speed = 1.25
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_g4v7s"]
-viewport_path = NodePath("SubViewport")
-
-[node name="Play" type="Node2D" unique_id=862141720]
+[node name="Play" type="Control" unique_id=862141720]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 script = ExtResource("1_h2yge")
 
-[node name="HUD" parent="." unique_id=211249179 instance=ExtResource("2_1bvp3")]
+[node name="Background" type="ColorRect" parent="." unique_id=1857960410]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.13725491, 0.2784314, 0.21176471, 1)
 
 [node name="SubViewport" type="SubViewport" parent="." unique_id=1916336550]
 transparent_bg = true
 size = Vector2i(600, 600)
+render_target_update_mode = 4
 
 [node name="RouletteWheel" parent="SubViewport" unique_id=1334309236 instance=ExtResource("1_ig7tw")]
 texture_filter = 2
 ball_extra_turns_min = 6
 
-[node name="WheelViewportOutput" type="Sprite2D" parent="." unique_id=1865346715]
-z_as_relative = false
-material = SubResource("ShaderMaterial_h2yge")
-texture = SubResource("ViewportTexture_g4v7s")
+[node name="Views" type="Control" parent="." unique_id=61409807]
+clip_contents = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="BettingView" parent="Views" unique_id=970465835 instance=ExtResource("3_betting")]
+layout_mode = 0
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="WheelView" parent="Views" unique_id=1096472193 instance=ExtResource("4_wheel")]
+layout_mode = 0
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+grow_horizontal = 1
+grow_vertical = 1
 
 [node name="CardContainer" parent="." unique_id=1437024605 instance=ExtResource("5_b1x3f")]
-offset_left = 602.0
-offset_top = 586.0
-offset_right = 1112.0017
-offset_bottom = 766.0
+layout_mode = 0
 card_scale = 2.5
 bob_tilt_offset_step = 1.0
 separation = 10.0
+alignment = 0
 
-[connection signal="spin_requested" from="HUD" to="." method="_on_spin_requested"]
+[node name="HUD" parent="." unique_id=211249179 instance=ExtResource("2_1bvp3")]
+
+[connection signal="bet_cleared" from="Views/BettingView" to="." method="_on_bet_cleared"]
+[connection signal="bet_placed" from="Views/BettingView" to="." method="_on_bet_placed"]
+[connection signal="wheel_requested" from="Views/BettingView" to="." method="_on_wheel_requested"]
+[connection signal="betting_requested" from="Views/WheelView" to="." method="_on_betting_requested"]
+[connection signal="spin_requested" from="Views/WheelView" to="." method="_on_spin_requested"]

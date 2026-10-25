@@ -3,169 +3,48 @@
 [ext_resource type="FontFile" uid="uid://bjqcqudoiecha" path="res://assets/fonts/Silkscreen-Regular.ttf" id="1_37p78"]
 [ext_resource type="Script" uid="uid://dq7i3mpcq8btk" path="res://scenes/hud/hud.gd" id="1_64ctp"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_info"]
-font = ExtResource("1_37p78")
-font_size = 20
-
-[sub_resource type="ButtonGroup" id="ButtonGroup_bet"]
-
 [sub_resource type="LabelSettings" id="LabelSettings_result"]
 font = ExtResource("1_37p78")
 font_size = 48
 outline_size = 8
 outline_color = Color(0, 0, 0, 1)
 
-[sub_resource type="LabelSettings" id="LabelSettings_equation"]
-font = ExtResource("1_37p78")
-font_size = 40
-outline_size = 8
-outline_color = Color(0, 0, 0, 1)
-
 [node name="HUD" type="CanvasLayer" unique_id=211249179]
 script = ExtResource("1_64ctp")
-
-[node name="Info" type="VBoxContainer" parent="."]
-offset_left = 40.0
-offset_top = 110.0
-offset_right = 420.0
-offset_bottom = 600.0
-theme_override_constants/separation = 8
-
-[node name="RoundLabel" type="Label" parent="Info"]
-unique_name_in_owner = true
-label_settings = SubResource("LabelSettings_info")
-
-[node name="ScoreLabel" type="Label" parent="Info"]
-unique_name_in_owner = true
-label_settings = SubResource("LabelSettings_info")
-
-[node name="SpinsLabel" type="Label" parent="Info"]
-unique_name_in_owner = true
-label_settings = SubResource("LabelSettings_info")
-
-[node name="MoneyLabel" type="Label" parent="Info"]
-unique_name_in_owner = true
-label_settings = SubResource("LabelSettings_info")
-
-[node name="TicketsLabel" type="Label" parent="Info"]
-unique_name_in_owner = true
-label_settings = SubResource("LabelSettings_info")
-
-[node name="LastSpinLabel" type="Label" parent="Info"]
-unique_name_in_owner = true
-label_settings = SubResource("LabelSettings_info")
 
 [node name="ResultLabel" type="Label" parent="."]
 unique_name_in_owner = true
 visible = false
-anchors_preset = 5
+anchors_preset = 8
 anchor_left = 0.5
+anchor_top = 0.5
 anchor_right = 0.5
+anchor_bottom = 0.5
 offset_left = -300.0
-offset_top = 40.0
+offset_top = -80.0
 offset_right = 300.0
-offset_bottom = 100.0
+offset_bottom = -20.0
 grow_horizontal = 2
+grow_vertical = 2
 label_settings = SubResource("LabelSettings_result")
-horizontal_alignment = 1
-
-[node name="EquationLabel" type="Label" parent="."]
-unique_name_in_owner = true
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -300.0
-offset_top = 110.0
-offset_right = 300.0
-offset_bottom = 170.0
-grow_horizontal = 2
-label_settings = SubResource("LabelSettings_equation")
 horizontal_alignment = 1
 
 [node name="ContinueButton" type="Button" parent="."]
 unique_name_in_owner = true
 visible = false
-anchors_preset = 5
+anchors_preset = 8
 anchor_left = 0.5
+anchor_top = 0.5
 anchor_right = 0.5
+anchor_bottom = 0.5
 offset_left = -100.0
-offset_top = 190.0
+offset_top = 0.0
 offset_right = 100.0
-offset_bottom = 250.0
+offset_bottom = 60.0
 grow_horizontal = 2
+grow_vertical = 2
 theme_override_fonts/font = ExtResource("1_37p78")
 theme_override_font_sizes/font_size = 32
 text = "Continue"
 
-[node name="SpinButton" type="Button" parent="." unique_id=1258611457]
-offset_left = 40.0
-offset_top = 40.0
-offset_right = 165.0
-offset_bottom = 89.0
-theme_override_fonts/font = ExtResource("1_37p78")
-theme_override_font_sizes/font_size = 32
-text = "Spin"
-
-[node name="ChipsInput" type="SpinBox" parent="."]
-unique_name_in_owner = true
-offset_left = 180.0
-offset_top = 40.0
-offset_right = 380.0
-offset_bottom = 89.0
-min_value = 1.0
-max_value = 1000.0
-value = 10.0
-rounded = true
-prefix = "Chips"
-
-[node name="RedButton" type="Button" parent="."]
-unique_name_in_owner = true
-offset_left = 400.0
-offset_top = 40.0
-offset_right = 500.0
-offset_bottom = 89.0
-theme_override_fonts/font = ExtResource("1_37p78")
-theme_override_font_sizes/font_size = 24
-toggle_mode = true
-button_pressed = true
-button_group = SubResource("ButtonGroup_bet")
-text = "Red"
-
-[node name="BlackButton" type="Button" parent="."]
-unique_name_in_owner = true
-offset_left = 510.0
-offset_top = 40.0
-offset_right = 610.0
-offset_bottom = 89.0
-theme_override_fonts/font = ExtResource("1_37p78")
-theme_override_font_sizes/font_size = 24
-toggle_mode = true
-button_group = SubResource("ButtonGroup_bet")
-text = "Black"
-
-[node name="GreenButton" type="Button" parent="."]
-unique_name_in_owner = true
-offset_left = 620.0
-offset_top = 40.0
-offset_right = 720.0
-offset_bottom = 89.0
-theme_override_fonts/font = ExtResource("1_37p78")
-theme_override_font_sizes/font_size = 24
-toggle_mode = true
-button_group = SubResource("ButtonGroup_bet")
-text = "Green"
-
-[node name="NumberInput" type="LineEdit" parent="."]
-unique_name_in_owner = true
-offset_left = 730.0
-offset_top = 40.0
-offset_right = 900.0
-offset_bottom = 89.0
-theme_override_fonts/font = ExtResource("1_37p78")
-theme_override_font_sizes/font_size = 24
-placeholder_text = "Number"
-max_length = 2
-
-[connection signal="text_changed" from="NumberInput" to="." method="_on_number_input_text_changed"]
 [connection signal="pressed" from="ContinueButton" to="." method="_on_continue_button_pressed"]
-[connection signal="pressed" from="SpinButton" to="." method="_on_spin_button_pressed"]

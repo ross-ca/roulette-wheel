@@ -1,0 +1,78 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/stat_display/stat_display.gd" id="1_script"]
+[ext_resource type="FontFile" uid="uid://bjqcqudoiecha" path="res://assets/fonts/Silkscreen-Regular.ttf" id="2_title_font"]
+[ext_resource type="FontFile" uid="uid://ddxplyyts7k4" path="res://assets/fonts/PressStart2P-Regular.ttf" id="3_value_font"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_box"]
+content_margin_left = 32.0
+content_margin_top = 32.0
+content_margin_right = 32.0
+content_margin_bottom = 32.0
+bg_color = Color(0.13725491, 0.13333334, 0.13333334, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_color = Color(0, 0, 0, 0.25)
+shadow_size = 1
+shadow_offset = Vector2(4, 20)
+
+[sub_resource type="LabelSettings" id="LabelSettings_title"]
+font = ExtResource("2_title_font")
+font_size = 20
+
+[sub_resource type="LabelSettings" id="LabelSettings_zeros"]
+font = ExtResource("3_value_font")
+font_size = 36
+font_color = Color(0.8117647, 0.8509804, 1, 0.4)
+shadow_size = 0
+shadow_color = Color(0.11764706, 0.20392157, 0.27058825, 1)
+shadow_offset = Vector2(4, 4)
+
+[sub_resource type="LabelSettings" id="LabelSettings_number"]
+font = ExtResource("3_value_font")
+font_size = 36
+shadow_size = 0
+shadow_color = Color(0.11764706, 0.20392157, 0.27058825, 1)
+shadow_offset = Vector2(4, 4)
+
+[node name="StatDisplay" type="PanelContainer"]
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_box")
+script = ExtResource("1_script")
+
+[node name="Rows" type="VBoxContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 20
+
+[node name="Title" type="Label" parent="Rows"]
+layout_mode = 2
+text = "Title"
+label_settings = SubResource("LabelSettings_title")
+
+[node name="Value" type="HBoxContainer" parent="Rows"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="Prefix" type="Label" parent="Rows/Value"]
+visible = false
+layout_mode = 2
+label_settings = SubResource("LabelSettings_number")
+
+[node name="Zeros" type="Label" parent="Rows/Value"]
+layout_mode = 2
+text = "00"
+label_settings = SubResource("LabelSettings_zeros")
+
+[node name="Number" type="Label" parent="Rows/Value"]
+layout_mode = 2
+text = "0"
+label_settings = SubResource("LabelSettings_number")

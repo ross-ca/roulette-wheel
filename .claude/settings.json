@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "deny": [
+      "Read(/assets/**)",
+      "Bash(*assets*)",
+      "PowerShell(*assets*)"
+    ]
+  }
+}
