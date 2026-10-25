@@ -1,6 +1,6 @@
 class_name BettingView
 extends Control
-## The play phase's betting screen: round info along the top, the table, the chips to drag onto it,
+## The play phase's betting screen: money, score and rolls along the top, the table, the chips to drag onto it,
 ## and the tickets, consumables and the way to the wheel along the bottom. Display only: it reports
 ## what the player does through its signals, and play.gd decides what happens.
 
@@ -13,9 +13,9 @@ const CHIP_SCENE := preload("res://scenes/chip/chip.tscn")
 ## Where the shared ticket strip sits while this view is showing. play.gd moves it there.
 @onready var ticket_slot: Control = %TicketSlot
 
-@onready var _money_label: Label = %MoneyLabel
-@onready var _spins_label: Label = %SpinsLabel
-@onready var _score_label: Label = %ScoreLabel
+@onready var _money: StatDisplay = %MoneyDisplay
+@onready var _rolls: StatDisplay = %RollsDisplay
+@onready var _score: StatDisplay = %ScoreDisplay
 @onready var _table: BetTable = %Table
 @onready var _chips: HBoxContainer = %Chips
 
@@ -29,11 +29,11 @@ func _on_wheel_button_pressed() -> void:
 	wheel_requested.emit()
 
 
-func show_round(run: RunState, step: RoundStep) -> void:
+func show_round(run: RunState, _step: RoundStep) -> void:
 	var progress := run.current_round
-	_money_label.text = "$%d" % run.money
-	_spins_label.text = "Rolls left %d" % progress.spins_left
-	_score_label.text = "Score %d / %d" % [progress.score, step.target_score]
+	_money.value = run.money
+	_rolls.value = progress.spins_left
+	_score.value = progress.score
 
 
 ## Colours the table's number tiles by their pockets' colours.

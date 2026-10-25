@@ -4,6 +4,7 @@
 [ext_resource type="FontFile" uid="uid://bjqcqudoiecha" path="res://assets/fonts/Silkscreen-Regular.ttf" id="2_font"]
 [ext_resource type="Script" uid="uid://d2st3ptq8dlys" path="res://scenes/bet_table/bet_table.gd" id="3_table"]
 [ext_resource type="Resource" uid="uid://desc1cj401ifv" path="res://scenes/bet_table/table_style.tres" id="4_style"]
+[ext_resource type="PackedScene" path="res://scenes/stat_display/stat_display.tscn" id="5_stat"]
 
 [sub_resource type="Theme" id="Theme_view"]
 default_font = ExtResource("2_font")
@@ -20,7 +21,7 @@ mouse_filter = 2
 theme = SubResource("Theme_view")
 script = ExtResource("1_script")
 
-[node name="Margin" type="MarginContainer" parent="." unique_id=105156921]
+[node name="Rows" type="VBoxContainer" parent="." unique_id=1193481416]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -28,81 +29,89 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="TopBar" type="HBoxContainer" parent="Rows" unique_id=1073330374]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="MoneyDisplay" parent="Rows/TopBar" unique_id=76829617 instance=ExtResource("5_stat")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+title = "Your money"
+prefix = "$"
+digits = 9
+
+[node name="ScoreDisplay" parent="Rows/TopBar" unique_id=703984411 instance=ExtResource("5_stat")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+title = "Score"
+digits = 9
+
+[node name="RollsDisplay" parent="Rows/TopBar" unique_id=363413181 instance=ExtResource("5_stat")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+title = "Rolls remaining"
+
+[node name="Margin" type="MarginContainer" parent="Rows" unique_id=105156921]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
 theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 16
+theme_override_constants/margin_top = 36
 theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 16
 
-[node name="Rows" type="VBoxContainer" parent="Margin" unique_id=1193481416]
+[node name="Body" type="VBoxContainer" parent="Rows/Margin" unique_id=633205896]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 12
 
-[node name="TopBar" type="HBoxContainer" parent="Margin/Rows" unique_id=1073330374]
-layout_mode = 2
-mouse_filter = 2
-
-[node name="MoneyLabel" type="Label" parent="Margin/Rows/TopBar" unique_id=1047462050]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-text = "$0"
-horizontal_alignment = 1
-
-[node name="SpinsLabel" type="Label" parent="Margin/Rows/TopBar" unique_id=82926691]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Rolls left 0"
-horizontal_alignment = 1
-
-[node name="ScoreLabel" type="Label" parent="Margin/Rows/TopBar" unique_id=681342774]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Score 0 / 0"
-horizontal_alignment = 1
-
-[node name="Table" type="Container" parent="Margin/Rows" unique_id=1459938205]
+[node name="Table" type="Container" parent="Rows/Margin/Body" unique_id=1459938205]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 script = ExtResource("3_table")
 style = ExtResource("4_style")
+fill = 0.95
 
-[node name="Chips" type="HBoxContainer" parent="Margin/Rows" unique_id=187652771]
+[node name="Chips" type="HBoxContainer" parent="Rows/Margin/Body" unique_id=187652771]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
 mouse_filter = 2
 alignment = 1
 
-[node name="Bottom" type="HBoxContainer" parent="Margin/Rows" unique_id=1316435993]
+[node name="Bottom" type="HBoxContainer" parent="Rows/Margin/Body" unique_id=1316435993]
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 12
 
-[node name="TicketSlot" type="Control" parent="Margin/Rows/Bottom" unique_id=1833676926]
+[node name="TicketSlot" type="Control" parent="Rows/Margin/Body/Bottom" unique_id=1833676926]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
 mouse_filter = 2
 
-[node name="Bowl" type="PanelContainer" parent="Margin/Rows/Bottom" unique_id=694186356]
+[node name="Bowl" type="PanelContainer" parent="Rows/Margin/Body/Bottom" unique_id=694186356]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="Margin/Rows/Bottom/Bowl" unique_id=1069860572]
+[node name="Label" type="Label" parent="Rows/Margin/Body/Bottom/Bowl" unique_id=1069860572]
 layout_mode = 2
 text = "Consumables"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="WheelButton" type="Button" parent="Margin/Rows/Bottom" unique_id=1605460053]
+[node name="WheelButton" type="Button" parent="Rows/Margin/Body/Bottom" unique_id=1605460053]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Go to wheel"
 
-[connection signal="pressed" from="Margin/Rows/Bottom/WheelButton" to="." method="_on_wheel_button_pressed"]
+[connection signal="pressed" from="Rows/Margin/Body/Bottom/WheelButton" to="." method="_on_wheel_button_pressed"]

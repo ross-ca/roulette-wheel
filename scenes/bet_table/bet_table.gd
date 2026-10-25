@@ -28,6 +28,11 @@ const ZERO_COLUMN_WIDTH := 0.5
 	set(value):
 		outside_row_height = value
 		queue_sort()
+## How much of the largest grid that fits to actually use, so the table leaves some space around it.
+@export_range(0.5, 1.0, 0.05) var fill := 1.0:
+	set(value):
+		fill = value
+		queue_sort()
 
 var _spots := {} # Bet.key() -> BetSpot
 ## Where each spot goes, in grid cells: {spot, column, row, column_span, row_span, zero_corners,
@@ -148,7 +153,7 @@ func _layout() -> void:
 	var across := COLUMNS + ZERO_COLUMN_WIDTH # zero's column plus the numbers
 	var down := NUMBER_ROWS + 2 * outside_row_height
 	var tile := minf(size.x / (across + (COLUMNS + 2) * line_ratio),
-			size.y / (down + (NUMBER_ROWS + 3) * line_ratio))
+			size.y / (down + (NUMBER_ROWS + 3) * line_ratio)) * fill
 	var line := tile * line_ratio
 	_line = line
 	var grid_size := Vector2(across * tile + (COLUMNS + 2) * line,
