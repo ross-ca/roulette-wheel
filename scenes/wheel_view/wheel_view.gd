@@ -1,7 +1,7 @@
 class_name WheelView
 extends Control
-## The play phase's wheel screen: the tickets, the way back to betting and the spin's bets (ticking
-## up live as the ball passes pockets) on the left, and the wheel on the right. Display only, like
+## The play phase's wheel screen: the TABLE tab back to betting on the left edge, then the tickets
+## and the spin's bets (ticking up live as the ball passes pockets), and the wheel on the right. Display only, like
 ## BettingView: play.gd decides what its signals do.
 
 signal betting_requested
@@ -10,7 +10,7 @@ signal spin_requested
 ## Where the shared ticket strip sits while this view is showing. play.gd moves it there.
 @onready var ticket_slot: Control = %TicketSlot
 
-@onready var _back_button: Button = %BackButton
+@onready var _table_tab: SideTab = %TableTab
 @onready var _spin_button: Button = %SpinButton
 @onready var _rows: VBoxContainer = %BetRows
 @onready var _breakdown_label: Label = %BreakdownLabel
@@ -65,7 +65,7 @@ func show_result(spin: SpinContext) -> void:
 
 ## Locks the way back to betting while the wheel spins, and hides the spin button.
 func set_spinning(spinning: bool) -> void:
-	_back_button.disabled = spinning
+	_table_tab.disabled = spinning
 	_spin_button.visible = not spinning
 
 

@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://scenes/wheel_view/wheel_view.gd" id="1_script"]
 [ext_resource type="FontFile" uid="uid://bjqcqudoiecha" path="res://assets/fonts/Silkscreen-Regular.ttf" id="2_font"]
 [ext_resource type="Shader" uid="uid://bhnaj174ofi68" path="res://scenes/wheel/wheel_shader.gdshader" id="3_shader"]
+[ext_resource type="PackedScene" path="res://scenes/side_tab/side_tab.tscn" id="4_tab"]
 
 [sub_resource type="Theme" id="Theme_view"]
 default_font = ExtResource("2_font")
@@ -35,7 +36,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/margin_left = 16
+theme_override_constants/margin_left = 128
 theme_override_constants/margin_top = 16
 theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 16
@@ -56,11 +57,6 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 mouse_filter = 2
-
-[node name="BackButton" type="Button" parent="Margin/Columns/Left"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Go back to betting"
 
 [node name="BetRows" type="VBoxContainer" parent="Margin/Columns/Left"]
 unique_name_in_owner = true
@@ -99,5 +95,18 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "Click to spin"
 
-[connection signal="pressed" from="Margin/Columns/Left/BackButton" to="." method="_on_back_button_pressed"]
+[node name="TableTab" parent="." instance=ExtResource("4_tab")]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -165.0
+offset_right = 104.0
+offset_bottom = 165.0
+grow_vertical = 2
+side = 0
+title = "TABLE"
+
+[connection signal="pressed" from="TableTab" to="." method="_on_back_button_pressed"]
 [connection signal="pressed" from="Margin/Columns/WheelOutput/SpinButton" to="." method="_on_spin_button_pressed"]

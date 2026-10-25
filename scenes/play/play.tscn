@@ -66,6 +66,7 @@ layout_mode = 0
 card_scale = 2.5
 bob_tilt_offset_step = 1.0
 separation = 10.0
+alignment = 0
 
 [node name="HUD" parent="." unique_id=211249179 instance=ExtResource("2_1bvp3")]
 
