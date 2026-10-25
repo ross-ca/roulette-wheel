@@ -61,6 +61,11 @@ func _process(_delta: float) -> void:
 		_emit_passed_pockets()
 
 
+## Radius of the hub in the middle of the wheel, in the SubViewport's pixels.
+func hub_radius() -> float:
+	return _wheel.inner_radius
+
+
 ## Hands the wheel the pockets to draw and land on. Ignored mid-spin, since targets are computed at
 ## spin start.
 func set_pockets(pockets: Array[Pocket]) -> void:

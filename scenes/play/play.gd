@@ -63,7 +63,7 @@ func _ready() -> void:
 		_step = RoundStep.new()
 		_run.current_step = _step
 
-	_wheel_view.set_wheel_texture($SubViewport.get_texture())
+	_wheel_view.set_wheel($SubViewport, $SubViewport/SpinButton, _wheel.hub_radius())
 	_wheel.rng = _run.rng
 	_wheel.set_pockets(_run.pockets)
 	_wheel.spin_finished.connect(_on_wheel_spin_finished)
