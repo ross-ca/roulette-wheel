@@ -4,10 +4,11 @@ extends Control
 ## and the tickets, consumables and the way to the wheel along the bottom. Display only: it reports
 ## what the player does through its signals, and play.gd decides what happens.
 
-signal bet_placed(bet: Bet, chips: int)
+signal bet_placed(bet: Bet, chip: PlacedChip)
 signal bet_cleared(bet: Bet)
 signal wheel_requested
 
+const CHIP_SCENE := preload("res://scenes/chip/chip.tscn")
 ## Numbers across the table; each column holds three, counting up from the bottom row.
 const TABLE_COLUMNS := 12
 
@@ -38,18 +39,20 @@ func show_round(run: RunState, step: RoundStep) -> void:
 	_score_label.text = "Score %d / %d" % [progress.score, step.target_score]
 
 
-## Replaces the chips in the row with one per value, in order.
+## Replaces the chips in the row with one per value, in order. A chip's tier is its index here.
 func set_chip_values(values: Array[int]) -> void:
 	for child in _chips.get_children():
 		child.queue_free()
-	for value in values:
-		_chips.add_child(Chip.of(value))
+	for tier in values.size():
+		var chip: Chip = CHIP_SCENE.instantiate()
+		chip.setup(values[tier], tier)
+		_chips.add_child(chip)
 
 
 ## Shows the chips on each spot of the table.
 func show_bets(bets: Array[PlacedBet]) -> void:
 	for spot: BetSpot in _spots.values():
-		spot.show_chips(0)
+		spot.show_chips([])
 	for placed in bets:
 		var spot: BetSpot = _spots.get(placed.bet.key())
 		if spot:
@@ -69,6 +72,7 @@ func _build_table() -> void:
 	_add_spot(NumberBet.of(0), _table)
 	var right := VBoxContainer.new()
 	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	right.size_flags_stretch_ratio = TABLE_COLUMNS # so zero is as wide as one column of numbers
 	_table.add_child(right)
 
 	var numbers := GridContainer.new()
@@ -79,7 +83,10 @@ func _build_table() -> void:
 		for column in TABLE_COLUMNS:
 			_add_spot(NumberBet.of(column * 3 + 3 - row), numbers)
 
+	# As tall as one row of numbers, so its chip stacks have the same room.
 	var colours := HBoxContainer.new()
+	colours.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	numbers.size_flags_stretch_ratio = 3.0
 	right.add_child(colours)
 	for colour in ["red", "black"]:
 		_add_spot(ColourBet.of(colour), colours)
@@ -87,7 +94,7 @@ func _build_table() -> void:
 
 func _add_spot(bet: Bet, parent: Control) -> void:
 	var spot := BetSpot.of(bet)
-	spot.chips_dropped.connect(bet_placed.emit)
+	spot.chip_dropped.connect(bet_placed.emit)
 	spot.cleared.connect(bet_cleared.emit)
 	parent.add_child(spot)
 	_spots[bet.key()] = spot

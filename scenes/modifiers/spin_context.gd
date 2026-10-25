@@ -11,7 +11,7 @@ var bets: Array[ScoreContext] = []
 
 func _init(placed: Array[PlacedBet]) -> void:
 	for entry in placed:
-		bets.append(ScoreContext.new(entry.chips, entry.bet))
+		bets.append(ScoreContext.new(entry.total(), entry.bet))
 
 
 func land(landed: Pocket) -> void:

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ChipSet" format=3 uid="uid://ddh2clbas82ha"]
+
+[ext_resource type="Script" uid="uid://d2c6h4f5ivuyg" path="res://scenes/chip/chip_set.gd" id="1_r7pef"]
+[ext_resource type="Texture2D" uid="uid://bt651ojqkpwxe" path="res://assets/textures/chips/chips_Red.png" id="2_r4a3d"]
+[ext_resource type="Texture2D" uid="uid://5nao73dxxsby" path="res://assets/textures/chips/chips_Blue.png" id="3_abyj1"]
+[ext_resource type="Texture2D" uid="uid://tonw6qtnexjv" path="res://assets/textures/chips/chips_Green.png" id="4_q654f"]
+[ext_resource type="Texture2D" uid="uid://10plarxb68r7" path="res://assets/textures/chips/chips_Black.png" id="5_altiv"]
+[ext_resource type="Texture2D" uid="uid://c2q826rrmwdx4" path="res://assets/textures/chips/chips_Pink.png" id="6_65s83"]
+
+[resource]
+script = ExtResource("1_r7pef")
+textures = Array[Texture2D]([ExtResource("2_r4a3d"), ExtResource("3_abyj1"), ExtResource("4_q654f"), ExtResource("5_altiv"), ExtResource("6_65s83")])

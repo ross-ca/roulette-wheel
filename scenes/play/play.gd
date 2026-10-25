@@ -124,16 +124,15 @@ func _place_views() -> void:
 	_cards.size = from.size.lerp(to.size, _view_position)
 
 
-# Chips dropped on a spot that already has a bet add to it.
-func _on_bet_placed(bet: Bet, chips: int) -> void:
+# A chip dropped on a spot that already has a bet joins its chips.
+func _on_bet_placed(bet: Bet, chip: PlacedChip) -> void:
 	if _state != State.WAITING:
 		return
-	var bets := _run.current_round.bets
 	var placed := _find_bet(bet)
-	if placed:
-		placed.chips += chips
-	else:
-		bets.append(PlacedBet.of(bet.duplicate(), chips)) # the table keeps its own spot's bet
+	if placed == null:
+		placed = PlacedBet.of(bet.duplicate()) # the table keeps its own spot's bet
+		_run.current_round.bets.append(placed)
+	placed.chips.append(chip)
 	_show_bets()
 	Game.save_run()
 

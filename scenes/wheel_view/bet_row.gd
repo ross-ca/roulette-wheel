@@ -12,7 +12,7 @@ static func of(placed: PlacedBet) -> BetRow:
 	var row := BetRow.new()
 	row._bet_name = placed.bet.display_name
 	row._shown_mult = placed.bet.base_mult
-	row._set_equation(placed.chips, placed.bet.base_mult)
+	row._set_equation(placed.total(), placed.bet.base_mult)
 	return row
 
 

@@ -1,0 +1,15 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/chip/chip_stack.gd" id="1_script"]
+[ext_resource type="Resource" path="res://scenes/chip/chip_set.tres" id="2_set"]
+
+[node name="ChipStack" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_script")
+chip_set = ExtResource("2_set")
