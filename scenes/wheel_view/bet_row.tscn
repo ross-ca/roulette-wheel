@@ -1,0 +1,124 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/wheel_view/bet_row.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://8q44yyjs2ntc" path="res://scenes/chip/chip_stack.tscn" id="2_stack"]
+[ext_resource type="FontFile" uid="uid://ddxplyyts7k4" path="res://assets/fonts/PressStart2P-Regular.ttf" id="3_font"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_row"]
+content_margin_left = 12.0
+content_margin_top = 10.0
+content_margin_right = 16.0
+content_margin_bottom = 10.0
+bg_color = Color(0.13725491, 0.13333334, 0.13333334, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="LabelSettings" id="LabelSettings_number"]
+font = ExtResource("3_font")
+font_size = 28
+shadow_size = 0
+shadow_color = Color(0.11764706, 0.20392157, 0.27058825, 1)
+shadow_offset = Vector2(3, 3)
+
+[sub_resource type="LabelSettings" id="LabelSettings_mult"]
+font = ExtResource("3_font")
+font_size = 28
+font_color = Color(0.9764706, 0.8392157, 0.5176471, 1)
+shadow_size = 0
+shadow_color = Color(0.11764706, 0.20392157, 0.27058825, 1)
+shadow_offset = Vector2(3, 3)
+
+[sub_resource type="LabelSettings" id="LabelSettings_float"]
+font = ExtResource("3_font")
+font_size = 18
+font_color = Color(0.9764706, 0.8392157, 0.5176471, 1)
+shadow_size = 0
+shadow_color = Color(0.11764706, 0.20392157, 0.27058825, 1)
+shadow_offset = Vector2(2, 2)
+
+[node name="BetRow" type="PanelContainer"]
+custom_minimum_size = Vector2(0, 72)
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_row")
+script = ExtResource("1_script")
+float_settings = SubResource("LabelSettings_float")
+
+[node name="Items" type="HBoxContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 16
+
+[node name="Badge" type="PanelContainer" parent="Items"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(128, 0)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="BadgeLabel" type="Label" parent="Items/Badge"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Stack" parent="Items" instance=ExtResource("2_stack")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+chip_size = Vector2(32, 32)
+chip_rise = 3.0
+max_shown = 4
+
+[node name="Stake" type="Label" parent="Items"]
+unique_name_in_owner = true
+layout_mode = 2
+label_settings = SubResource("LabelSettings_number")
+vertical_alignment = 1
+
+[node name="Times" type="Label" parent="Items"]
+layout_mode = 2
+text = "×"
+label_settings = SubResource("LabelSettings_number")
+vertical_alignment = 1
+
+[node name="Mult" type="Label" parent="Items"]
+unique_name_in_owner = true
+layout_mode = 2
+label_settings = SubResource("LabelSettings_mult")
+vertical_alignment = 1
+
+[node name="Strike" type="ColorRect" parent="Items/Mult"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -2.0
+offset_bottom = 2.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.8627451, 0.12156863, 0.14901961, 1)
+
+[node name="Equals" type="Label" parent="Items"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+text = "="
+label_settings = SubResource("LabelSettings_number")
+vertical_alignment = 1
+
+[node name="Total" type="Label" parent="Items"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+label_settings = SubResource("LabelSettings_mult")
+vertical_alignment = 1
