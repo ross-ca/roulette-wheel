@@ -57,7 +57,7 @@ So the views always sit side by side, and `Views` clips whatever is off screen, 
 
 **The tickets** don't belong to either view. Each view has an empty `ticket_slot` Control marking where they go, and `_place_views()` puts `CardContainer` the same fraction of the way from the betting view's slot to the wheel view's. It glides between them as the views slide, and there's only ever one strip to keep in sync with `run.tickets`.
 
-**The wheel** lives in the SubViewport, not in `WheelView`, so it renders and keeps spinning whichever view is showing. `play.gd` hands the viewport's texture to `WheelView.set_wheel_texture()`.
+**The wheel** lives in the SubViewport, not in `WheelView`, so it renders and keeps spinning whichever view is showing. `play.gd` hands the viewport to `WheelView.set_wheel()`, which shows its texture and keeps its render size matched to the wheel's size on screen.
 
 **Why not separate scenes or a camera.** Separate scenes would be freed on every switch, losing the wheel mid-spin, and couldn't animate between each other. A `Camera2D` would move the whole canvas, so the tickets couldn't take their own path. Moving two plain Controls keeps each view an ordinary full-screen layout you can edit on its own. Keeping both loaded costs little: the hidden one is clipped and its scripts are idle.
 

@@ -7,6 +7,8 @@ extends Control
 ## The wheel and its SPIN button are drawn in a SubViewport in play.tscn, so the wheel shader bobs
 ## and shadows the button with the wheel. WheelOutput shows the viewport's texture and forwards the
 ## mouse into it, since a SubViewport outside a SubViewportContainer gets no input of its own.
+## The viewport lays the wheel out at its fixed size_2d_override (the design size) but renders at
+## as many pixels as WheelOutput covers on screen, so the wheel stays sharp at any window size.
 
 signal betting_requested
 signal spin_requested
@@ -32,6 +34,7 @@ signal spin_requested
 @onready var _wheel_output: TextureRect = %WheelOutput
 
 var _viewport: SubViewport
+var _design_size := Vector2.ZERO # the viewport's size_2d_override, which the wheel is laid out in
 var _spin_button: Button
 var _pocket_colours := {} # pocket number -> Pocket.colour, for number bets' badges
 
@@ -40,6 +43,9 @@ func _ready() -> void:
 	_wheel_output.gui_input.connect(_forward_to_wheel)
 	_wheel_output.mouse_entered.connect(_notify_wheel.bind(NOTIFICATION_VP_MOUSE_ENTER))
 	_wheel_output.mouse_exited.connect(_notify_wheel.bind(NOTIFICATION_VP_MOUSE_EXIT))
+	# The window's stretch scale can change without WheelOutput's size changing, so watch both.
+	_wheel_output.resized.connect(_fit_wheel_resolution)
+	get_viewport().size_changed.connect(_fit_wheel_resolution)
 
 
 func _on_back_button_pressed() -> void:
@@ -47,14 +53,17 @@ func _on_back_button_pressed() -> void:
 
 
 ## The wheel's SubViewport and the SPIN button in it, which both live in play.tscn. The button is
-## sized to cover the wheel's hub, `hub_radius` in the viewport's pixels, and centred on it.
+## sized to cover the wheel's hub, `hub_radius` in the wheel's design pixels, and centred on it.
 func set_wheel(viewport: SubViewport, spin_button: Button, hub_radius: float) -> void:
 	_viewport = viewport
+	_design_size = Vector2(viewport.size_2d_override)
 	_wheel_output.texture = viewport.get_texture()
+	(_wheel_output.material as ShaderMaterial).set_shader_parameter("design_size", _design_size)
 	_spin_button = spin_button
 	_spin_button.size = Vector2.ONE * 2.0 * hub_radius
-	_spin_button.position = (Vector2(viewport.size) - _spin_button.size) / 2.0
+	_spin_button.position = (_design_size - _spin_button.size) / 2.0
 	_spin_button.pressed.connect(spin_requested.emit)
+	_fit_wheel_resolution()
 
 
 ## Number bets' badges take their pocket's colour, like the table's tiles.
@@ -138,15 +147,32 @@ func _badge_style(bet: Bet) -> BetTileStyle:
 	return table_style.outside
 
 
+# How much bigger than its design size the wheel is drawn in WheelOutput, which shows the texture as
+# big as fits and centred (keep aspect centred).
+func _shown_scale() -> float:
+	return minf(_wheel_output.size.x / _design_size.x, _wheel_output.size.y / _design_size.y)
+
+
+# Renders the wheel at the pixels it covers on screen: its shown size times the window's stretch
+# scale (1920x1080 is scaled to fit the window).
+func _fit_wheel_resolution() -> void:
+	if _viewport == null:
+		return
+	var screen_scale := get_viewport().get_final_transform().get_scale() \
+			* _wheel_output.get_global_transform_with_canvas().get_scale()
+	var pixels := (_design_size * _shown_scale() * screen_scale).ceil()
+	if pixels.x >= 1.0 and pixels.y >= 1.0:
+		_viewport.size = Vector2i(pixels)
+
+
 # Passes mouse events on WheelOutput into the viewport, moved from WheelOutput's space into the
-# viewport's. The texture is drawn as big as fits and centred (keep aspect centred). The shader's bob
-# isn't accounted for, so the clickable hub sits where the wheel is at rest.
+# wheel's design space (local coordinates skip the viewport's stretch, so they go in unscaled). The
+# shader's bob isn't accounted for, so the clickable hub sits where the wheel is at rest.
 func _forward_to_wheel(event: InputEvent) -> void:
 	if _viewport == null or not (event is InputEventMouse):
 		return
-	var texture_size := Vector2(_viewport.size)
-	var shown := minf(_wheel_output.size.x / texture_size.x, _wheel_output.size.y / texture_size.y)
-	var offset := (_wheel_output.size - texture_size * shown) / 2.0
+	var shown := _shown_scale()
+	var offset := (_wheel_output.size - _design_size * shown) / 2.0
 	var local: InputEventMouse = event.duplicate()
 	local.position = (event.position - offset) / shown
 	local.global_position = local.position
