@@ -9,6 +9,7 @@ extends Container
 
 signal chip_dropped(bet: Bet, chip: PlacedChip)
 signal cleared(bet: Bet)
+signal spot_clicked(bet: Bet)
 
 const SPOT_SCENE := preload("res://scenes/bet_table/bet_spot.tscn")
 const COLUMNS := 12
@@ -112,6 +113,7 @@ func _add_spot(bet: Bet, column: int, row: int, column_span := 1, row_span := 1,
 	spot.setup(bet)
 	spot.chip_dropped.connect(chip_dropped.emit)
 	spot.cleared.connect(cleared.emit)
+	spot.clicked.connect(spot_clicked.emit)
 	add_child(spot)
 	_spots[bet.key()] = spot
 	_cells.append({"spot": spot, "column": column, "row": row,

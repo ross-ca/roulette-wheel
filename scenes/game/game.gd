@@ -4,6 +4,7 @@ extends Node
 const SAVE_PATH := "user://run.tres"
 const STARTING_MONEY := 4
 const TICKET_DATABASE := preload("res://scenes/modifiers/ticket_database.tres")
+const CONSUMABLE_DATABASE := preload("res://scenes/modifiers/consumable_database.tres")
 
 var run: RunState
 ## How the last run ended, for the main menu to show. Empty if no run has ended this session.
@@ -20,6 +21,7 @@ func new_run(rng_seed: int = randi(), saving: bool = true) -> void:
 	run.money = STARTING_MONEY
 	run.pockets = Pocket.european_layout()
 	run.tickets = TICKET_DATABASE.create_starters()
+	run.consumables = CONSUMABLE_DATABASE.create_starters()
 
 
 func has_save() -> bool:

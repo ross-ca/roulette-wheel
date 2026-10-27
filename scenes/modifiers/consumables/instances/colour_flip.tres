@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ColourFlipConsumable" format=3 uid="uid://blnscb7u8wpex"]
+
+[ext_resource type="Script" uid="uid://b7vn1clb80rqi" path="res://scenes/modifiers/consumables/colour_flip_consumable.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://dpr3hqnmupi0b" path="res://assets/textures/consumables/chilli.png" id="1_ydhkd"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"colour_flip"
+display_name = "Colour Flip"
+icon = ExtResource("1_ydhkd")

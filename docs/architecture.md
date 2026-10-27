@@ -124,6 +124,7 @@ Events, raised with `Modifiers.notify(run, event, args)`:
 | `spin_started` / `spin_finished` | Each spin | — / pocket |
 | `round_started` / `round_finished` | Each round | round state / round state, won |
 | `step_started` / `step_finished` | Every step | step / step, result |
+| `consumable_used` | A consumable is used in the play phase | consumable, pocket |
 
 `step_started` only fires when a step is first taken, not when a save resumes it.
 
@@ -146,6 +147,16 @@ A spin is scored in two layers:
 
 Modifiers record what they did in `ctx.trace`. Rules are computed instantly and the wheel view plays the trace back afterwards, so game logic never waits on animation.
 
+## Consumables
+
+`scenes/modifiers/consumables/`. A `Consumable` extends `Modifier` (so a `Card` and tooltip show it like a ticket) but lives in `RunState.consumables`, which `Modifiers.active()` doesn't read: it does nothing until the player uses it. It has `can_target(run, pocket)` and `use(run, pocket)`; a consumable changes the wheel by mutating a `Pocket` from `run.pockets` in place, which is saved with the run and makes the wheel redraw through the pocket's `changed` signal.
+
+`ColourFlipConsumable` turns a red pocket black and a black one red (green can't be flipped). Instances live in `instances/`. `ConsumableDatabase` (`consumable_database.tres`, loaded by `Game.CONSUMABLE_DATABASE`) mirrors `TicketDatabase`: `consumables` lists every one that can appear, `starter_consumables` is what a new run starts with (the same one can be listed repeatedly), and `create(id)`, `create_starters()` and `roll(rng, exclude)` hand out copies or rolled templates by rarity. Edit it in the inspector.
+
+**Using one** (all in `play.gd`, while waiting between spins): click the consumable's card in the betting view (`CardContainer.item_clicked`, a press released without being dragged out of its slot; the card stays popped up via `Card.selected`), then click a number tile (`BetSpot.clicked`, passed up through `BetTable.spot_clicked` and `BettingView.spot_clicked`). Clicking the card again puts it down. A number tile stands for the first pocket with that number; if the consumable's `can_target` refuses it, nothing happens and the card stays selected. On success `use` runs, `consumable_used` is notified, the consumable leaves the run, the run is saved, the table and the wheel view's badges are recoloured with `show_pockets`, and the card dissolves. Spinning clears the selection, and spinning is blocked while the card dissolves. Right-click on a tile still clears its chips, and chip drops are untouched.
+
+Open: a consumable that needs two pockets (replace one with another) needs a second selection step, and consumables can't be bought or sold yet.
+
 ## Cards and tooltips
 
 `scenes/card/`, `scenes/card_container/`, `scenes/tooltip/`. Two layers:
@@ -155,7 +166,7 @@ Modifiers record what they did in `ctx.trace`. Rules are computed instantly and 
 
 The **tooltip** is a second view of the same thing, the detailed one. Neither view branches on what kind of thing it shows: they ask the item for `display_name`, `icon`, `get_description()` (may contain BBCode) and `get_kind_name()` ("Ticket"). Anything kind-specific a view needs, such as a different card frame later, should come from the item the same way, not from `if item is ...`.
 
-**If it changes the run, it doesn't go in Card.** What interacting with a card means belongs to whatever holds it. `CardContainer` gives cards two interactions, drag to reorder (reported with `order_changed`) and right-click (`item_right_clicked`, which the play phase turns into selling a ticket); the play phase decides that means ticket trigger order and writes `run.tickets`. Clicking to buy will belong to the shop, clicking to use a consumable to wherever consumables are held. So every screen gets the same card and tooltip, and only adds what its interactions do.
+**If it changes the run, it doesn't go in Card.** What interacting with a card means belongs to whatever holds it. `CardContainer` gives cards two interactions, drag to reorder (reported with `order_changed`) and right-click (`item_right_clicked`, which the play phase turns into selling a ticket); the play phase decides that means ticket trigger order and writes `run.tickets`. Clicking to buy will belong to the shop; clicking to use a consumable (`item_clicked`) belongs to the play phase. So every screen gets the same card and tooltip, and only adds what its interactions do.
 
 Details:
 

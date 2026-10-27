@@ -9,6 +9,10 @@ extends Control
 signal bet_placed(bet: Bet, chip: PlacedChip)
 signal bet_cleared(bet: Bet)
 signal wheel_requested
+## A table tile was left-clicked (not a chip drop), e.g. to target a consumable.
+signal spot_clicked(bet: Bet)
+signal consumable_clicked(item: Consumable)
+signal consumables_reordered
 
 const CHIP_SCENE := preload("res://scenes/chip/chip.tscn")
 ## Most chips in a row before they wrap onto another. The rows are kept even, so seven chips make
@@ -23,11 +27,35 @@ const CHIPS_PER_ROW := 5
 @onready var _score: StatDisplay = %ScoreDisplay
 @onready var _table: BetTable = %Table
 @onready var _chips: VBoxContainer = %Chips # one centred HBoxContainer per row of chips
+@onready var _consumables: CardContainer = %Consumables
 
 
 func _ready() -> void:
 	_table.chip_dropped.connect(bet_placed.emit)
 	_table.cleared.connect(bet_cleared.emit)
+	_table.spot_clicked.connect(spot_clicked.emit)
+	_consumables.item_clicked.connect(func(item: Modifier) -> void: consumable_clicked.emit(item))
+	_consumables.order_changed.connect(consumables_reordered.emit)
+
+
+## Shows the consumables the player holds, as cards.
+func show_consumables(items: Array[Consumable]) -> void:
+	_consumables.set_items(items)
+
+
+## The consumables in their on-screen order, after the player has dragged them about.
+func get_consumables() -> Array[Modifier]:
+	return _consumables.get_items()
+
+
+## Raises the card of the consumable waiting for its target. Null puts them all down.
+func select_consumable(item: Consumable) -> void:
+	_consumables.select_item(item)
+
+
+## Dissolves the card of a consumable that's been used. Await it.
+func remove_consumable(item: Consumable) -> void:
+	await _consumables.remove_item(item)
 
 
 func _on_wheel_button_pressed() -> void:
