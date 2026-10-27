@@ -34,3 +34,4 @@ ratio = 1.6
 layout_mode = 2
 stream = ExtResource("2_iatiw")
 expand = true
+bus = &"Music"

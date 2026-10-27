@@ -75,7 +75,7 @@ func show_mult(mult: float) -> void:
 	_target_mult = mult
 	if _mult_tween:
 		_mult_tween.kill()
-	_mult_tween = create_tween()
+	_mult_tween = _tween()
 	_mult_tween.tween_method(_set_shown_mult, _shown_mult, mult, count_duration) \
 		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	_pop(_mult)
@@ -89,7 +89,7 @@ func show_hit(mult: float, total: int) -> void:
 	if not is_equal_approx(mult, _target_mult):
 		show_mult(mult)
 		settle = count_duration
-	var tween := create_tween()
+	var tween := _tween()
 	tween.tween_interval(settle)
 	tween.tween_callback(_mark_hit)
 	tween.tween_method(func(value: float) -> void: _total.text = str(roundi(value)), 0.0,
@@ -101,7 +101,7 @@ func show_hit(mult: float, total: int) -> void:
 func show_miss() -> void:
 	_strike.show()
 	var start := position.x
-	var tween := create_tween()
+	var tween := _tween()
 	for offset in [-8.0, 8.0, -5.0, 5.0, 0.0]:
 		tween.tween_property(self, "position:x", start + offset, 0.04)
 	tween.tween_property(self, "modulate:a", miss_alpha, 0.25)
@@ -118,7 +118,7 @@ func _mark_hit() -> void:
 	_pop(_badge)
 	# Flash bright, then settle.
 	modulate = Color(2.0, 2.0, 2.0)
-	create_tween().tween_property(self, "modulate", Color.WHITE, 0.3)
+	_tween().tween_property(self, "modulate", Color.WHITE, 0.3)
 
 
 func _set_shown_mult(value: float) -> void:
@@ -130,7 +130,7 @@ func _set_shown_mult(value: float) -> void:
 func _pop(control: Control) -> void:
 	control.pivot_offset = control.size / 2.0
 	control.scale = Vector2.ONE * 1.3
-	create_tween().tween_property(control, "scale", Vector2.ONE, 0.25) \
+	_tween().tween_property(control, "scale", Vector2.ONE, 0.25) \
 		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
@@ -142,11 +142,17 @@ func _float_up(text: String) -> void:
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_mult.add_child(label)
 	label.position = Vector2(_mult.size.x, -label.get_minimum_size().y / 2.0)
-	var tween := label.create_tween().set_parallel()
+	var tween := _tween(label).set_parallel()
 	tween.tween_property(label, "position:y", label.position.y - 28.0, 0.7) \
 		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	tween.tween_property(label, "modulate:a", 0.0, 0.7).set_ease(Tween.EASE_IN)
 	tween.chain().tween_callback(label.queue_free)
+
+
+# A tween bound to `node`, at the animation speed setting. Everything a row animates is part of the
+# spin or its reveal, so all of it speeds up.
+func _tween(node: Node = self) -> Tween:
+	return node.create_tween().set_speed_scale(Settings.animation_speed())
 
 
 # The chip stack draws from its bottom-left corner, so it needs to be told how big its chips get.

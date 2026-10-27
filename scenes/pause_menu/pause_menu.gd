@@ -27,6 +27,17 @@ func _on_resume_button_pressed() -> void:
 	_set_paused(false)
 
 
+## SettingsMenu inherits Always from this, and takes Esc first to close itself.
+func _on_settings_button_pressed() -> void:
+	$Root/Center.hide()
+	%SettingsMenu.open()
+
+
+func _on_settings_menu_closed() -> void:
+	$Root/Center.show()
+	%SettingsButton.grab_focus()
+
+
 ## The run was saved after the last spin that settled, so Continue picks up from there.
 func _on_quit_button_pressed() -> void:
 	get_tree().paused = false

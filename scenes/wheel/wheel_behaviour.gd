@@ -101,20 +101,22 @@ func spin_wheel() -> void:
 	# Wheel: pull back against the spin, then whip forward to the target in one continuous
 	# curve that includes the overshoot (see _set_wheel_spin).
 	# The ball is launched after the pull back, so it rides back with the wheel first.
+	# All three tweens run at the animation speed setting, so they stay in step.
+	var speed := Settings.animation_speed()
 	var wheel_tween: Tween = null
 	if not debug_freeze_wheel:
 		var spin_from: float = _wheel.rotation - windup_angle
-		wheel_tween = create_tween()
+		wheel_tween = create_tween().set_speed_scale(speed)
 		wheel_tween.tween_property(_wheel, "rotation", spin_from, windup_duration) \
 			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 		wheel_tween.tween_method(_set_wheel_spin.bind(spin_from, target_rotation), 0.0, _wheel_spin_time(), _wheel_spin_time())
 
-	var ball_tween: Tween = create_tween()
+	var ball_tween: Tween = create_tween().set_speed_scale(speed)
 	ball_tween.tween_property(self, "_ball_angle", target_ball_angle, spin_duration) \
 		.set_delay(windup_duration).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT)
 
 	# Launch onto the rim, wait for the ball to slow, then drop and bounce off the hub.
-	var radius_tween: Tween = create_tween()
+	var radius_tween: Tween = create_tween().set_speed_scale(speed)
 	radius_tween.tween_interval(windup_duration)
 	radius_tween.tween_property(self, "_ball_radius", ball_track_radius, 0.4)
 	radius_tween.tween_interval(maxf(ball_drop_time - 0.4, 0.0))

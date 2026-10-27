@@ -4,7 +4,7 @@ How scenes get loaded and used, from launch to the end of a run. See [architectu
 
 ## Launch
 
-1. Godot creates the autoloads first, `Audio`, `Game` and `Tooltip`. They sit under the root for the whole session and are never unloaded.
+1. Godot creates the autoloads first, `Settings` (which loads and applies the player's settings), `Audio`, `Game` and `Tooltip`. They sit under the root for the whole session and are never unloaded.
 2. It loads the main scene set in `project.godot`: `scenes/intro/intro.tscn`, the intro video. It starts loading the main menu in the background, plays the intro video (`VideoStreamPlayer`, Ogg Theora, letterboxed to its aspect ratio), and changes to the menu when the video ends or on any key, click or button press. With no video set it goes straight to the menu.
 
 ## Main menu
@@ -12,6 +12,7 @@ How scenes get loaded and used, from launch to the end of a run. See [architectu
 - **New run** calls `Game.new_run()`, which builds a fresh `RunState` in memory.
 - **Continue** calls `Game.load_run()`, which reads `user://run.tres` back into `Game.run`.
 - Either way it then calls `change_scene_to_file("run.tscn")`, which frees the menu and loads the run scene in its place.
+- **Settings** opens the `SettingsMenu` instanced in the menu. It isn't a scene change: the menu hides its buttons until the settings screen emits `closed`. The pause menu opens the same screen in the same way.
 
 ## Run scene
 
@@ -74,6 +75,7 @@ The loop calls `Game.end_run()`, which deletes the save and records the result, 
 
 ```
 root
+├─ Settings       (autoload, player preferences)
 ├─ Audio          (autoload)
 ├─ Game           (autoload, holds Game.run)
 ├─ Tooltip        (autoload, the shared card tooltip)
@@ -81,6 +83,7 @@ root
                   ├─ Phase
                   │   └─ Play  or  Shop   (swapped by the loop)
                   └─ PauseMenu
+                      └─ SettingsMenu
 ```
 
 The data lives in `Game.run`; scenes only display and change it. That's why phases can be freed and swapped freely, and why saving the run is enough to resume.
