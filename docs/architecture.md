@@ -179,6 +179,17 @@ Details:
 
 `scenes/pause_menu/`. Esc (`ui_cancel`) toggles `get_tree().paused`. The pause menu lives in `run.tscn` with Process Mode **Always**, so it hears Esc while the game runs (When Paused would never see the Esc that pauses it). Everything else is Pausable: the wheel's tweens freeze mid-spin and the runner's `await` simply waits.
 
+## Settings
+
+Player preferences, kept apart from runs.
+
+- **`Settings` autoload** (`scenes/settings/settings.gd`), listed first so it applies before anything else loads. Values live in a `ConfigFile` saved to `user://settings.cfg`. `DEFAULTS` lists every setting by section and key, and a missing key falls back to its default, so adding a setting needs no migration. `set_value(section, key, value)` saves, applies and emits `changed(section, key)`; `_apply` turns each value into engine calls.
+- **Preferences only.** Settings never change how a run plays, so a save plays the same on any machine. Run options (difficulty, seeded runs) belong in `RunState` and will be chosen when creating a run.
+- **Audio** goes through buses in `default_bus_layout.tres`: `Music` and `SFX`, both sending to `Master`. `Audio`'s voices play on `SFX` and the intro video on `Music`. Volumes are stored linear (0 to 1) and converted with `linear_to_db`; 0 mutes the bus.
+- **Display**: the 1920×1080 viewport in project settings is the design resolution, scaled to the window (`canvas_items`, `expand`), and isn't a setting. Players choose the window mode (windowed, "fullscreen windowed", which is Godot's borderless `MODE_FULLSCREEN`, and "fullscreen", which is `MODE_EXCLUSIVE_FULLSCREEN`), the window size (used only when windowed) and VSync.
+- **Animation speed** (1x, 2x or 4x, `Settings.ANIMATION_SPEEDS`, on a notched slider) is read through `Settings.animation_speed()` when an animation starts: tweens take it as `set_speed_scale`, and waits (timers) are divided by it. It's not `Engine.time_scale`, so each animation chooses whether it speeds up. It applies to the wheel spin (`wheel_behaviour.gd`'s three tweens, which share one speed so they stay in step), the bet rows' live mult and hit/miss reveal (`BetRow._tween`), and the gaps between reveals (`WheelView.show_result`). The tick sound's 35ms rate limit deliberately doesn't scale, so faster spins skip more ticks rather than buzzing. Not affected: view slides, card and shop animations, and the HUD's pass popup. **Every new animation needs a decision on this:** anything the player waits through during play (spins, scoring, payouts) should usually use it; UI motion (menus, slides, hovers, drags) usually shouldn't.
+- **The settings screen** (`scenes/settings_menu/`) is display only: it shows `Settings` values and passes each change straight back, so changes apply as you make them and there's no Apply button. It's instanced in both the main menu and the pause menu (where it inherits Process Mode Always). Its owner hides its own buttons while it's open and shows them again on `closed`. Esc closes it, and it hears Esc before the pause menu, its parent, so Esc doesn't unpause underneath it.
+
 ## Decisions and open questions
 
 | Topic | Decision |

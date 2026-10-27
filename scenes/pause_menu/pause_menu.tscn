@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" path="res://scenes/pause_menu/pause_menu.gd" id="1_pause"]
 [ext_resource type="FontFile" uid="uid://bjqcqudoiecha" path="res://assets/fonts/Silkscreen-Regular.ttf" id="2_font"]
+[ext_resource type="PackedScene" path="res://scenes/settings_menu/settings_menu.tscn" id="3_settings"]
 
 [sub_resource type="Theme" id="Theme_pause"]
 default_font = ExtResource("2_font")
@@ -53,9 +54,20 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Resume"
 
+[node name="SettingsButton" type="Button" parent="Root/Center/Items"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Settings"
+
 [node name="QuitButton" type="Button" parent="Root/Center/Items"]
 layout_mode = 2
 text = "Quit to menu"
 
+[node name="SettingsMenu" parent="Root" instance=ExtResource("3_settings")]
+unique_name_in_owner = true
+layout_mode = 1
+
 [connection signal="pressed" from="Root/Center/Items/ResumeButton" to="." method="_on_resume_button_pressed"]
+[connection signal="pressed" from="Root/Center/Items/SettingsButton" to="." method="_on_settings_button_pressed"]
 [connection signal="pressed" from="Root/Center/Items/QuitButton" to="." method="_on_quit_button_pressed"]
+[connection signal="closed" from="Root/SettingsMenu" to="." method="_on_settings_menu_closed"]

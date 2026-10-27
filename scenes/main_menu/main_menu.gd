@@ -23,5 +23,15 @@ func _on_continue_button_pressed() -> void:
 		%ContinueButton.disabled = true
 
 
+func _on_settings_button_pressed() -> void:
+	$Center.hide()
+	%SettingsMenu.open()
+
+
+func _on_settings_menu_closed() -> void:
+	$Center.show()
+	%SettingsButton.grab_focus()
+
+
 func _on_quit_button_pressed() -> void:
 	get_tree().quit()

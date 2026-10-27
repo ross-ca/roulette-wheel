@@ -96,9 +96,10 @@ func show_result(spin: SpinContext) -> void:
 	lines.append("Spin total %d" % spin.total())
 	_breakdown_label.text = "\n".join(lines)
 
+	var speed := Settings.animation_speed()
 	var hits := 0
 	for i in spin.bets.size():
-		await get_tree().create_timer(reveal_gap, false).timeout
+		await get_tree().create_timer(reveal_gap / speed, false).timeout
 		var ctx := spin.bets[i]
 		if ctx.won:
 			_row(i).show_hit(ctx.mult, ctx.total())
@@ -109,7 +110,7 @@ func show_result(spin: SpinContext) -> void:
 			_row(i).show_miss()
 			if miss_sound:
 				Audio.play_sfx(miss_sound, reveal_volume_db, randf_range(0.95, 1.05))
-	await get_tree().create_timer(reveal_tail, false).timeout
+	await get_tree().create_timer(reveal_tail / speed, false).timeout
 
 
 ## Locks the way back to betting while the wheel spins, and hides the spin button.

@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bmhwcxdtst3qj" path="res://scenes/main_menu/main_menu.gd" id="1_menu"]
 [ext_resource type="FontFile" uid="uid://bjqcqudoiecha" path="res://assets/fonts/Silkscreen-Regular.ttf" id="2_font"]
+[ext_resource type="PackedScene" path="res://scenes/settings_menu/settings_menu.tscn" id="3_settings"]
 
 [sub_resource type="Theme" id="Theme_menu"]
 default_font = ExtResource("2_font")
@@ -51,10 +52,21 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Continue"
 
+[node name="SettingsButton" type="Button" parent="Center/Items"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Settings"
+
 [node name="QuitButton" type="Button" parent="Center/Items" unique_id=1115156476]
 layout_mode = 2
 text = "Quit"
 
+[node name="SettingsMenu" parent="." instance=ExtResource("3_settings")]
+unique_name_in_owner = true
+layout_mode = 1
+
 [connection signal="pressed" from="Center/Items/NewRunButton" to="." method="_on_new_run_button_pressed"]
 [connection signal="pressed" from="Center/Items/ContinueButton" to="." method="_on_continue_button_pressed"]
+[connection signal="pressed" from="Center/Items/SettingsButton" to="." method="_on_settings_button_pressed"]
 [connection signal="pressed" from="Center/Items/QuitButton" to="." method="_on_quit_button_pressed"]
+[connection signal="closed" from="SettingsMenu" to="." method="_on_settings_menu_closed"]
