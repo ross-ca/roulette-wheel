@@ -6,22 +6,14 @@
 [ext_resource type="Resource" uid="uid://desc1cj401ifv" path="res://scenes/bet_table/table_style.tres" id="4_style"]
 [ext_resource type="PackedScene" path="res://scenes/stat_display/stat_display.tscn" id="5_stat"]
 [ext_resource type="PackedScene" path="res://scenes/side_tab/side_tab.tscn" id="6_tab"]
+[ext_resource type="PackedScene" path="res://scenes/card_container/card_container.tscn" id="7_cards"]
 
 [sub_resource type="Theme" id="Theme_view"]
 default_font = ExtResource("2_font")
 default_font_size = 20
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i454r"]
-bg_color = Color(0.13725491, 0.13333334, 0.13333334, 1)
-border_width_left = 8
-border_width_top = 8
-border_width_bottom = 8
-border_color = Color(0.9764706, 0.8392157, 0.5176471, 1)
-corner_radius_top_left = 52
-corner_radius_bottom_left = 52
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ceuks"]
-bg_color = Color(0.18431373, 0.1764706, 0.1764706, 1)
+bg_color = Color(0.13725491, 0.13333334, 0.13333334, 1)
 border_width_left = 8
 border_width_top = 8
 border_width_bottom = 8
@@ -39,6 +31,15 @@ corner_radius_top_left = 52
 corner_radius_bottom_left = 52
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lxuho"]
+bg_color = Color(0.18431373, 0.1764706, 0.1764706, 1)
+border_width_left = 8
+border_width_top = 8
+border_width_bottom = 8
+border_color = Color(0.9764706, 0.8392157, 0.5176471, 1)
+corner_radius_top_left = 52
+corner_radius_bottom_left = 52
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x3spg"]
 bg_color = Color(0.13725491, 0.13333334, 0.13333334, 1)
 border_width_left = 8
 border_width_top = 8
@@ -47,7 +48,7 @@ border_color = Color(0.9764706, 0.8392157, 0.5176471, 1)
 corner_radius_top_left = 52
 corner_radius_bottom_left = 52
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_x3spg"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e1kin"]
 
 [node name="BettingView" type="Control" unique_id=585023277]
 layout_mode = 3
@@ -140,11 +141,11 @@ mouse_filter = 2
 custom_minimum_size = Vector2(520, 0)
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Rows/Margin/Body/Bottom/Bowl" unique_id=1069860572]
+[node name="Consumables" parent="Rows/Margin/Body/Bottom/Bowl" unique_id=1069860572 instance=ExtResource("7_cards")]
+unique_name_in_owner = true
 layout_mode = 2
-text = "Consumables"
-horizontal_alignment = 1
-vertical_alignment = 1
+card_scale = 2.5
+separation = 10.0
 
 [node name="Chips" type="VBoxContainer" parent="Rows/Margin/Body/Bottom" unique_id=187652771]
 unique_name_in_owner = true
@@ -165,10 +166,10 @@ offset_top = -165.0
 offset_bottom = 165.0
 grow_horizontal = 0
 grow_vertical = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_i454r")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_ceuks")
-theme_override_styles/hover = SubResource("StyleBoxFlat_dvm0a")
-theme_override_styles/disabled = SubResource("StyleBoxFlat_lxuho")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_x3spg")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ceuks")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_dvm0a")
+theme_override_styles/hover = SubResource("StyleBoxFlat_lxuho")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_x3spg")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_e1kin")
 
 [connection signal="pressed" from="WheelTab" to="." method="_on_wheel_button_pressed"]

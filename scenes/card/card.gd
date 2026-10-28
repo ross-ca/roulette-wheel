@@ -66,6 +66,10 @@ var held := false:
 		held = value
 		_update_tooltip()
 
+## True while whatever holds the card has it picked, e.g. a consumable waiting for its target. It
+## stays popped up as if hovered.
+var selected := false
+
 ## Scale multiplier at the start of `pulse`.
 @export_range(1.0, 1.5, 0.01) var pulse_peak: float = 1.2
 
@@ -147,7 +151,7 @@ func _process(delta: float) -> void:
 func _step_hover_spring(delta: float) -> void:
 	var stiffness := hover_scale_speed * hover_scale_speed
 	var damping := 2.0 * hover_scale_damping * hover_scale_speed
-	var target := 1.0 if _hovered else 0.0
+	var target := 1.0 if _hovered or selected else 0.0
 	_hover_velocity += (stiffness * (target - _hover_amount) - damping * _hover_velocity) * delta
 	_hover_amount += _hover_velocity * delta
 

@@ -35,6 +35,9 @@ var _spin: SpinContext # live score of the spin in progress
 var _view_position := 0.0
 var _slide: Tween
 var _selling := false # a ticket's card is dissolving
+var _selected: Consumable # picked, waiting for the player to pick its targets on the table
+var _picked: Array[Pocket] = [] # the targets chosen so far for _selected
+var _using := false # a used consumable's card is dissolving
 
 @onready var _wheel := $SubViewport/RouletteWheel
 @onready var _views: Control = $Views
@@ -96,6 +99,10 @@ func _ready() -> void:
 
 	_betting.set_chip_values(CHIP_VALUES)
 	_betting.show_pockets(_run.pockets)
+	_betting.show_consumables(_run.consumables)
+	_betting.consumable_clicked.connect(_on_consumable_clicked)
+	_betting.consumables_reordered.connect(_on_consumables_reordered)
+	_betting.spot_clicked.connect(_on_spot_clicked)
 	_wheel_view.show_pockets(_run.pockets)
 	_show_round()
 	_show_bets()
@@ -107,6 +114,57 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	_place_views()
+
+
+# Clicking a consumable picks it (or puts it down again); the next valid tile clicked is its target.
+func _on_consumable_clicked(item: Consumable) -> void:
+	if _state != State.WAITING or _using:
+		return
+	_selected = null if _selected == item else item
+	_picked.clear()
+	_betting.select_consumable(_selected)
+
+
+func _on_consumables_reordered() -> void:
+	_run.consumables.assign(_betting.get_consumables())
+	Game.save_run()
+
+
+# Only number tiles are targets for now, as they stand for one pocket each. A consumable that
+# can't use the pocket leaves itself selected.
+func _on_spot_clicked(bet: Bet) -> void:
+	if _selected == null or _state != State.WAITING or _using or not bet is NumberBet:
+		return
+	var pocket := _find_pocket(bet.number)
+	if pocket == null or not _selected.can_target(_run, pocket, _picked):
+		return
+	_picked.append(pocket)
+	if _picked.size() < _selected.target_count():
+		return # waiting for the rest of its targets
+	_using = true
+	var item := _selected
+	var pockets := _picked.duplicate()
+	_selected = null
+	_picked.clear()
+	_betting.select_consumable(null)
+	item.use(_run, pockets)
+	Modifiers.notify(_run, &"consumable_used", [item, pockets])
+	_run.consumables.erase(item)
+	# The wheel redraws itself as the pocket changes; the table and the rows' badges need telling.
+	_betting.show_pockets(_run.pockets)
+	_wheel_view.show_pockets(_run.pockets)
+	if not _run.current_round.bets.is_empty():
+		_wheel_view.show_bets(_run.current_round.bets)
+	Game.save_run()
+	await _betting.remove_consumable(item)
+	_using = false
+
+
+func _find_pocket(number: int) -> Pocket:
+	for pocket in _run.pockets:
+		if pocket.number == number:
+			return pocket
+	return null
 
 
 func _on_wheel_requested() -> void:
@@ -173,10 +231,13 @@ func _find_bet(bet: Bet) -> PlacedBet:
 
 
 func _on_spin_requested() -> void:
-	if _state != State.WAITING or _selling or _run.current_round.bets.is_empty():
+	if _state != State.WAITING or _selling or _using or _run.current_round.bets.is_empty():
 		return
 	_state = State.SPINNING
-	_spin = SpinContext.new(_run.current_round.bets)
+	_selected = null
+	_picked.clear()
+	_betting.select_consumable(null)
+	_spin =SpinContext.new(_run.current_round.bets)
 	_betting.set_editable(false)
 	_wheel_view.set_spinning(true)
 	_ticks_this_spin = 0

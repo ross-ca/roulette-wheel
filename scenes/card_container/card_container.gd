@@ -9,10 +9,15 @@ extends Container
 
 ## Emitted after a drag ends with the cards in a different order than they started.
 signal order_changed
+## Emitted when a card is clicked: pressed and released without being dragged out of its slot.
+signal item_clicked(item: Modifier)
 ## Emitted when a card is right-clicked (and none is being dragged). What it means is up to the scene.
 signal item_right_clicked(item: Modifier)
 
 const CARD_SCENE := preload("res://scenes/card/card.tscn")
+
+## How far (pixels) a card can be dragged and still count as a click when it's let go.
+const CLICK_SLOP := 6.0
 
 enum Alignment { BEGIN, CENTER, END }
 
@@ -76,6 +81,13 @@ func remove_item(item: Modifier) -> void:
 			queue_sort()
 			update_minimum_size()
 			return
+
+
+## Marks the card showing `item` as selected (and every other as not). Null clears the selection.
+func select_item(item: Modifier) -> void:
+	for card in _cards():
+		if card is Card:
+			card.selected = card.item == item
 
 
 ## The items of the cards, in their current left-to-right order. Assign it to a typed array
@@ -247,6 +259,8 @@ func _drop() -> void:
 	_restore_mouse_filters()
 	if _cards() != _order_at_grab:
 		order_changed.emit()
+	elif card is Card and absf(card.position.x - _targets[card].x) < CLICK_SLOP:
+		item_clicked.emit(card.item)
 
 
 func _restore_mouse_filters() -> void:

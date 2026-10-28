@@ -14,6 +14,8 @@ extends Resource
 @export var money: int = 0
 ## Trigger order is array order, left to right.
 @export var tickets: Array[Ticket] = []
+## One-use items the player is holding, used in the play phase.
+@export var consumables: Array[Consumable] = []
 ## The wheel, clockwise from the top.
 @export var pockets: Array[Pocket] = []
 ## Upcoming steps; index 0 is next.

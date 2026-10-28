@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="GreenFlipConsumable" format=3 uid="uid://cd317t8dei0cq"]
+
+[ext_resource type="Script" uid="uid://07bmblgl7ujf" path="res://scenes/modifiers/consumables/green_flip_consumable.gd" id="1_5r5kc"]
+[ext_resource type="Texture2D" uid="uid://76xnlea5ohyg" path="res://assets/textures/consumables/springOnion.png" id="1_rs3e1"]
+
+[resource]
+script = ExtResource("1_5r5kc")
+id = &"green_flip"
+display_name = "Green Flip"
+icon = ExtResource("1_rs3e1")
+metadata/_custom_type_script = "uid://07bmblgl7ujf"

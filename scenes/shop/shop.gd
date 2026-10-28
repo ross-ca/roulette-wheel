@@ -29,7 +29,7 @@ func _ready() -> void:
 		_run.current_step = _step
 
 	if not _step.stocked:
-		_step.stock_up(_run, Game.TICKET_DATABASE)
+		_step.stock_up(_run, Game.TICKET_DATABASE, Game.CONSUMABLE_DATABASE)
 		Game.save_run()
 	_stock.set_items(_step.stock)
 	_refresh()
@@ -55,7 +55,7 @@ func _on_reroll_button_pressed() -> void:
 	if _run.money < cost:
 		return
 	_run.money -= cost
-	_step.reroll(_run, Game.TICKET_DATABASE)
+	_step.reroll(_run, Game.TICKET_DATABASE, Game.CONSUMABLE_DATABASE)
 	_stock.set_items(_step.stock)
 	Game.save_run()
 	_refresh()

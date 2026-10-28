@@ -7,6 +7,8 @@ extends Control
 
 signal chip_dropped(bet: Bet, chip: PlacedChip)
 signal cleared(bet: Bet)
+## The tile was left-clicked, e.g. to pick it as the target of a consumable.
+signal clicked(bet: Bet)
 
 var bet: Bet
 ## False while bets can't change, such as during a spin.
@@ -78,7 +80,11 @@ func _drop_data(_at: Vector2, data: Variant) -> void:
 
 
 func _gui_input(event: InputEvent) -> void:
-	if editable and event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT \
-			and event.pressed:
+	if not (editable and event is InputEventMouseButton and event.pressed):
+		return
+	if event.button_index == MOUSE_BUTTON_RIGHT:
 		cleared.emit(bet)
+		accept_event()
+	elif event.button_index == MOUSE_BUTTON_LEFT:
+		clicked.emit(bet)
 		accept_event()

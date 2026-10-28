@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ConsumableDatabase" format=3 uid="uid://fuktre8f0ryg"]
+
+[ext_resource type="Script" uid="uid://dnjmlwk2r2e2m" path="res://scenes/modifiers/consumable_database.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://sans47dkpc0" path="res://scenes/modifiers/consumables/consumable.gd" id="2_consumable"]
+[ext_resource type="Resource" uid="uid://cd317t8dei0cq" path="res://scenes/modifiers/consumables/instances/green_flip.tres" id="3_7b25n"]
+[ext_resource type="Resource" uid="uid://blnscb7u8wpex" path="res://scenes/modifiers/consumables/instances/colour_flip.tres" id="3_flip"]
+[ext_resource type="Resource" path="res://scenes/modifiers/consumables/instances/convert_pocket.tres" id="4_convert"]
+
+[resource]
+script = ExtResource("1_script")
+consumables = Array[ExtResource("2_consumable")]([ExtResource("3_flip"), ExtResource("3_7b25n"), ExtResource("4_convert")])
+starter_consumables = Array[ExtResource("2_consumable")]([ExtResource("3_flip"), ExtResource("3_flip"), ExtResource("3_7b25n"), ExtResource("4_convert")])
