@@ -38,3 +38,5 @@ Follow the same pattern so it can be run on its own:
 ## Saves
 
 The save is `user://run.tres`, which on Windows is `%APPDATA%\Godot\app_userdata\roulette-wheel\run.tres`. It's a text resource you can open to inspect a run's state. Delete it to clear Continue.
+
+Settings are saved next to it in `settings.cfg`, a plain-text `ConfigFile`. Delete it to reset every setting to its default. When the game runs embedded in the editor's Game tab, window mode and size changes may not apply; use a separate window (or an export) to test those.
