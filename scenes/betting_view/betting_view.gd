@@ -66,7 +66,7 @@ func show_round(run: RunState, _step: RoundStep) -> void:
 	var progress := run.current_round
 	_money.value = run.money
 	_rolls.value = progress.spins_left
-	_score.value = progress.score
+	_score.value = _step.target_score
 
 
 ## Colours the table's number tiles by their pockets' colours.

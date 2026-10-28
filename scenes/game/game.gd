@@ -2,7 +2,7 @@ extends Node
 ## Autoload ("Game"): owns the current run, and starts, saves, loads and ends runs.
 
 const SAVE_PATH := "user://run.tres"
-const STARTING_MONEY := 4
+const STARTING_MONEY := 200
 const TICKET_DATABASE := preload("res://scenes/modifiers/ticket_database.tres")
 const CONSUMABLE_DATABASE := preload("res://scenes/modifiers/consumable_database.tres")
 
