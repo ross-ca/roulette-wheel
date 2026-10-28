@@ -1,15 +1,15 @@
 class_name GreenFlipConsumable
 extends Consumable
-## Flips one pocket between green and black. Red pockets can't be flipped.
+## Turns one red or black pocket green.
 
 
 func get_description() -> String:
-    return "Pick a number on the table. Set it's colour to green."
+	return "Pick a number on the table. Set it's colour to green."
 
 
-func can_target(_run: RunState, pocket: Pocket) -> bool:
-    return pocket.colour == "red" or pocket.colour == "black"
+func can_target(_run: RunState, pocket: Pocket, _picked: Array[Pocket]) -> bool:
+	return pocket.colour == "red" or pocket.colour == "black"
 
 
-func use(_run: RunState, pocket: Pocket) -> void:
-    pocket.colour = "green"
+func use(_run: RunState, pockets: Array[Pocket]) -> void:
+	pockets[0].colour = "green"

@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ConvertPocketConsumable" format=3 uid="uid://w8lvo2gxwsbe"]
+
+[ext_resource type="Texture2D" uid="uid://3i6rfi370dw7" path="res://assets/textures/consumables/beef.png" id="1_2i4yi"]
+[ext_resource type="Script" uid="uid://bsvdgxrnjj5rd" path="res://scenes/modifiers/consumables/convert_pocket_consumable.gd" id="1_convert"]
+
+[resource]
+script = ExtResource("1_convert")
+id = &"convert_pocket"
+display_name = "Convert Pocket"
+icon = ExtResource("1_2i4yi")

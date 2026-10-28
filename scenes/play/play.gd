@@ -35,7 +35,8 @@ var _spin: SpinContext # live score of the spin in progress
 var _view_position := 0.0
 var _slide: Tween
 var _selling := false # a ticket's card is dissolving
-var _selected: Consumable # picked, waiting for the player to pick its target on the table
+var _selected: Consumable # picked, waiting for the player to pick its targets on the table
+var _picked: Array[Pocket] = [] # the targets chosen so far for _selected
 var _using := false # a used consumable's card is dissolving
 
 @onready var _wheel := $SubViewport/RouletteWheel
@@ -120,6 +121,7 @@ func _on_consumable_clicked(item: Consumable) -> void:
 	if _state != State.WAITING or _using:
 		return
 	_selected = null if _selected == item else item
+	_picked.clear()
 	_betting.select_consumable(_selected)
 
 
@@ -134,14 +136,19 @@ func _on_spot_clicked(bet: Bet) -> void:
 	if _selected == null or _state != State.WAITING or _using or not bet is NumberBet:
 		return
 	var pocket := _find_pocket(bet.number)
-	if pocket == null or not _selected.can_target(_run, pocket):
+	if pocket == null or not _selected.can_target(_run, pocket, _picked):
 		return
+	_picked.append(pocket)
+	if _picked.size() < _selected.target_count():
+		return # waiting for the rest of its targets
 	_using = true
 	var item := _selected
+	var pockets := _picked.duplicate()
 	_selected = null
+	_picked.clear()
 	_betting.select_consumable(null)
-	item.use(_run, pocket)
-	Modifiers.notify(_run, &"consumable_used", [item, pocket])
+	item.use(_run, pockets)
+	Modifiers.notify(_run, &"consumable_used", [item, pockets])
 	_run.consumables.erase(item)
 	# The wheel redraws itself as the pocket changes; the table and the rows' badges need telling.
 	_betting.show_pockets(_run.pockets)
@@ -228,8 +235,9 @@ func _on_spin_requested() -> void:
 		return
 	_state = State.SPINNING
 	_selected = null
+	_picked.clear()
 	_betting.select_consumable(null)
-	_spin = SpinContext.new(_run.current_round.bets)
+	_spin =SpinContext.new(_run.current_round.bets)
 	_betting.set_editable(false)
 	_wheel_view.set_spinning(true)
 	_ticks_this_spin = 0

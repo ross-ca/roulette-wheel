@@ -124,7 +124,7 @@ Events, raised with `Modifiers.notify(run, event, args)`:
 | `spin_started` / `spin_finished` | Each spin | — / pocket |
 | `round_started` / `round_finished` | Each round | round state / round state, won |
 | `step_started` / `step_finished` | Every step | step / step, result |
-| `consumable_used` | A consumable is used in the play phase | consumable, pocket |
+| `consumable_used` | A consumable is used in the play phase | consumable, pockets (the picked targets, in order) |
 
 `step_started` only fires when a step is first taken, not when a save resumes it.
 
@@ -149,13 +149,15 @@ Modifiers record what they did in `ctx.trace`. Rules are computed instantly and 
 
 ## Consumables
 
-`scenes/modifiers/consumables/`. A `Consumable` extends `Modifier` (so a `Card` and tooltip show it like a ticket) but lives in `RunState.consumables`, which `Modifiers.active()` doesn't read: it does nothing until the player uses it. It has `can_target(run, pocket)` and `use(run, pocket)`; a consumable changes the wheel by mutating a `Pocket` from `run.pockets` in place, which is saved with the run and makes the wheel redraw through the pocket's `changed` signal.
+`scenes/modifiers/consumables/`. A `Consumable` extends `Modifier` (so a `Card` and tooltip show it like a ticket) but lives in `RunState.consumables`, which `Modifiers.active()` doesn't read: it does nothing until the player uses it. It has `target_count()` (default 1), `can_target(run, pocket, picked)` and `use(run, pockets)`; a consumable changes the wheel by mutating a `Pocket` from `run.pockets` in place, which is saved with the run and makes the wheel redraw through the pocket's `changed` signal.
 
 `ColourFlipConsumable` turns a red pocket black and a black one red (green can't be flipped). Instances live in `instances/`. `ConsumableDatabase` (`consumable_database.tres`, loaded by `Game.CONSUMABLE_DATABASE`) mirrors `TicketDatabase`: `consumables` lists every one that can appear, `starter_consumables` is what a new run starts with (the same one can be listed repeatedly), and `create(id)`, `create_starters()` and `roll(rng, exclude)` hand out copies or rolled templates by rarity. Edit it in the inspector.
 
 **Using one** (all in `play.gd`, while waiting between spins): click the consumable's card in the betting view (`CardContainer.item_clicked`, a press released without being dragged out of its slot; the card stays popped up via `Card.selected`), then click a number tile (`BetSpot.clicked`, passed up through `BetTable.spot_clicked` and `BettingView.spot_clicked`). Clicking the card again puts it down. A number tile stands for the first pocket with that number; if the consumable's `can_target` refuses it, nothing happens and the card stays selected. On success `use` runs, `consumable_used` is notified, the consumable leaves the run, the run is saved, the table and the wheel view's badges are recoloured with `show_pockets`, and the card dissolves. Spinning clears the selection, and spinning is blocked while the card dissolves. Right-click on a tile still clears its chips, and chip drops are untouched.
 
-Open: a consumable that needs two pockets (replace one with another) needs a second selection step, and consumables can't be bought or sold yet.
+`ConvertPocketConsumable` has `target_count() == 2`: `play.gd` collects picks in `_picked` (each checked with `can_target(run, pocket, picked)`, which for Convert refuses the same number twice) and only calls `use` and notifies once enough are in; putting the card down or spinning discards a half-made pick. The first pocket becomes a copy of the second (number, colour, weight), so the first number leaves the wheel, bets on it can't win, and the second appears twice. A number tile stands for the first pocket with that number, so a duplicated number can't be targeted to reach its twin. There's no highlight yet on the first pick.
+
+Open: consumables can't be bought or sold yet.
 
 ## Cards and tooltips
 
