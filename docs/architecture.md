@@ -211,7 +211,7 @@ Still open:
 - Should anything be able to change where the current ball lands? Today the winner is fixed at spin start.
 - The scoring formula.
 - Chips and money: should placing chips cost money, and should chip values be fractions of the player's money (the plan)? Today chips are free and fixed (`CHIP_VALUES`).
-- What the shop sells besides tickets.
+- What the shop sells besides tickets and consumables (consumables are stocked as a possible placeholder: two slots after the tickets, `ShopStep.CONSUMABLE_SLOTS`).
 
 ## Next
 
