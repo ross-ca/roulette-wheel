@@ -32,6 +32,14 @@ func multiply_mult(factor: float) -> void:
 		ctx.mult *= factor
 
 
+## What the spin cost: the chips on all its bets.
+func staked() -> int:
+	var sum := 0
+	for ctx in bets:
+		sum += ctx.points
+	return sum
+
+
 ## The spin's score: the sum of its bets'. Lost bets add nothing.
 func total() -> int:
 	var sum := 0

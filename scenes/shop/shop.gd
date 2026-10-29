@@ -9,9 +9,10 @@ var _run: RunState
 var _step: ShopStep
 
 @onready var _stock: CardContainer = %Stock
-@onready var _money_label: Label = %MoneyLabel
+@onready var _vouchers_label: RichTextLabel = %VouchersLabel
 @onready var _tickets_label: Label = %TicketsLabel
 @onready var _reroll_button: Button = %RerollButton
+@onready var _reroll_label: RichTextLabel = %RerollLabel
 
 
 ## Called by the runner before the scene enters the tree.
@@ -36,10 +37,12 @@ func _ready() -> void:
 
 
 func _refresh() -> void:
-	_money_label.text = "$%d" % _run.money
+	_vouchers_label.text = "[center]%s[/center]" % Game.voucher_text(_run.vouchers)
 	var reroll_cost := _reroll_cost()
-	_reroll_button.text = "Reroll ($%d)" % reroll_cost
-	_reroll_button.disabled = _run.money < reroll_cost
+	_reroll_label.text = "[center]Reroll %s[/center]" % Game.voucher_text(reroll_cost)
+	_reroll_button.disabled = _run.vouchers < reroll_cost
+	_reroll_label.modulate.a = 0.5 if _reroll_button.disabled else 1.0 # it doesn't follow the button's disabled look
+	# A button's size ignores its children, so size it to the label plus some padding.
 	var names: PackedStringArray = []
 	for ticket in _run.tickets:
 		names.append(ticket.display_name)
@@ -52,9 +55,9 @@ func _reroll_cost() -> int:
 
 func _on_reroll_button_pressed() -> void:
 	var cost := _reroll_cost()
-	if _run.money < cost:
+	if _run.vouchers < cost:
 		return
-	_run.money -= cost
+	_run.vouchers -= cost
 	_step.reroll(_run, Game.TICKET_DATABASE, Game.CONSUMABLE_DATABASE)
 	_stock.set_items(_step.stock)
 	Game.save_run()

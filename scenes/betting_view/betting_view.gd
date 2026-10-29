@@ -1,6 +1,6 @@
 class_name BettingView
 extends Control
-## The play phase's betting screen: money, score and rolls along the top, the table, the tickets,
+## The play phase's betting screen: money, required and current profit and rolls along the top, the table, the tickets,
 ## consumables and the chips to drag onto the table along the bottom (left, middle and right), and
 ## the WHEEL tab on the right edge.
 ## Display only: it reports what the player does through its signals, and play.gd decides what
@@ -24,7 +24,8 @@ const CHIPS_PER_ROW := 5
 
 @onready var _money: StatDisplay = %MoneyDisplay
 @onready var _rolls: StatDisplay = %RollsDisplay
-@onready var _score: StatDisplay = %ScoreDisplay
+@onready var _required_profit: StatDisplay = %RequiredProfitDisplay
+@onready var _current_profit: StatDisplay = %CurrentProfitDisplay
 @onready var _table: BetTable = %Table
 @onready var _chips: VBoxContainer = %Chips # one centred HBoxContainer per row of chips
 @onready var _consumables: CardContainer = %Consumables
@@ -66,7 +67,8 @@ func show_round(run: RunState, _step: RoundStep) -> void:
 	var progress := run.current_round
 	_money.value = run.money
 	_rolls.value = progress.spins_left
-	_score.value = _step.target_score
+	_required_profit.value = _step.required_profit
+	_current_profit.value = progress.profit()
 
 
 ## Colours the table's number tiles by their pockets' colours.
