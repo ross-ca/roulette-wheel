@@ -7,7 +7,7 @@ const SLOTS := 3
 ## How many consumables the shop offers, after the tickets.
 const CONSUMABLE_SLOTS := 2
 ## What a reroll costs before modifiers change it. Placeholder: 0 makes rerolls free.
-const REROLL_COST := 0
+const REROLL_COST := 2
 
 ## What the shop is offering, in slot order: the tickets, then the consumables. Kept on the step so
 ## it's saved with the run: leaving and resuming the shop shows the same stock instead of rolling it again.

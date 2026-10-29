@@ -1,15 +1,14 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://b2j1ioicjsn4t"]
 
-[ext_resource type="Script" path="res://scenes/shop/shop.gd" id="1_shop"]
+[ext_resource type="Script" uid="uid://b27g2m6jexpel" path="res://scenes/shop/shop.gd" id="1_shop"]
 [ext_resource type="FontFile" uid="uid://bjqcqudoiecha" path="res://assets/fonts/Silkscreen-Regular.ttf" id="2_font"]
-
 [ext_resource type="PackedScene" path="res://scenes/card_container/card_container.tscn" id="3_cards"]
 
 [sub_resource type="Theme" id="Theme_shop"]
 default_font = ExtResource("2_font")
 default_font_size = 28
 
-[node name="Shop" type="Control"]
+[node name="Shop" type="Control" unique_id=1959714596]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -19,7 +18,7 @@ grow_vertical = 2
 theme = SubResource("Theme_shop")
 script = ExtResource("1_shop")
 
-[node name="Center" type="CenterContainer" parent="."]
+[node name="Center" type="CenterContainer" parent="." unique_id=2125734248]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -27,39 +26,59 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Items" type="VBoxContainer" parent="Center"]
+[node name="Items" type="VBoxContainer" parent="Center" unique_id=1409340734]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="Title" type="Label" parent="Center/Items"]
+[node name="Title" type="Label" parent="Center/Items" unique_id=46499663]
 layout_mode = 2
 theme_override_font_sizes/font_size = 56
 text = "Shop"
 horizontal_alignment = 1
 
-[node name="MoneyLabel" type="Label" parent="Center/Items"]
+[node name="VouchersLabel" type="RichTextLabel" parent="Center/Items" unique_id=311999752]
+unique_name_in_owner = true
+texture_filter = 5
+layout_mode = 2
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+
+[node name="Stock" parent="Center/Items" unique_id=89430866 instance=ExtResource("3_cards")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="TicketsLabel" type="Label" parent="Center/Items" unique_id=1435948210]
 unique_name_in_owner = true
 layout_mode = 2
 horizontal_alignment = 1
 
-[node name="Stock" parent="Center/Items" instance=ExtResource("3_cards")]
+[node name="RerollButton" type="Button" parent="Center/Items" unique_id=918117533]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
 
-[node name="TicketsLabel" type="Label" parent="Center/Items"]
+[node name="RerollLabel" type="RichTextLabel" parent="Center/Items/RerollButton" unique_id=1502776490]
 unique_name_in_owner = true
-layout_mode = 2
-horizontal_alignment = 1
+texture_filter = 5
+clip_contents = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+bbcode_enabled = true
+scroll_active = false
+autowrap_mode = 0
+vertical_alignment = 1
 
-[node name="RerollButton" type="Button" parent="Center/Items"]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="ReverseButton" type="Button" parent="Center/Items"]
+[node name="ReverseButton" type="Button" parent="Center/Items" unique_id=763519126]
 layout_mode = 2
 text = "Reverse ticket order"
 
-[node name="ContinueButton" type="Button" parent="Center/Items"]
+[node name="ContinueButton" type="Button" parent="Center/Items" unique_id=1858303695]
 layout_mode = 2
 text = "Continue"
 

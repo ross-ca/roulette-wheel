@@ -2,7 +2,15 @@ extends Node
 ## Autoload ("Game"): owns the current run, and starts, saves, loads and ends runs.
 
 const SAVE_PATH := "user://run.tres"
-const STARTING_MONEY := 4
+const STARTING_MONEY := 200
+const STARTING_VOUCHERS := 0
+## Shown in front of a voucher amount, in place of a currency character. Used through `voucher_text`.
+const VOUCHER_SYMBOL := "res://assets/textures/voucherSymbol.png"
+## Height in pixels the symbol is drawn at in a RichTextLabel; the shop's font is 28.
+const VOUCHER_SYMBOL_HEIGHT := 18
+## Where the symbol sits against the text, "image,text". Bottom on the baseline lines it up with the
+## digits; the default, center,center, centres it on the line box, which sits above a pixel font's digits.
+const VOUCHER_SYMBOL_ALIGN := "bottom,baseline"
 const TICKET_DATABASE := preload("res://scenes/modifiers/ticket_database.tres")
 const CONSUMABLE_DATABASE := preload("res://scenes/modifiers/consumable_database.tres")
 
@@ -19,9 +27,18 @@ func new_run(rng_seed: int = randi(), saving: bool = true) -> void:
 	run.rng_seed = rng_seed
 	run.rng.seed = rng_seed
 	run.money = STARTING_MONEY
+	run.vouchers = STARTING_VOUCHERS
 	run.pockets = Pocket.european_layout()
 	run.tickets = TICKET_DATABASE.create_starters()
 	run.consumables = CONSUMABLE_DATABASE.create_starters()
+
+
+## BBCode for an amount of vouchers: the symbol, then the number. For RichTextLabels only; Labels and
+## Buttons can't show it.
+static func voucher_text(amount: int) -> String:
+	return "[img height=%d align=%s]%s[/img]%d" % [
+		VOUCHER_SYMBOL_HEIGHT, VOUCHER_SYMBOL_ALIGN, VOUCHER_SYMBOL, amount
+	]
 
 
 func has_save() -> bool:

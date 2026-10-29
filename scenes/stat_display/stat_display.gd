@@ -1,7 +1,7 @@
 @tool
 class_name StatDisplay
 extends PanelContainer
-## A boxed readout, like the money, rolls and score along the top of the betting view: a small
+## A boxed readout, like the money, rolls and profit along the top of the betting view: a small
 ## title above a big number padded with leading zeros to `digits` wide. The zeros and the number
 ## are separate labels so they can be styled apart; the looks live in stat_display.tscn.
 
@@ -32,9 +32,10 @@ func _ready() -> void:
 func _refresh() -> void:
 	if not is_node_ready():
 		return
-	var number := str(value)
+	var number := str(absi(value))
 	$Rows/Title.text = title
 	$Rows/Value/Prefix.text = prefix
 	$Rows/Value/Prefix.visible = not prefix.is_empty()
-	$Rows/Value/Zeros.text = "0".repeat(maxi(digits - number.length(), 0))
+	# A negative value (a round in the red) puts its sign in front of the zeros.
+	$Rows/Value/Zeros.text = ("-" if value < 0 else "") + "0".repeat(maxi(digits - number.length(), 0))
 	$Rows/Value/Number.text = number

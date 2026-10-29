@@ -11,7 +11,10 @@ extends Resource
 @export var rng_state: int = 0
 ## The table being played, from 1. 0 before the first table starts.
 @export var table: int = 0
+## Spent on bets and paid out by winning ones. Carries between the rounds of a table.
 @export var money: int = 0
+## Earned by finishing rounds with spins left, and spent in the shop.
+@export var vouchers: int = 0
 ## Trigger order is array order, left to right.
 @export var tickets: Array[Ticket] = []
 ## One-use items the player is holding, used in the play phase.

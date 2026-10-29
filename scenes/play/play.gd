@@ -1,6 +1,6 @@
 extends Control
 ## The play phase for one round: spin until the round's target is reached or the spins run out,
-## then emit `finished` with {won, score}. Round progress lives in `run.current_round`, so a loaded
+## then emit `finished` with {won, profit, spins_left}. Round progress lives in `run.current_round`, so a loaded
 ## save resumes part-way through.
 ##
 ## The round has two views that slide sideways between each other: betting (place chips on the
@@ -17,7 +17,7 @@ const TICK_VOLUME_DB := -12.0
 const TICK_PITCH_STEP := 0.004
 const TICK_PITCH_MAX := 1.5
 
-## The chips offered in the betting view. Placeholder until chips are tied to money.
+## The chips offered in the betting view. Placeholder until chip values follow the player's money.
 const CHIP_VALUES: Array[int] = [1, 5, 10, 25, 100]
 ## Seconds a slide between the views takes.
 const SLIDE_DURATION := 0.35
@@ -31,6 +31,7 @@ var _state := State.WAITING
 var _last_tick_ms := 0
 var _ticks_this_spin := 0
 var _spin: SpinContext # live score of the spin in progress
+var _staked := 0 # what the spin in progress cost, to work out its profit
 ## 0 shows the betting view, 1 the wheel view, and values between are part-way through a slide.
 var _view_position := 0.0
 var _slide: Tween
@@ -67,7 +68,7 @@ func _on_cards_item_right_clicked(item: Modifier) -> void:
 	_selling = true
 	await _cards.remove_item(item)
 	_run.tickets.erase(item)
-	_run.money += int(item.price * 0.5)
+	_run.vouchers += int(item.price * 0.5)
 	_show_round()
 	Game.save_run()
 	_selling = false
@@ -202,13 +203,14 @@ func _place_views() -> void:
 
 # A chip dropped on a spot that already has a bet joins its chips.
 func _on_bet_placed(bet: Bet, chip: PlacedChip) -> void:
-	if _state != State.WAITING:
+	if _state != State.WAITING or chip.value > _run.money:
 		return
 	var placed := _find_bet(bet)
 	if placed == null:
 		placed = PlacedBet.of(bet.duplicate()) # the table keeps its own spot's bet
 		_run.current_round.bets.append(placed)
 	placed.chips.append(chip)
+	_run.money -= chip.value
 	_show_bets()
 	Game.save_run()
 
@@ -219,6 +221,7 @@ func _on_bet_cleared(bet: Bet) -> void:
 	var placed := _find_bet(bet)
 	if placed:
 		_run.current_round.bets.erase(placed)
+		_run.money += placed.total() # a removed bet is refunded
 		_show_bets()
 		Game.save_run()
 
@@ -237,7 +240,8 @@ func _on_spin_requested() -> void:
 	_selected = null
 	_picked.clear()
 	_betting.select_consumable(null)
-	_spin =SpinContext.new(_run.current_round.bets)
+	_spin = SpinContext.new(_run.current_round.bets)
+	_staked = _spin.staked()
 	_betting.set_editable(false)
 	_wheel_view.set_spinning(true)
 	_ticks_this_spin = 0
@@ -263,7 +267,8 @@ func _on_wheel_spin_finished(_index: int, pocket: Pocket) -> void:
 	Modifiers.notify(_run, &"pocket_landed", [pocket])
 	Modifiers.score(_run, _spin, pocket)
 	var progress := _run.current_round
-	progress.score += _spin.total()
+	_run.money += _spin.total() # the stakes were taken when the chips went down
+	progress.spin_profit += _spin.total() - _staked
 	progress.spins_left -= 1
 	progress.bets.clear() # the spin uses its bets up
 	Modifiers.notify(_run, &"spin_finished", [pocket])
@@ -300,7 +305,12 @@ func _show_bets() -> void:
 
 func _is_round_over() -> bool:
 	var progress := _run.current_round
-	return progress.score >= _step.target_score or progress.spins_left <= 0
+	return progress.profit() >= _step.required_profit or progress.spins_left <= 0 or _is_broke()
+
+
+# Out of money with nothing on the table: no bet can ever be placed again.
+func _is_broke() -> bool:
+	return _run.money < CHIP_VALUES.min() and _run.current_round.bets.is_empty()
 
 
 func _finish() -> void:
@@ -308,8 +318,8 @@ func _finish() -> void:
 	_betting.set_editable(false)
 	_wheel_view.set_can_spin(false)
 	var progress := _run.current_round
-	var won := progress.score >= _step.target_score
+	var won := progress.profit() >= _step.required_profit
 	Modifiers.notify(_run, &"round_finished", [progress, won])
 	_hud.show_result(won)
 	await _hud.continue_requested
-	finished.emit({"won": won, "score": progress.score})
+	finished.emit({"won": won, "profit": progress.profit(), "spins_left": progress.spins_left})

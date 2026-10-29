@@ -19,8 +19,8 @@ What you get:
 
 | Scene | With F6 |
 | --- | --- |
-| `play.tscn` | A fresh round: starter tickets, 4 spins, target 300. At the end it shows the result and emits `finished`, but nothing is listening, so it stays on screen. Press F6 again to replay. |
-| `shop.tscn` | The starter tickets and $4. Continue does nothing, for the same reason. |
+| `play.tscn` | A fresh round: starter tickets, 4 spins, target 300 profit, $200 to bet with. At the end it shows the result and emits `finished`, but nothing is listening, so it stays on screen. Press F6 again to replay. |
+| `shop.tscn` | The starter tickets and 0 vouchers. Continue does nothing, for the same reason. |
 | `run.tscn` | A full run from the first table, including the pause menu. |
 
 - **Your real save is never touched.** Throwaway runs are created with saving off (`Game.new_run(seed, false)`).
